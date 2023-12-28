@@ -1,0 +1,49 @@
+﻿@model MobileAndTablet
+@{
+    ViewData["Title"] = "Samsung";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">@Model.Name</h2>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">
+                    Image
+                </th>
+                <th scope="col">
+                    Name
+                </th>
+                <th scope="col">
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-primary">
+                <td scope="row">
+                    <img class="rounded-circle" src="@Model.imageSrc" alt="@Model.Name" style="width:170px; height:170px; max-width:100%" />
+                </td>
+                <td scope="row">
+                    @Model.Name
+                </td>
+                <td scope="row">
+                    @Model.Price $
+                </td>
+                <td scope="row">
+                    <a class="btn btn-primary text-white"
+                       asp-controller="Orders"
+                       asp-action="AddItemToShoppingCart"
+                       asp-route-id="@Model.Id">
+                        <i class="bi bi-cart-plus"></i> Add to Cart
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

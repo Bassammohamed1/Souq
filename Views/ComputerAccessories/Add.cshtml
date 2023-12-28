@@ -1,0 +1,49 @@
+﻿@model ComputerAccessory
+@{
+    ViewData["Title"] = "Add Computer Accessory";
+}
+<form method="post" enctype="multipart/form-data">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Computer Accessory</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="AddedOn"></label>
+            <input type="date" asp-for="AddedOn" class="form-control" />
+            <span asp-validation-for="AddedOn"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Category"></label>
+            <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<ComputerAccessoriesCategory>()"></select>
+            <span asp-validation-for="Category"></span>
+        </div>
+        <div class="mb-3">
+            <label>Image</label>
+            <input type="file" asp-for="clientFile" class="form-control" />
+            <span asp-validation-for="clientFile" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" asp-controller="ComputerAccessories" class="btn btn-secondary">
+            Back To Computer Accessories
+        </a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

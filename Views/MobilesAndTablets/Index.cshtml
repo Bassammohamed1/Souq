@@ -1,0 +1,77 @@
+﻿@model IEnumerable<MobileAndTablet>
+@{
+    ViewData["Title"] = "Mobiles And Tablets";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<style>
+    html,
+    body {
+        position: relative;
+        height: 100%;
+    }
+
+    body {
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #000;
+        margin: 0;
+        padding: 0;
+    }
+
+    .swiper {
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Mobiles And Tablets</h2>
+        </div>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"> <a asp-controller="MobilesAndTablets" asp-action="IPhoneAndIpad"><img src="~/imgs/mac.png" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="MobilesAndTablets" asp-action="Samsung"><img src="~/imgs/samsung.png" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="MobilesAndTablets" asp-action="Huawei"><img src="~/imgs/Huawei.png" class="catItem" /></a></div>
+                <div class="swiper-slide">  <a asp-controller="MobilesAndTablets" asp-action="Xiaomi"><img src="~/imgs/MI.png" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="MobilesAndTablets" asp-action="Oppo"><img src="~/imgs/oppo.png" class="catItem" /></a></div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper('.swiper', {
+        slidesPerView: 3,
+        direction: getDirection(),
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        on: {
+            resize: function () {
+                swiper.changeDirection(getDirection());
+            },
+        },
+    });
+    function getDirection() {
+        var windowWidth = window.innerWidth;
+        var direction = window.innerWidth <= 760 ? 'vertical' : 'horizontal';
+
+        return direction;
+    }
+</script>
