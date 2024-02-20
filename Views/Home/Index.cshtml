@@ -1,4 +1,4 @@
-﻿@model List<BaseModel>
+﻿@model HomePageVM
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -37,7 +37,7 @@
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Categories</h2>
+            <h2 class="text-dark">Categories</h2>
         </div>
         <div class="swiper">
             <div class="swiper-wrapper">
@@ -53,11 +53,122 @@
 
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Recently Added</h2>
+            <h2 class="text-dark">Recently Added</h2>
         </div>
         <div class="swiper">
             <div class="swiper-wrapper">
-                @foreach (var item in Model)
+                @foreach (var item in Model.AddedOnItems)
+                {
+                    if (item.Name.Contains("Keyboard"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ComputerAccessories" asp-action="KeyboardDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Mouse"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ComputerAccessories" asp-action="MouseDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Headphone"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ComputerAccessories" asp-action="HeadphoneDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Fridge"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ElectricalDevices" asp-action="FridgeDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("TV"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ElectricalDevices" asp-action="TvDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("WashingMachine"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ElectricalDevices" asp-action="WashingMachineDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("GasStove"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="ElectricalDevices" asp-action="GasStoveDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Dell"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="Laptops" asp-action="DellDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("HP"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="Laptops" asp-action="HpDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Lenovo"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="Laptops" asp-action="LenovoDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Mac"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="Laptops" asp-action="MacDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("iPhone") || item.Name.Contains("iPad"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="MobilesAndTablets" asp-action="IPhoneAndIPadDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Samsung"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="MobilesAndTablets" asp-action="SamsungDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Xiaomi"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="MobilesAndTablets" asp-action="XiaomiDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Huawei"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="MobilesAndTablets" asp-action="HuaweiDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                    else if (item.Name.Contains("Oppo"))
+                    {
+                        <div class="swiper-slide">
+                            <a asp-controller="MobilesAndTablets" asp-action="OppoDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-dark">Check Out Our New Offers</h2>
+        </div>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model.OfferedItems)
                 {
                     if (item.Name.Contains("Keyboard"))
                     {

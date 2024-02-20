@@ -43,7 +43,6 @@ namespace Souq.Controllers
                 UserName = user.UserName,
                 Roles = roles.Select(role => new RoleViewModel
                 {
-                    RoleId = role.Id,
                     RoleName = role.Name,
                     IsSelected = _userManager.IsInRoleAsync(user, role.Name).Result
                 }).ToList()

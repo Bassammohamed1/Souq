@@ -21,7 +21,53 @@ namespace Souq.Controllers
         }
         public IActionResult Index()
         {
+
             var data1 = _unitOfWork.ComputerAccessories.GetAll();
+            var data2 = _unitOfWork.ElectricalDevices.GetAll();
+            var data3 = _unitOfWork.Laptops.GetAll();
+            var data4 = _unitOfWork.MobilesAndTablets.GetAll();
+
+            List<BaseModel> MyList = new();
+            foreach (var item in data1)
+            {
+                if (item.Amount <= 5)
+                {
+                    item.Price *= .75;
+                    _unitOfWork.SaveChanges();
+                    MyList.Add(item);
+                  
+                }
+            }
+            foreach (var item in data2)
+            {
+                if (item.Amount <= 5)
+                {
+                    item.Price *= .75;
+                    _unitOfWork.SaveChanges();
+                    MyList.Add(item);
+                }
+            }
+            foreach (var item in data3)
+            {
+                if (item.Amount <= 5)
+                {
+                    item.Price *= .75;
+                    _unitOfWork.SaveChanges();
+                    MyList.Add(item);
+                }
+            }
+            foreach (var item in data4)
+            {
+                if (item.Amount <= 5)
+                {
+                    item.Price *= .75;
+                    _unitOfWork.SaveChanges();
+                    MyList.Add(item);
+                }
+            }
+
+
+
             var result1 = data1.Where(o => o.Category == ComputerAccessoriesCategory.Keyboard).OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result1 != null)
                 _items.Add(result1);
@@ -34,7 +80,7 @@ namespace Souq.Controllers
             if (result1 != null)
                 _items.Add(result1);
 
-            var data2 = _unitOfWork.ElectricalDevices.GetAll();
+
             var result2 = data2.Where(o => o.Category == ElectricalDevicesCategory.Fridge).OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result2 != null)
                 _items.Add(result2);
@@ -51,7 +97,7 @@ namespace Souq.Controllers
             if (result2 != null)
                 _items.Add(result2);
 
-            var data3 = _unitOfWork.Laptops.GetAll();
+
             var result3 = data3.Where(o => o.Category == LaptopsCategory.Dell).OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result3 != null)
                 _items.Add(result3);
@@ -68,7 +114,7 @@ namespace Souq.Controllers
             if (result3 != null)
                 _items.Add(result3);
 
-            var data4 = _unitOfWork.MobilesAndTablets.GetAll();
+
             var result4 = data4.Where(o => o.Category == MobilesAndTabletsCategory.IPhone || o.Category == MobilesAndTabletsCategory.Ipad).OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result4 != null)
                 _items.Add(result4);
@@ -89,7 +135,14 @@ namespace Souq.Controllers
             if (result4 != null)
                 _items.Add(result4);
 
-            return View(_items);
+
+            var allData = new HomePageVM()
+            {
+                AddedOnItems = _items,
+                OfferedItems = MyList
+            };
+
+            return View(allData);
         }
         [AllowAnonymous]
         public IActionResult Filter(string searchString)
