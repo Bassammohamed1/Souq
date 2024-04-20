@@ -1,0 +1,80 @@
+﻿@model IEnumerable<ElectricalDevice>
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Electrical Devices</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="ElectricalDevices" asp-action="Add" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>  Add New
+            </a>
+        </div>
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Sort By <i class="bi bi-sliders2"></i>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" asp-controller="ElectricalDevices" asp-action="PriceDetails"><i class="bi bi-coin"></i> Price</a>
+                <a class="dropdown-item" asp-controller="ElectricalDevices" asp-action="DateDetails"><i class="bi bi-calendar"></i> Date</a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">
+                    Image
+                </th>
+                <th scope="col">
+                    Name
+                </th>
+                <th scope="col">
+                    Price
+                </th>
+                <th scope="col">
+                    Amount
+                </th>
+                <th scope="col">
+                    Date Added
+                </th>
+                <th scope="col">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table-primary">
+                    <td scope="row">
+                        <img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" />
+                    </td>
+                    <td scope="row">
+                        @item.Name
+                    </td>
+                    <td scope="row">
+                        @item.Price $
+                    </td>
+                    <td scope="row">
+                        @item.Amount
+                    </td>
+                    <td scope="row">
+                        @item.AddedOn
+                    </td>
+                    <td>
+                        <a asp-controller="ElectricalDevices" asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-controller="ElectricalDevices" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

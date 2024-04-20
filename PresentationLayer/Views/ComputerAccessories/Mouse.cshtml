@@ -1,0 +1,64 @@
+﻿@model IEnumerable<ComputerAccessory>
+@{
+    ViewData["Title"] = "Mouses";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Mouses</h2>
+        </div>
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                Sort By <i class="bi bi-sliders2"></i>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" asp-controller="ComputerAccessories" asp-action="PriceDetailsForMouse"><i class="bi bi-coin"></i> Price</a>
+                <a class="dropdown-item" asp-controller="ComputerAccessories" asp-action="DateDetailsForMouse"><i class="bi bi-calendar"></i> Date</a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">
+                    Image
+                </th>
+                <th scope="col">
+                    Name
+                </th>
+                <th scope="col">
+                    Price
+                </th>
+                <th scope="col">
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table-primary">
+                    <td scope="row">
+                        <img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" />
+                    </td>
+                    <td scope="row">
+                        @item.Name
+                    </td>
+                    <td scope="row">
+                        @item.Price $
+                    </td>
+                    <td scope="row">
+                        <a class="btn btn-primary text-white"
+                       asp-controller="Orders"
+                       asp-action="AddItemToShoppingCart"
+                       asp-route-id="@item.Id">
+                            <i class="bi bi-cart-plus"></i> Add to Cart
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
