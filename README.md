@@ -1,5 +1,5 @@
 Souq website : 
-I used C#11 & .Net 7 with EF 8 and microsoft identity.
+I used C# 12 & .Net 8 with EF 8 and microsoft identity.
 The user can see all the categories of all products from home page and search for any item or any category he want.
 The user also can see all the recently added products and can see the offers.
 All the website offers is make 25% discount of the price of any product.
