@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ElectricalDevice>
+﻿@model IEnumerable<Item>
 @{
     ViewData["Title"] = "Electrical Devices";
 }
@@ -41,10 +41,10 @@
         </div>
         <div class="swiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="WashingMachine"><img src="~/imgs/wash.png" class="catItem" /></a></div>
-                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="Tv"><img src="~/imgs/TV.png" class="catItem" /></a></div>
-                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="Fridge"><img src="~/imgs/Fridge.png" class="catItem" /></a></div>
-                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="GasStove"><img src="~/imgs/Gasstove.png" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="WashingMachine"><img src="~/imgs/Washing.png" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="Tv"><img src="~/imgs/TV.jpg" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="Fridge"><img src="~/imgs/Fridge.jpg" class="catItem" /></a></div>
+                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="GasStove"><img src="~/imgs/Gas.jpg" class="catItem" /></a></div>
             </div>
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>

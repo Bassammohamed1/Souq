@@ -2,9 +2,10 @@
 
 namespace DomainLayer.Interfaces
 {
-    public interface ILaptopsRepository : IRepository<Laptop>
+    public interface ILaptopsRepository : IRepository<Item>
     {
-        IEnumerable<Laptop> GetByPrice();
-        IEnumerable<Laptop> GetByDate();
+        IEnumerable<Item> GetByPrice();
+        IEnumerable<Item> GetByDate();
+        IEnumerable<Item> GetAllItems();
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Laptop
+﻿@model Item
 @{
     ViewData["Title"] = "Dell";
 }
@@ -36,14 +36,26 @@
                     @Model.Price $
                 </td>
                 <td scope="row">
-                    <a class="btn btn-primary text-white"
-                       asp-controller="Orders"
-                       asp-action="AddItemToShoppingCart"
-                       asp-route-id="@Model.Id">
-                        <i class="bi bi-cart-plus"></i> Add to Cart
-                    </a>
+                    <button type="button" onclick="add(@Model.Id)" class="btn btn-primary">Add to cart</button>
                 </td>
             </tr>
         </tbody>
     </table>
 </div>
+@section Scripts {
+    <script>
+        async function add(itemId) {
+            try {
+                var response = await fetch(`/Cart/AddItem?itemId=${itemId}`);
+                if (response.status == 200) {
+                    var result = await response.json();
+                    var cartCountEl = document.getElementById("cartCount");
+                    cartCountEl.innerHTML = result;
+                }
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+    </script>
+}

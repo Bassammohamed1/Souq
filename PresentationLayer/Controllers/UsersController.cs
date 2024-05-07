@@ -1,9 +1,8 @@
-﻿using DomainLayer.ViewModels;
+﻿using DomainLayer.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace PresentationLayer.Controllers
 {
@@ -19,58 +18,49 @@ namespace PresentationLayer.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var users = await _userManager.Users.Select(user => new UserViewModel
+            IEnumerable<UserViewModel> data = await _userManager.Users.Select(user => new UserViewModel
             {
                 Id = user.Id,
-                UserName = user.UserName,
+                Name = user.UserName,
                 Email = user.Email,
                 Roles = _userManager.GetRolesAsync(user).Result
             }).ToListAsync();
-            return View(users);
+            return View(data);
         }
         public async Task<IActionResult> ManageRoles(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-
             if (user == null)
                 return NotFound();
-
-            var roles = await _roleManager.Roles.ToListAsync();
-
-            var viewModel = new UserRolesViewModel
+            var roles = _roleManager.Roles.ToList();
+            var User = new UserRolesViewModel()
             {
                 UserId = user.Id,
-                UserName = user.UserName,
-                Roles = roles.Select(role => new RoleViewModel
+                Name = user.UserName,
+                Roles = roles.Select(role => new RolesViewModel
                 {
-                    RoleName = role.Name,
+                    Name = role.Name,
                     IsSelected = _userManager.IsInRoleAsync(user, role.Name).Result
                 }).ToList()
             };
-
-            return View(viewModel);
+            return View(User);
         }
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ManageRoles(UserRolesViewModel model)
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> ManageRoles(UserRolesViewModel data)
         {
-            var user = await _userManager.FindByIdAsync(model.UserId);
-
+            var user = await _userManager.FindByIdAsync(data.UserId);
             if (user == null)
                 return NotFound();
-
             var userRoles = await _userManager.GetRolesAsync(user);
-
-            foreach (var role in model.Roles)
+            foreach (var role in data.Roles)
             {
-                if (userRoles.Any(r => r == role.RoleName) && !role.IsSelected)
-                    await _userManager.RemoveFromRoleAsync(user, role.RoleName);
+                if (userRoles.Any(r => r == role.Name) && !role.IsSelected)
+                    await _userManager.RemoveFromRoleAsync(user, role.Name);
 
-                if (!userRoles.Any(r => r == role.RoleName) && role.IsSelected)
-                    await _userManager.AddToRoleAsync(user, role.RoleName);
+                if (!userRoles.Any(r => r == role.Name) && role.IsSelected)
+                    await _userManager.AddToRoleAsync(user, role.Name);
             }
-
             return RedirectToAction(nameof(Index));
         }
     }

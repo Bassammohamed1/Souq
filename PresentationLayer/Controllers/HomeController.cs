@@ -1,15 +1,14 @@
-﻿using DomainLayer.Enums;
 using DomainLayer.Interfaces;
 using DomainLayer.Models;
+using DomainLayer.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace PresentationLayer.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller
     {
-        private List<BaseModel> _items = new List<BaseModel>();
+        private List<Item> _items = new List<Item>();
         private readonly IUnitOfWork _unitOfWork;
         public HomeController(IUnitOfWork unitOfWork)
         {
@@ -18,12 +17,12 @@ namespace PresentationLayer.Controllers
         public IActionResult Index()
         {
 
-            var data1 = _unitOfWork.ComputerAccessories.GetAll();
-            var data2 = _unitOfWork.ElectricalDevices.GetAll();
-            var data3 = _unitOfWork.Laptops.GetAll();
-            var data4 = _unitOfWork.MobilesAndTablets.GetAll();
+            var data1 = _unitOfWork.ComputerAccessories.GetAllItems();
+            var data2 = _unitOfWork.ElectricalDevices.GetAllItems();
+            var data3 = _unitOfWork.Laptops.GetAllItems();
+            var data4 = _unitOfWork.MobilesAndTablets.GetAllItems();
 
-            List<BaseModel> MyList = new();
+            List<Item> MyList = new();
             foreach (var item in data1)
             {
                 if (item.Amount <= 5)
@@ -64,70 +63,70 @@ namespace PresentationLayer.Controllers
 
 
 
-            var result1 = data1.Where(o => o.Category == ComputerAccessoriesCategory.Keyboard).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            var result1 = data1.Where(o => o.ItemType == "Keyboard").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result1 != null)
                 _items.Add(result1);
 
-            result1 = data1.Where(o => o.Category == ComputerAccessoriesCategory.Mouse).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result1 = data1.Where(o => o.ItemType == "Mouse").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result1 != null)
                 _items.Add(result1);
 
-            result1 = data1.Where(o => o.Category == ComputerAccessoriesCategory.Headphone).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result1 = data1.Where(o => o.ItemType == "Headphone").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result1 != null)
                 _items.Add(result1);
 
 
-            var result2 = data2.Where(o => o.Category == ElectricalDevicesCategory.Fridge).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            var result2 = data2.Where(o => o.ItemType == "Fridge").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result2 != null)
                 _items.Add(result2);
 
-            result2 = data2.Where(o => o.Category == ElectricalDevicesCategory.TV).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result2 = data2.Where(o => o.ItemType == "TV").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result2 != null)
                 _items.Add(result2);
 
-            result2 = data2.Where(o => o.Category == ElectricalDevicesCategory.WashingMachine).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result2 = data2.Where(o => o.ItemType == "WashingMachine").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result2 != null)
                 _items.Add(result2);
 
-            result2 = data2.Where(o => o.Category == ElectricalDevicesCategory.GasStove).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result2 = data2.Where(o => o.ItemType == "GasStove").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result2 != null)
                 _items.Add(result2);
 
 
-            var result3 = data3.Where(o => o.Category == LaptopsCategory.Dell).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            var result3 = data3.Where(o => o.ItemType == "Dell").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result3 != null)
                 _items.Add(result3);
 
-            result3 = data3.Where(o => o.Category == LaptopsCategory.HP).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result3 = data3.Where(o => o.ItemType == "HP").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result3 != null)
                 _items.Add(result3);
 
-            result3 = data3.Where(o => o.Category == LaptopsCategory.Lenovo).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result3 = data3.Where(o => o.ItemType == "Lenovo").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result3 != null)
                 _items.Add(result3);
 
-            result3 = data3.Where(o => o.Category == LaptopsCategory.Mac).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result3 = data3.Where(o => o.ItemType == "Mac").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result3 != null)
                 _items.Add(result3);
 
 
-            var result4 = data4.Where(o => o.Category == MobilesAndTabletsCategory.IPhone || o.Category == MobilesAndTabletsCategory.Ipad).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            var result4 = data4.Where(o => o.ItemType == "IPhone" || o.ItemType == "IPad").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result4 != null)
                 _items.Add(result4);
 
-            result4 = data4.Where(o => o.Category == MobilesAndTabletsCategory.Samsung).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result4 = data4.Where(o => o.ItemType == "Samsung").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result4 != null)
                 _items.Add(result4);
 
-            result4 = data4.Where(o => o.Category == MobilesAndTabletsCategory.Xiaomi).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result4 = data4.Where(o => o.ItemType == "Xiaomi").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result4 != null)
                 _items.Add(result4);
 
-            result4 = data4.Where(o => o.Category == MobilesAndTabletsCategory.Huawei).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result4 = data4.Where(o => o.ItemType == "Huawei").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result4 != null)
                 _items.Add(result4);
 
-            result4 = data4.Where(o => o.Category == MobilesAndTabletsCategory.Oppo).OrderByDescending(x => x.AddedOn).FirstOrDefault();
+            result4 = data4.Where(o => o.ItemType == "Oppo").OrderByDescending(x => x.AddedOn).FirstOrDefault();
             if (result4 != null)
                 _items.Add(result4);
 
@@ -140,79 +139,70 @@ namespace PresentationLayer.Controllers
 
             return View(allData);
         }
-        [AllowAnonymous]
         public IActionResult Filter(string searchString)
         {
-            var ComputerAccessories = _unitOfWork.ComputerAccessories.GetAll();
-            var ElectricalDevices = _unitOfWork.ElectricalDevices.GetAll();
-            var Laptops = _unitOfWork.Laptops.GetAll();
-            var MobilesAndTablets = _unitOfWork.MobilesAndTablets.GetAll();
+            var ComputerAccessories = _unitOfWork.ComputerAccessories.GetAllItems();
+            var ElectricalDevices = _unitOfWork.ElectricalDevices.GetAllItems();
+            var Laptops = _unitOfWork.Laptops.GetAllItems();
+            var MobilesAndTablets = _unitOfWork.MobilesAndTablets.GetAllItems();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 string formattedInput1 = searchString.Trim().ToLower();
-                foreach (ComputerAccessoriesCategory item in Enum.GetValues(typeof(ComputerAccessoriesCategory)))
+                foreach (var item in ComputerAccessories)
                 {
-                    string formattedEnumValue = item.ToString().Trim().ToLower();
-                    var myList = new List<ComputerAccessoriesCategory>();
-                    if (formattedInput1 == formattedEnumValue)
+                    string itemType1 = item.ItemType.ToString().Trim().ToLower();
+                    if (itemType1 == formattedInput1 || itemType1 + 's' == formattedInput1)
                     {
-                        myList.Add(item);
-                        IEnumerable<ComputerAccessory> ComputerData = ComputerAccessories.Where(x => x.Category == myList.First());
+                        IEnumerable<Item> ComputerData = ComputerAccessories.Where(x => x.ItemType == item.ItemType);
                         return View(ComputerData);
                     }
                 }
-                var data = ComputerAccessories.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower())).ToList();
-                if (data.Count != 0)
-                    return View(data);
-
-                string formattedInput2 = searchString.Trim().ToLower();
-                foreach (ElectricalDevicesCategory item in Enum.GetValues(typeof(ElectricalDevicesCategory)))
-                {
-                    string formattedEnumValue = item.ToString().Trim().ToLower();
-                    var myList = new List<ElectricalDevicesCategory>();
-                    if (formattedInput2 == formattedEnumValue)
-                    {
-                        myList.Add(item);
-                        IEnumerable<ElectricalDevice> ElectricalData = ElectricalDevices.Where(x => x.Category == myList.First());
-                        return View(ElectricalData);
-                    }
-                }
-                var data1 = ElectricalDevices.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                var data1 = ComputerAccessories.Where(n => Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower())).ToList();
                 if (data1.Count != 0)
                     return View(data1);
 
-                string formattedInput3 = searchString.Trim().ToLower();
-                foreach (LaptopsCategory item in Enum.GetValues(typeof(LaptopsCategory)))
+                string formattedInput2 = searchString.Trim().ToLower();
+                foreach (var item in ElectricalDevices)
                 {
-                    string formattedEnumValue = item.ToString().Trim().ToLower();
-                    var myList = new List<LaptopsCategory>();
-                    if (formattedInput3 == formattedEnumValue)
+                    string itemType2 = item.ItemType.ToString().Trim().ToLower();
+                    if (itemType2 == formattedInput2 || itemType2 + 's' == formattedInput2)
                     {
-                        myList.Add(item);
-                        IEnumerable<Laptop> LaptopData = Laptops.Where(x => x.Category == myList.First());
-                        return View(LaptopData);
+                        IEnumerable<Item> ElectricalData = ElectricalDevices.Where(x => x.ItemType == item.ItemType);
+                        return View(ElectricalData);
                     }
                 }
-                var data2 = Laptops.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                var data2 = ElectricalDevices.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
                 if (data2.Count != 0)
                     return View(data2);
 
-                string formattedInput4 = searchString.Trim().ToLower();
-                foreach (MobilesAndTabletsCategory item in Enum.GetValues(typeof(MobilesAndTabletsCategory)))
+                string formattedInput3 = searchString.Trim().ToLower();
+                foreach (var item in Laptops)
                 {
-                    string formattedEnumValue = item.ToString().Trim().ToLower();
-                    var myList = new List<MobilesAndTabletsCategory>();
-                    if (formattedInput4 == formattedEnumValue)
+                    string itemType3 = item.ItemType.ToString().Trim().ToLower();
+                    if (itemType3 == formattedInput3 || itemType3 + 's' == formattedInput3)
                     {
-                        myList.Add(item);
-                        IEnumerable<MobileAndTablet> MobileData = MobilesAndTablets.Where(x => x.Category == myList.First());
+                        IEnumerable<Item> LaptopData = Laptops.Where(x => x.ItemType == item.ItemType);
+                        return View(LaptopData);
+                    }
+                }
+                var data3 = Laptops.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                if (data3.Count != 0)
+                    return View(data3);
+
+                string formattedInput4 = searchString.Trim().ToLower();
+                foreach (var item in MobilesAndTablets)
+                {
+                    string itemType4 = item.ItemType.ToString().Trim().ToLower();
+                    if (itemType4 == formattedInput4 || itemType4 + 's' == formattedInput4)
+                    {
+                        IEnumerable<Item> MobileData = MobilesAndTablets.Where(x => x.ItemType == item.ItemType);
                         return View(MobileData);
                     }
                 }
-                var data3 = MobilesAndTablets.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
-                if (data3.Count != 0)
-                    return View(data3);
+                var data4 = MobilesAndTablets.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                if (data4.Count != 0)
+                    return View(data4);
 
                 return View();
             }

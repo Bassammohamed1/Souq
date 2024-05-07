@@ -1,0 +1,15 @@
+﻿@model Department
+@{
+    ViewData["Title"] = "Delete Department";
+}
+<form method="post">
+    <div class="window" style="background-color:antiquewhite;padding:20px;">
+        <p3>Are you sure you want to delete this Department</p3>
+        <div class="buttons" style="padding-top:10px;">
+            <button type="submit" class="btn btn-primary">Okay</button>
+            <a asp-controller="Departments" asp-action="Index" class="btn btn-secondary">
+                Back to Departments
+            </a>
+        </div>
+    </div>
+</form>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BaseModel>
+﻿@model IEnumerable<Item>
 @{
     ViewData["Title"] = "Items";
 }
@@ -44,12 +44,7 @@ else
                             @item.Price $
                         </td>
                         <td scope="row">
-                            <a class="btn btn-primary text-white"
-                       asp-controller="Orders"
-                       asp-action="AddItemToShoppingCart"
-                       asp-route-id="@item.Id">
-                                <i class="bi bi-cart-plus"></i> Add to Cart
-                            </a>
+                            <button type="button" onclick="add(@item.Id)" class="btn btn-primary">Add to cart</button>
                         </td>
                     </tr>
                 }

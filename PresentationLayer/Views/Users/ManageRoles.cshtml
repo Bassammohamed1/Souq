@@ -7,7 +7,7 @@
 <form method="post">
     <div class="card mt-4">
         <div class="card-header">
-            <h2>@Model.UserName</h2>
+            <h2>@Model.Name</h2>
             Add/Remove Roles
         </div>
         <div class="card-body">
@@ -15,17 +15,17 @@
             @for (int i = 0; i < Model.Roles.Count; i++)
             {
                 <div class="form-check m-1">
-                    <input type="hidden" asp-for="@Model.Roles[i].RoleName" />
+                    <input type="hidden" asp-for="@Model.Roles[i].Name" />
                     <input asp-for="@Model.Roles[i].IsSelected" class="form-check-input" />
                     <label class="form-check-label" asp-for="@Model.Roles[i].IsSelected">
-                        @Model.Roles[i].RoleName
+                        @Model.Roles[i].Name
                     </label>
                 </div>
             }
             <div asp-validation-summary="All" class="text-danger"></div>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-warning">Save</button>
             <a asp-action="Index" class="btn btn-secondary">Cancel</a>
         </div>
     </div>

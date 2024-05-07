@@ -4,7 +4,7 @@ using InfrastructureLayer.Data;
 
 namespace InfrastructureLayer.Repository
 {
-    public class ElectricalDevicesRepository : Repository<ElectricalDevice>, IElectricalDevicesRepository
+    public class ElectricalDevicesRepository : Repository<Item>, IElectricalDevicesRepository
     {
         private readonly AppDbContext _context;
 
@@ -13,14 +13,19 @@ namespace InfrastructureLayer.Repository
             _context = context;
         }
 
-        public IEnumerable<ElectricalDevice> GetByDate()
+        public IEnumerable<Item> GetAllItems()
         {
-            return _context.ElectricalDevices.OrderByDescending(x => x.AddedOn).ToList();
+            return _context.Items.Where(x => x.DepartmentID == 2).ToList();
         }
 
-        public IEnumerable<ElectricalDevice> GetByPrice()
+        public IEnumerable<Item> GetByDate()
         {
-            return _context.ElectricalDevices.OrderByDescending(x => x.Price).ToList();
+            return _context.Items.Where(x => x.DepartmentID == 2).OrderByDescending(x => x.AddedOn).ToList();
+        }
+
+        public IEnumerable<Item> GetByPrice()
+        {
+            return _context.Items.Where(x => x.DepartmentID == 2).OrderByDescending(x => x.Price).ToList();
         }
     }
 }

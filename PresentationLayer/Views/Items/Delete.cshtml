@@ -1,0 +1,15 @@
+﻿@model Item
+@{
+    ViewData["Title"] = "Delete Item";
+}
+<form method="post">
+    <div class="window" style="background-color:antiquewhite;padding:20px;">
+        <p3>Are you sure you want to delete this Item</p3>
+        <div class="buttons" style="padding-top:10px;">
+            <button type="submit" class="btn btn-primary">Okay</button>
+            <a asp-controller="Items" asp-action="Index" class="btn btn-secondary">
+                Back to Items
+            </a>
+        </div>
+    </div>
+</form>

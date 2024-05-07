@@ -2,9 +2,10 @@
 
 namespace DomainLayer.Interfaces
 {
-    public interface IComputerAccessoriesRepository : IRepository<ComputerAccessory>
+    public interface IComputerAccessoriesRepository : IRepository<Item>
     {
-        IEnumerable<ComputerAccessory> GetByPrice();
-        IEnumerable<ComputerAccessory> GetByDate();
+        IEnumerable<Item> GetByPrice();
+        IEnumerable<Item> GetByDate();
+        IEnumerable<Item> GetAllItems();
     }
 }

@@ -1082,7 +1082,7 @@
   const SWIPE_THRESHOLD = 40;
   const Default$a = {
     interval: 5000,
-    keyboard: true,
+    Keyboard: true,
     slide: false,
     pause: 'hover',
     wrap: true,
@@ -1090,7 +1090,7 @@
   };
   const DefaultType$a = {
     interval: '(number|boolean)',
-    keyboard: 'boolean',
+    Keyboard: 'boolean',
     slide: '(boolean|string)',
     pause: '(string|boolean)',
     wrap: 'boolean',
@@ -1271,7 +1271,7 @@
     }
 
     _addEventListeners() {
-      if (this._config.keyboard) {
+      if (this._config.Keyboard) {
         EventHandler.on(this._element, EVENT_KEYDOWN, event => this._keydown(event));
       }
 
@@ -2593,7 +2593,7 @@
     var width = html.clientWidth;
     var height = html.clientHeight;
     var x = 0;
-    var y = 0; // NB: This isn't supported on iOS <= 12. If the keyboard is open, the popper
+    var y = 0; // NB: This isn't supported on iOS <= 12. If the Keyboard is open, the popper
     // can be obscured underneath it.
     // Also, `html.clientHeight` adds the bottom bar height in Safari iOS, even
     // if it isn't open, so if this isn't available, the popper will be detected
@@ -4510,12 +4510,12 @@
   const ESCAPE_KEY$1 = 'Escape';
   const Default$5 = {
     backdrop: true,
-    keyboard: true,
+    Keyboard: true,
     focus: true
   };
   const DefaultType$5 = {
     backdrop: '(boolean|string)',
-    keyboard: 'boolean',
+    Keyboard: 'boolean',
     focus: 'boolean'
   };
   const EVENT_HIDE$3 = `hide${EVENT_KEY$6}`;
@@ -4727,10 +4727,10 @@
     _setEscapeEvent() {
       if (this._isShown) {
         EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS$1, event => {
-          if (this._config.keyboard && event.key === ESCAPE_KEY$1) {
+          if (this._config.Keyboard && event.key === ESCAPE_KEY$1) {
             event.preventDefault();
             this.hide();
-          } else if (!this._config.keyboard && event.key === ESCAPE_KEY$1) {
+          } else if (!this._config.Keyboard && event.key === ESCAPE_KEY$1) {
             this._triggerBackdropTransition();
           }
         });
@@ -4932,12 +4932,12 @@
   const ESCAPE_KEY = 'Escape';
   const Default$4 = {
     backdrop: true,
-    keyboard: true,
+    Keyboard: true,
     scroll: false
   };
   const DefaultType$4 = {
     backdrop: 'boolean',
-    keyboard: 'boolean',
+    Keyboard: 'boolean',
     scroll: 'boolean'
   };
   const CLASS_NAME_SHOW$3 = 'show';
@@ -5100,7 +5100,7 @@
 
     _addEventListeners() {
       EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS, event => {
-        if (this._config.keyboard && event.key === ESCAPE_KEY) {
+        if (this._config.Keyboard && event.key === ESCAPE_KEY) {
           this.hide();
         }
       });

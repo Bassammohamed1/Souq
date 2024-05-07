@@ -2,9 +2,10 @@
 
 namespace DomainLayer.Interfaces
 {
-    public interface IMobilesAndTabletsRepository : IRepository<MobileAndTablet>
+    public interface IMobilesAndTabletsRepository : IRepository<Item>
     {
-        IEnumerable<MobileAndTablet> GetByPrice();
-        IEnumerable<MobileAndTablet> GetByDate();
+        IEnumerable<Item> GetByPrice();
+        IEnumerable<Item> GetByDate();
+        IEnumerable<Item> GetAllItems();
     }
 }

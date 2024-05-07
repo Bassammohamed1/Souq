@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace PresentationLayer.Areas.Identity.Pages.Account.Manage
+namespace Souq.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
     {

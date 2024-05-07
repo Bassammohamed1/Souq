@@ -1,4 +1,4 @@
-﻿using DomainLayer.ViewModels;
+﻿using DomainLayer.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,36 +9,31 @@ namespace PresentationLayer.Controllers
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+
         public RolesController(RoleManager<IdentityRole> roleManager)
         {
             _roleManager = roleManager;
         }
+
         public IActionResult Index()
         {
-            var roles = _roleManager.Roles;
-            return View(roles);
+            var data = _roleManager.Roles.ToList();
+            return View(data);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Add(RoleFormViewModel data)
         {
             if (ModelState.IsValid)
             {
                 if (await _roleManager.RoleExistsAsync(data.Name))
                 {
-                    ModelState.AddModelError("Name", "Role is Exist");
-                    return View("Index", _roleManager.Roles);
-                }
-                else
-                {
-                    await _roleManager.CreateAsync(new IdentityRole(data.Name.Trim()));
                     return RedirectToAction("Index");
                 }
+                await _roleManager.CreateAsync(new IdentityRole(data.Name.Trim()));
+                return RedirectToAction("Index");
             }
-            else
-            {
-                return View("Index", _roleManager.Roles);
-            }
+            return RedirectToAction("Index");
         }
     }
 }

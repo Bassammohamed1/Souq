@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace PresentationLayer.Areas.Identity.Pages.Account
+namespace Souq.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {

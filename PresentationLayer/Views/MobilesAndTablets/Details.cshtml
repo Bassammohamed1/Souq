@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MobileAndTablet>
+﻿@model IEnumerable<Item>
 @{
     ViewData["Title"] = "Details";
 }
@@ -9,7 +9,7 @@
             <h2 class="text-primary">Mobiles And Tablets</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="MobilesAndTablets" asp-action="Add" class="btn btn-primary">
+            <a asp-controller="Items" asp-action="Add" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i>  Add New
             </a>
         </div>
@@ -66,10 +66,10 @@
                         @item.AddedOn
                     </td>
                     <td>
-                        <a asp-controller="MobilesAndTablets" asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                        <a asp-controller="Items" asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-success">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a asp-controller="MobilesAndTablets" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                        <a asp-controller="Items" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
                             <i class="bi bi-trash3"></i>
                         </a>
                     </td>
