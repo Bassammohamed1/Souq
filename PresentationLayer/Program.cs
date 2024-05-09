@@ -23,7 +23,8 @@ var services = scope.ServiceProvider;
 var usermanager = services.GetRequiredService<UserManager<IdentityUser>>();
 var rolemanager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-await Roles.AddRoles(rolemanager);
+await Roles.CreateUser(rolemanager);
+await Roles.CreateAdmin(rolemanager);
 await Users.CreateAdmin(usermanager);
 await Users.CreateUser(usermanager);
 
