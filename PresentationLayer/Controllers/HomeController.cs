@@ -1,9 +1,9 @@
-using DomainLayer.Interfaces;
-using DomainLayer.Models;
-using DomainLayer.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-namespace PresentationLayer.Controllers
+using Souq.Models;
+using Souq.Models.ViewModels;
+using Souq.Repository.Interfaces;
+namespace Souq.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller
@@ -158,7 +158,7 @@ namespace PresentationLayer.Controllers
                         return View(ComputerData);
                     }
                 }
-                var data1 = ComputerAccessories.Where(n => Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower())).ToList();
+                var data1 = ComputerAccessories.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower())).ToList();
                 if (data1.Count != 0)
                     return View(data1);
 

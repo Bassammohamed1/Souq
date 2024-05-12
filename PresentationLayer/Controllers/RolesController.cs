@@ -1,9 +1,9 @@
-﻿using DomainLayer.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Souq.Models.ViewModels;
 
-namespace PresentationLayer.Controllers
+namespace Souq.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class RolesController : Controller

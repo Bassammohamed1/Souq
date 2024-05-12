@@ -6,37 +6,15 @@ namespace InfrastructureLayer.Data.IdentitySeeds
     {
         public static async Task CreateUser(UserManager<IdentityUser> userManager)
         {
-            if (await userManager.FindByNameAsync("User@gmail.com") is null)
-            {
-                var User = new IdentityUser
-                {
-                    UserName = "User@gmail.com",
-                    Email = "user@gmail.com"
-                };
-                await userManager.CreateAsync(User, "Ba$$am3324");
-                await userManager.AddToRoleAsync(User, "User");
-            }
-            else
-            {
-                throw new Exception("User is exists!!");
-            }
+            var user = new IdentityUser() { UserName = "User@gmail.com", Email = "User@gmail.com", PhoneNumber = "123456" };
+            await userManager.CreateAsync(user, "Ba$$am3324");
+            await userManager.AddToRoleAsync(user, "User");
         }
         public static async Task CreateAdmin(UserManager<IdentityUser> userManager)
         {
-            if (await userManager.FindByNameAsync("Admin@gmail.com") is null)
-            {
-                var User = new IdentityUser
-                {
-                    UserName = "Admin@gmail.com",
-                    Email = "admin@gmail.com"
-                };
-                await userManager.CreateAsync(User, "Ba$$am3324");
-                await userManager.AddToRolesAsync(User, new List<string> { "Admin", "User" });
-            }
-            else
-            {
-                throw new Exception("User is exists!!");
-            }
+            var user = new IdentityUser() { UserName = "Admin@gmail.com", Email = "Admin@gmail.com", PhoneNumber = "123456" };
+            await userManager.CreateAsync(user, "Ba$$am3324");
+            await userManager.AddToRolesAsync(user, new List<string>() { "Admin", "User" });
         }
     }
 }

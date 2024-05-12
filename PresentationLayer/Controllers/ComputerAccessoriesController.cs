@@ -1,9 +1,9 @@
-﻿using DomainLayer.Interfaces;
-using DomainLayer.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Souq.Models;
+using Souq.Repository.Interfaces;
 
-namespace PresentationLayer.Controllers
+namespace Souq.Controllers
 {
     [AllowAnonymous]
     public class ComputerAccessoriesController : Controller

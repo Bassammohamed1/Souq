@@ -1,8 +1,8 @@
-﻿using DomainLayer.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Souq.Repository.Interfaces;
 
-namespace PresentationLayer.Controllers
+namespace Souq.Controllers
 {
     [Authorize]
     public class CartController : Controller

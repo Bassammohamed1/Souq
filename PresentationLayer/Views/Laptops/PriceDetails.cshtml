@@ -60,7 +60,9 @@
                         @item.Price $
                     </td>
                     <td scope="row">
-                        @item.Amount
+                        @item.Amount <a asp-controller="Items" asp-action="IncreaseAmount" asp-route-itemId="@item.Id" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus"></i>
+                        </a>
                     </td>
                     <td scope="row">
                         @item.AddedOn

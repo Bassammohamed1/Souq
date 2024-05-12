@@ -1,10 +1,10 @@
-﻿using DomainLayer.Interfaces;
-using DomainLayer.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Souq.Models;
+using Souq.Repository.Interfaces;
 
-namespace PresentationLayer.Controllers
+namespace Souq.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ItemsController : Controller
@@ -87,12 +87,22 @@ namespace PresentationLayer.Controllers
         }
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-
         public IActionResult Delete(Item data)
         {
             _unitOfWork.Items.Delete(data);
             _unitOfWork.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult IncreaseAmount(int itemId)
+        {
+            if (itemId == null)
+                return NotFound();
+            var result = _unitOfWork.Items.GetById(itemId);
+            if (result == null)
+                return NotFound();
+            result.Amount++;
+            _unitOfWork.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
