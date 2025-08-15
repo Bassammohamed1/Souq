@@ -1,4 +1,4 @@
-# 🛒 E-Commerce Platform
+# 🛒 Souq E-Commerce Platform
 
 A full-featured, high-performance e-commerce web application built with **C#**, **ASP.NET Core 8**, and **Entity Framework Core** following **Onion Architecture** principles.  
 The platform offers **real-time communication**, advanced analytics, flexible promotions, and seamless payment integrations.
