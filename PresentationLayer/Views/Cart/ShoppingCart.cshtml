@@ -1,0 +1,127 @@
+﻿@model CartViewModel
+
+@{
+    ViewData["Title"] = "ShoppingCart";
+}
+
+@if (Model is not null)
+{
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+                <h2 class="text-dark mb-0">ShoppingCart</h2>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        Image
+                    </th>
+                    <th scope="col">
+                        Name
+                    </th>
+                    <th scope="col">
+                        Type
+                    </th>
+                    <th scope="col">
+                        Unit Price (EGP)
+                    </th>
+                    <th scope="col">
+                        Total Price
+                    </th>
+                    <th class="text-center">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Carts)
+                {
+                    <tr>
+                        <td scope="row">
+                            <img src="@item.imageSrc" alt="@item.Name" class="wishList-cart-img" />
+                        </td>
+                        <td scope="row" style="width:50%">
+                            @item.Name
+                        </td>
+                        <td scope="row">
+                            @item.ItemType
+                        </td>
+                        <td>@item.Price X @item.Quantity</td>
+                        <td>@(item.Price* item.Quantity)</td>
+                        <td scope="row">
+                            @if (item.Price == 0)
+                            {
+                                <a class="btn disabled-btn" tabindex="-1"><i class="bi bi-cart-plus"></i></a>
+                                <a class="btn disabled-btn" tabindex="-1"><i class="bi bi-cart-dash"></i></a>
+                            }
+                            else
+                            {
+                                <a class="btn" asp-action="AddItemToCart" asp-route-itemId="@item.ItemId" asp-route-itemType="@item.ItemType" asp-route-qty=1 asp-route-redirect=1><i class="bi bi-cart-plus"></i></a>
+                                <a class="btn" asp-action="RemoveItemFromCart" asp-route-itemId="@item.ItemId" asp-route-itemType="@item.ItemType" asp-route-redirect=1><i class="bi bi-cart-dash"></i></a>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3 me-2">
+        <div class="card text-end border-0" style="min-width: 250px;">
+            <div class="card-body">
+                <h5 class="card-title text-dark">Total:</h5>
+                <h4 class="card-text text-black fw-bold">EGP @Model.TotalPrice</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3 me-2">
+        <form asp-action="ApplyPromoCode" asp-controller="Cart" method="post" class="input-group" style="max-width: 350px;">
+            <input type="text" style="box-shadow: none;border-color: #000;" name="promoCode" class="form-control" placeholder="Enter Promo Code" aria-label="Promo Code" />
+            <button class="btn  btn-dark" type="submit">
+                <i class="bi bi-tag-fill me-1"></i> Apply
+            </button>
+        </form>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ViewBag.PromoMessage as string))
+    {
+        <div class="alert alert-danger text-center me-2" style="max-width: 350px; margin-left: auto;">
+            @ViewBag.PromoMessage
+        </div>
+    }
+
+
+    <div class="d-flex justify-content-end mb-3 me-2">
+        <a asp-controller="Payments" asp-action="PaymentMethods" class="btn bg-gold">
+            <i class="bi bi-credit-card"></i> Proceed to Checkout
+        </a>
+    </div>
+
+    <div>
+        @Html.PagedListPager(Model.Carts, page => Url.Action("GetUserCart", new { page }), new PagedListRenderOptions
+        {
+            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        DisplayLinkToIndividualPages = true,
+        LinkToFirstPageFormat = "First",
+        LinkToPreviousPageFormat = "Previous",
+        LinkToIndividualPageFormat = "{0}",
+        LinkToNextPageFormat = "Next",
+        LinkToLastPageFormat = "Last"
+        })
+</div>
+}
+@* else
+{
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <h3>Your cart is empty.</h3>
+    </div>
+} *@

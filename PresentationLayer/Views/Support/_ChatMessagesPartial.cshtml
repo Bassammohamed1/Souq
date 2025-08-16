@@ -1,0 +1,46 @@
+﻿@model ChatMessagesViewModel
+
+@{
+    foreach (var msg in Model.ReadMessages)
+    {
+        if (msg.SenderId == ViewBag.CurrentUserID)
+        {
+            <div class="message caller">
+                @msg.MessageContent
+                <div class="timestamp">
+                    @msg.MessageDate.ToShortTimeString()
+                    @(msg.IsRead
+                            ? Html.Raw("<span class='check blue-check'>✓✓</span>")
+                            : Html.Raw("<span class='check gray-check'>✓</span>")
+                            )
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="message other">
+                @msg.MessageContent
+                <div class="timestamp">
+                    @msg.MessageDate.ToShortTimeString()
+                </div>
+            </div>
+        }
+    }
+
+    if (Model.UnReadMessages.Any())
+    {
+        <div id="unread-messages-divider" style="clear: both; text-align: center; color: red; margin: 10px 0;">
+            @Model.UnReadMessages.Count() unread messages
+        </div>
+
+        foreach (var msg in Model.UnReadMessages)
+        {
+            <div class="message other">
+                @msg.MessageContent
+                <div class="timestamp">
+                    @msg.MessageDate.ToShortTimeString()
+                </div>
+            </div>
+        }
+    }
+}

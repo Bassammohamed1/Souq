@@ -1,0 +1,126 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<h2>Dashboard Overview</h2>
+
+<div class="row text-white mb-4">
+    <div class="col-md-3">
+        <div class="bg-primary p-4 rounded shadow">Orders: @Model.OrdersCount</div>
+    </div>
+    <div class="col-md-3">
+        <div class="bg-success p-4 rounded shadow">Revenue: $@Model.TotalRevenue</div>
+    </div>
+    <div class="col-md-3">
+        <div class="bg-info p-4 rounded shadow">Products: @Model.ProductsCount</div>
+    </div>
+    <div class="col-md-3">
+        <div class="bg-danger p-4 rounded shadow">Customers: @Model.UsersCount</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Sales Overview</div>
+            <div class="card-body">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Customer Growth</div>
+            <div class="card-body">
+                <canvas id="customerChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Revenue Breakdown</div>
+            <div class="card-body">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Product Category Distribution</div>
+            <div class="card-body">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 1. Sales Overview
+        new Chart(document.getElementById('salesChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Sales ($)',
+                    data: [3000, 4200, 3800, 5100, 6100],
+                    backgroundColor: 'rgba(0, 123, 255, 0.6)'
+                }]
+            }
+        });
+
+        // 2. Customer Growth
+        new Chart(document.getElementById('customerChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'New Customers',
+                    data: [50, 75, 60, 90, 110],
+                    backgroundColor: 'rgba(40, 167, 69, 0.3)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    fill: true
+                }]
+            }
+        });
+
+        // 3. Revenue Breakdown
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Online', 'In-store', 'Wholesale'],
+                datasets: [{
+                    label: 'Revenue Channels',
+                    data: [6000, 3000, 3000],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(54, 162, 235, 0.6)'
+                    ]
+                }]
+            }
+        });
+
+        // 4. Product Category Distribution
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Electronics', 'Clothing', 'Home', 'Beauty'],
+                datasets: [{
+                    label: 'Categories',
+                    data: [40, 25, 20, 15],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 205, 86, 0.6)'
+                    ]
+                }]
+            }
+        });
+    </script>
+}

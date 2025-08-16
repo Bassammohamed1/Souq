@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Souq.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using PresentationLayer.ViewModels.Identity;
 
-namespace Souq.Controllers
+namespace PresentationLayer.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class RolesController : Controller
@@ -15,24 +16,29 @@ namespace Souq.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var data = _roleManager.Roles.ToList();
-            return View(data);
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            return View(roles ?? Enumerable.Empty<IdentityRole>());
         }
+
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Add(RoleFormViewModel data)
+        public async Task<IActionResult> Create(RoleFormViewModel role)
         {
-            if (ModelState.IsValid)
-            {
-                if (await _roleManager.RoleExistsAsync(data.Name))
-                {
-                    return RedirectToAction("Index");
-                }
-                await _roleManager.CreateAsync(new IdentityRole(data.Name.Trim()));
+            if (!ModelState.IsValid)
                 return RedirectToAction("Index");
+
+            var isRoleExists = await _roleManager.RoleExistsAsync(role.Name);
+
+            if (isRoleExists)
+            {
+                ModelState.AddModelError("Name", $"Role {role.Name} is already exist.");
+                return View("Index", _roleManager.Roles);
             }
+            else
+                await _roleManager.CreateAsync(new IdentityRole(role.Name));
+
             return RedirectToAction("Index");
         }
     }

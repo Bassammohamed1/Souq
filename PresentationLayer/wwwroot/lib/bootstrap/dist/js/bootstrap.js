@@ -1104,7 +1104,7 @@
   const SWIPE_THRESHOLD = 40;
   const Default$a = {
     interval: 5000,
-    Keyboard: true,
+    keyboard: true,
     slide: false,
     pause: 'hover',
     wrap: true,
@@ -1112,7 +1112,7 @@
   };
   const DefaultType$a = {
     interval: '(number|boolean)',
-    Keyboard: 'boolean',
+    keyboard: 'boolean',
     slide: '(boolean|string)',
     pause: '(string|boolean)',
     wrap: 'boolean',
@@ -1293,7 +1293,7 @@
     }
 
     _addEventListeners() {
-      if (this._config.Keyboard) {
+      if (this._config.keyboard) {
         EventHandler.on(this._element, EVENT_KEYDOWN, event => this._keydown(event));
       }
 
@@ -2756,12 +2756,12 @@
   const ESCAPE_KEY$1 = 'Escape';
   const Default$5 = {
     backdrop: true,
-    Keyboard: true,
+    keyboard: true,
     focus: true
   };
   const DefaultType$5 = {
     backdrop: '(boolean|string)',
-    Keyboard: 'boolean',
+    keyboard: 'boolean',
     focus: 'boolean'
   };
   const EVENT_HIDE$3 = `hide${EVENT_KEY$6}`;
@@ -2973,10 +2973,10 @@
     _setEscapeEvent() {
       if (this._isShown) {
         EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS$1, event => {
-          if (this._config.Keyboard && event.key === ESCAPE_KEY$1) {
+          if (this._config.keyboard && event.key === ESCAPE_KEY$1) {
             event.preventDefault();
             this.hide();
-          } else if (!this._config.Keyboard && event.key === ESCAPE_KEY$1) {
+          } else if (!this._config.keyboard && event.key === ESCAPE_KEY$1) {
             this._triggerBackdropTransition();
           }
         });
@@ -3178,12 +3178,12 @@
   const ESCAPE_KEY = 'Escape';
   const Default$4 = {
     backdrop: true,
-    Keyboard: true,
+    keyboard: true,
     scroll: false
   };
   const DefaultType$4 = {
     backdrop: 'boolean',
-    Keyboard: 'boolean',
+    keyboard: 'boolean',
     scroll: 'boolean'
   };
   const CLASS_NAME_SHOW$3 = 'show';
@@ -3346,7 +3346,7 @@
 
     _addEventListeners() {
       EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS, event => {
-        if (this._config.Keyboard && event.key === ESCAPE_KEY) {
+        if (this._config.keyboard && event.key === ESCAPE_KEY) {
           this.hide();
         }
       });

@@ -1,0 +1,23 @@
+﻿@model Comment
+
+@{
+    ViewData["Title"] = "Comment";
+}
+<h1 class="comment-h1">Leave a Comment</h1>
+
+<div class="comment-form">
+    <form method="post" asp-action="Comment" asp-controller="UserInteractions">
+
+        <input type="hidden" asp-for="ItemId" />
+        <input type="hidden" asp-for="ItemType" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="CommentTime" />
+
+        <div class="form-group">
+            <label asp-for="Value">Your Comment:</label>
+            <input type="text" asp-for="Value" />
+        </div>
+
+        <button type="submit">Submit Comment</button>
+    </form>
+</div>

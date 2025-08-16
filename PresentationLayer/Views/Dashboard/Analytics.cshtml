@@ -1,0 +1,167 @@
+﻿@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Analytics Dashboard</h2>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">1. Sales Overview</div>
+            <div class="card-body"><canvas id="salesChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">2. Customer Growth</div>
+            <div class="card-body"><canvas id="customerChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">3. Revenue Breakdown</div>
+            <div class="card-body"><canvas id="revenueChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">4. Product Category Distribution</div>
+            <div class="card-body"><canvas id="categoryChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">5. Monthly Orders</div>
+            <div class="card-body"><canvas id="ordersChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">6. Top Selling Products</div>
+            <div class="card-body"><canvas id="topProductsChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">7. Traffic Sources</div>
+            <div class="card-body"><canvas id="trafficChart"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">8. Refund Requests</div>
+            <div class="card-body"><canvas id="refundChart"></canvas></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        new Chart(document.getElementById('salesChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Sales ($)',
+                    data: [3000, 4200, 3800, 5100, 6100],
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(0,123,255,0.1)',
+                    fill: true
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('customerChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'New Customers',
+                    data: [50, 75, 60, 90, 110],
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(40,167,69,0.1)',
+                    fill: true
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Online', 'In-Store', 'Wholesale'],
+                datasets: [{
+                    data: [6000, 3000, 3000],
+                    backgroundColor: ['#007bff', '#ffc107', '#28a745']
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Electronics', 'Clothing', 'Home', 'Beauty'],
+                datasets: [{
+                    data: [40, 25, 20, 15],
+                    backgroundColor: ['#17a2b8', '#6f42c1', '#fd7e14', '#20c997']
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('ordersChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [120, 150, 170, 200, 230],
+                    backgroundColor: 'rgba(255,99,132,0.6)'
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('topProductsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['iPhone', 'Shoes', 'Laptop', 'Headphones'],
+                datasets: [{
+                    label: 'Sales Count',
+                    data: [90, 75, 60, 50],
+                    backgroundColor: ['#6610f2', '#fd7e14', '#20c997', '#ffc107']
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('trafficChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Organic', 'Social', 'Referral', 'Email'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: ['#0d6efd', '#6610f2', '#fd7e14', '#6c757d']
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('refundChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Refund Requests',
+                    data: [5, 8, 4, 6, 3],
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220,53,69,0.1)',
+                    fill: true
+                }]
+            }
+        });
+    </script>
+}

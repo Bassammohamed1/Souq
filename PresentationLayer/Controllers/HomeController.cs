@@ -1,210 +1,223 @@
+using DomainLayer.DTOs;
+using DomainLayer.Enums;
+using DomainLayer.Interfaces;
+using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Souq.Models;
-using Souq.Models.ViewModels;
-using Souq.Repository.Interfaces;
-namespace Souq.Controllers
+using PresentationLayer.ViewModels;
+using PresentationLayer.ViewModels.ItemVMs;
+
+namespace PresentationLayer.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller
     {
-        private List<Item> _items = new List<Item>();
         private readonly IUnitOfWork _unitOfWork;
+
         public HomeController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
 
-            var data1 = _unitOfWork.ComputerAccessories.GetAllItems();
-            var data2 = _unitOfWork.ElectricalDevices.GetAllItems();
-            var data3 = _unitOfWork.Laptops.GetAllItems();
-            var data4 = _unitOfWork.MobilesAndTablets.GetAllItems();
+            var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+            var latestItems = items.OrderByDescending(i => i.AddedOn).Take(8).OrderBy(i => Guid.NewGuid());
+            var featuredItems = items.OrderByDescending(i => i.Rate).Take(8).OrderBy(i => Guid.NewGuid());
 
-            List<Item> MyList = new();
-            foreach (var item in data1)
+            var offers = _unitOfWork.Offers.GetAllOffers().Result
+                .Where(o => o.OfferType != OfferType.PromoCode);
+
+            var homePageVM = new HomePageViewModel()
             {
-                if (item.Amount <= 5)
-                {
-                    item.Price *= .75;
-                    _unitOfWork.SaveChanges();
-                    MyList.Add(item);
-
-                }
-            }
-            foreach (var item in data2)
-            {
-                if (item.Amount <= 5)
-                {
-                    item.Price *= .75;
-                    _unitOfWork.SaveChanges();
-                    MyList.Add(item);
-                }
-            }
-            foreach (var item in data3)
-            {
-                if (item.Amount <= 5)
-                {
-                    item.Price *= .75;
-                    _unitOfWork.SaveChanges();
-                    MyList.Add(item);
-                }
-            }
-            foreach (var item in data4)
-            {
-                if (item.Amount <= 5)
-                {
-                    item.Price *= .75;
-                    _unitOfWork.SaveChanges();
-                    MyList.Add(item);
-                }
-            }
-
-
-
-            var result1 = data1.Where(o => o.ItemType == "Keyboard").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result1 != null)
-                _items.Add(result1);
-
-            result1 = data1.Where(o => o.ItemType == "Mouse").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result1 != null)
-                _items.Add(result1);
-
-            result1 = data1.Where(o => o.ItemType == "Headphone").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result1 != null)
-                _items.Add(result1);
-
-
-            var result2 = data2.Where(o => o.ItemType == "Fridge").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result2 != null)
-                _items.Add(result2);
-
-            result2 = data2.Where(o => o.ItemType == "TV").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result2 != null)
-                _items.Add(result2);
-
-            result2 = data2.Where(o => o.ItemType == "WashingMachine").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result2 != null)
-                _items.Add(result2);
-
-            result2 = data2.Where(o => o.ItemType == "GasStove").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result2 != null)
-                _items.Add(result2);
-
-
-            var result3 = data3.Where(o => o.ItemType == "Dell").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result3 != null)
-                _items.Add(result3);
-
-            result3 = data3.Where(o => o.ItemType == "HP").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result3 != null)
-                _items.Add(result3);
-
-            result3 = data3.Where(o => o.ItemType == "Lenovo").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result3 != null)
-                _items.Add(result3);
-
-            result3 = data3.Where(o => o.ItemType == "Mac").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result3 != null)
-                _items.Add(result3);
-
-
-            var result4 = data4.Where(o => o.ItemType == "IPhone" || o.ItemType == "IPad").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result4 != null)
-                _items.Add(result4);
-
-            result4 = data4.Where(o => o.ItemType == "Samsung").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result4 != null)
-                _items.Add(result4);
-
-            result4 = data4.Where(o => o.ItemType == "Xiaomi").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result4 != null)
-                _items.Add(result4);
-
-            result4 = data4.Where(o => o.ItemType == "Huawei").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result4 != null)
-                _items.Add(result4);
-
-            result4 = data4.Where(o => o.ItemType == "Oppo").OrderByDescending(x => x.AddedOn).FirstOrDefault();
-            if (result4 != null)
-                _items.Add(result4);
-
-
-            var allData = new HomePageVM()
-            {
-                AddedOnItems = _items,
-                OfferedItems = MyList
+                Departments = departments ?? Enumerable.Empty<Department>(),
+                Latest = latestItems ?? Enumerable.Empty<Item>(),
+                Featured = featuredItems ?? Enumerable.Empty<Item>(),
+                Offers = offers ?? Enumerable.Empty<OfferDTO>()
             };
 
-            return View(allData);
+            return View(homePageVM);
         }
-        public IActionResult Filter(string searchString)
+
+        public async Task<IActionResult> Details(int id)
         {
-            var ComputerAccessories = _unitOfWork.ComputerAccessories.GetAllItems();
-            var ElectricalDevices = _unitOfWork.ElectricalDevices.GetAllItems();
-            var Laptops = _unitOfWork.Laptops.GetAllItems();
-            var MobilesAndTablets = _unitOfWork.MobilesAndTablets.GetAllItems();
+            var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
 
-            if (!string.IsNullOrEmpty(searchString))
+            var itemType = items.FirstOrDefault(i => i.ID == id)?.GetType().Name;
+
+            if (itemType is not null)
             {
-                string formattedInput1 = searchString.Trim().ToLower();
-                foreach (var item in ComputerAccessories)
+                return RedirectToAction("Details", $"{itemType}s", new { id });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> OfferDetails(int id)
+        {
+            var offer = await _unitOfWork.Offers.FindOfferByID(id);
+
+            if (offer is not null)
+            {
+                if (offer.OfferType == OfferType.BuyOneGetOne)
                 {
-                    string itemType1 = item.ItemType.ToString().Trim().ToLower();
-                    if (itemType1 == formattedInput1 || itemType1 + 's' == formattedInput1)
+                    var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+
+                    var itemType = items.FirstOrDefault(i => i.ID == offer.ItemOneID)?.GetType().Name;
+
+                    if (itemType is not null)
                     {
-                        IEnumerable<Item> ComputerData = ComputerAccessories.Where(x => x.ItemType == item.ItemType);
-                        return View(ComputerData);
+                        return RedirectToAction("Details", $"{itemType}s", new { id = offer.ItemOneID });
                     }
                 }
-                var data1 = ComputerAccessories.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower())).ToList();
-                if (data1.Count != 0)
-                    return View(data1);
-
-                string formattedInput2 = searchString.Trim().ToLower();
-                foreach (var item in ElectricalDevices)
+                else if (offer.OfferType == OfferType.FixedDiscount || offer.OfferType == OfferType.PercentDiscount)
                 {
-                    string itemType2 = item.ItemType.ToString().Trim().ToLower();
-                    if (itemType2 == formattedInput2 || itemType2 + 's' == formattedInput2)
+                    if (offer.DepartmentName is not null)
                     {
-                        IEnumerable<Item> ElectricalData = ElectricalDevices.Where(x => x.ItemType == item.ItemType);
-                        return View(ElectricalData);
+                        var nameAfterSplit = offer.DepartmentName.Split(' ');
+                        string controllerName = nameAfterSplit[0];
+                        for (int i = 1; i < nameAfterSplit.Length; i++)
+                        {
+                            controllerName += nameAfterSplit[i];
+                        }
+
+                        return RedirectToAction("Index", controllerName);
+                    }
+                    else if (offer.CategoryName is not null)
+                    {
+                        return RedirectToAction("Items", new { categoryName = offer.CategoryName });
+                    }
+                    else
+                    {
+                        var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+
+                        var itemType = items.FirstOrDefault(i => i.ID == offer.ItemID)?.GetType().Name;
+
+                        if (itemType is not null)
+                        {
+                            return RedirectToAction("Details", $"{itemType}s", new { id = offer.ItemID });
+                        }
                     }
                 }
-                var data2 = ElectricalDevices.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
-                if (data2.Count != 0)
-                    return View(data2);
+            }
 
-                string formattedInput3 = searchString.Trim().ToLower();
-                foreach (var item in Laptops)
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Items(string categoryName, string? orderIndex, int? page)
+        {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
+            int pageNumber = page ?? 1;
+            int pageSize = 9;
+
+            var allItems = _unitOfWork.Items.GetAll(1, int.MaxValue)
+                .Result.Where(i => i.Category?.Name == categoryName);
+
+            allItems = await _unitOfWork.Items.SortItems(allItems, orderIndex ?? "ID", false);
+
+            var totalPages = (int)Math.Ceiling(allItems.Count() / (double)pageSize);
+
+            var items = new ItemsViewModel()
+            {
+                Items = allItems.Skip((pageNumber - 1) * pageSize).Take(pageSize),
+                CurrentPage = pageNumber,
+                TotalPages = totalPages,
+                OrderIndex = orderIndex,
+                Brand = categoryName
+            };
+
+            return await Task.FromResult(View(items));
+        }
+
+        public async Task<IActionResult> Filter(string key, int? page, string? orderIndex)
+        {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                int pageNumber = page ?? 1;
+                int pageSize = 10;
+
+                var filterVM = new FilterViewModel()
                 {
-                    string itemType3 = item.ItemType.ToString().Trim().ToLower();
-                    if (itemType3 == formattedInput3 || itemType3 + 's' == formattedInput3)
+                    SearchPhrase = key,
+                    CurrentPage = pageNumber,
+                    OrderIndex = orderIndex ?? "ID"
+                };
+
+                var adjusted = key.Split(' ');
+                var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+
+                foreach (var word in adjusted)
+                {
+                    filterVM.MatchedItems = items.Where(i => i.Name.ToLower().Contains(word.ToLower()));
+                    items = filterVM.MatchedItems;
+                }
+
+                if (filterVM.MatchedItems.Any())
+                {
+                    var totalPages = (int)Math.Ceiling(filterVM.MatchedItems.Count() / (double)pageSize);
+                    filterVM.TotalPages = totalPages;
+
+                    filterVM.MatchedItems = filterVM.MatchedItems
+                        .OrderBy(i => i.GetType().GetProperty(orderIndex ?? "ID").GetValue(i, null))
+                        .Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+                    return View(filterVM);
+                }
+
+                if (!filterVM.MatchedItems.Any())
+                {
+                    foreach (var word in adjusted)
                     {
-                        IEnumerable<Item> LaptopData = Laptops.Where(x => x.ItemType == item.ItemType);
-                        return View(LaptopData);
+                        foreach (var department in departments)
+                        {
+                            if (department.Name.ToLower().Contains(word.ToLower()))
+                            {
+                                var matched = await _unitOfWork.Departments.GetDepartmentItems(department);
+
+                                var totalPages = (int)Math.Ceiling(matched.Count() / (double)pageSize);
+                                filterVM.TotalPages = totalPages;
+
+                                filterVM.MatchedItems = matched
+                                    .OrderBy(i => i.GetType().GetProperty(orderIndex ?? "ID").GetValue(i, null))
+                                    .Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+                                return View(filterVM);
+                            }
+                        }
                     }
                 }
-                var data3 = Laptops.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
-                if (data3.Count != 0)
-                    return View(data3);
 
-                string formattedInput4 = searchString.Trim().ToLower();
-                foreach (var item in MobilesAndTablets)
+                if (!filterVM.MatchedItems.Any())
                 {
-                    string itemType4 = item.ItemType.ToString().Trim().ToLower();
-                    if (itemType4 == formattedInput4 || itemType4 + 's' == formattedInput4)
+                    var categories = await _unitOfWork.Categories.GetAllWithoutPagination();
+                    foreach (var word in adjusted)
                     {
-                        IEnumerable<Item> MobileData = MobilesAndTablets.Where(x => x.ItemType == item.ItemType);
-                        return View(MobileData);
+                        foreach (var category in categories)
+                        {
+                            if (category.Name.ToLower().Contains(word.ToLower()))
+                            {
+                                var matched = await _unitOfWork.Categories.GetCategoryItems(category);
+
+                                var totalPages = (int)Math.Ceiling(matched.Count() / (double)pageSize);
+                                filterVM.TotalPages = totalPages;
+
+                                filterVM.MatchedItems = matched
+                                    .OrderBy(i => i.GetType().GetProperty(orderIndex ?? "ID").GetValue(i, null))
+                                    .Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+                                return View(filterVM);
+                            }
+                        }
                     }
                 }
-                var data4 = MobilesAndTablets.Where(n => string.Equals(n.Name.Trim().ToLower(), searchString.Trim().ToLower(), StringComparison.CurrentCultureIgnoreCase)).ToList();
-                if (data4.Count != 0)
-                    return View(data4);
-
-                return View();
             }
 
             return RedirectToAction("Index");

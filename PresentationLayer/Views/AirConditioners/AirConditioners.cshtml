@@ -1,0 +1,221 @@
+﻿@model ItemsViewModel
+
+@{
+    ViewData["Title"] = "AirConditioners";
+}
+<section class="series">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Results</h3>
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(
+                        Model.OrderIndex == null 
+                        ? "SortBy" 
+                        : (Model.Des.GetValueOrDefault() ? $"{Model.OrderIndex} : High to Low" : $"{Model.OrderIndex}: Low to High")
+                     )
+                </a>
+                <div class="dropdown-menu">
+                    <form asp-action="@Model.ActionName" method="post">
+                        @foreach (var item in Model.Items)
+                        {
+                            <input type="hidden" name="items[]" value="@item.Id" />
+                        }
+                        <a asp-route-orderIndex="Price" asp-route-page="@Model.CurrentPage" asp-route-name="@Model.Brand" asp-route-price1="@Model.Price1" asp-route-price2="@Model.Price2" asp-route-storage="@Model.Storage" class="dropdown-item">
+                            Price: Low to High
+                        </a>
+                        <a asp-route-orderIndex="Price" asp-route-page="@Model.CurrentPage" asp-route-name="@Model.Brand" asp-route-price1="@Model.Price1" asp-route-price2="@Model.Price2" asp-route-storage="@Model.Storage" asp-route-Des=@true class="dropdown-item">
+                            Price: High to Low
+                        </a>
+                        <a asp-route-orderIndex="AddedOn" asp-route-page="@Model.CurrentPage" asp-route-name="@Model.Brand" asp-route-price1="@Model.Price1" asp-route-price2="@Model.Price2" asp-route-storage="@Model.Storage" class="dropdown-item">
+                            Newest Arrivals
+                        </a>
+                        <a asp-route-orderIndex="Rate" asp-route-page="@Model.CurrentPage" asp-route-name="@Model.Brand" asp-route-price1="@Model.Price1" asp-route-price2="@Model.Price2" asp-route-storage="@Model.Storage" class="dropdown-item">
+                            Top Rated
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="item-grid">
+    @foreach (var item in Model.Items)
+    {
+        <div class="item-card">
+            <div class="cardHeader">
+                <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'AirConditioners')" : $"addToWishlist({item.Id}, 'AirConditioners')")">
+                    <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                </button>
+            </div>
+
+            <div class="image-container">
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    <img src="@item.imageSrc" alt="@item.Name" />
+                </a>
+            </div>
+
+            <div class="product-brand">
+                @item.CategoryName
+            </div>
+
+            <div class="product-title">
+                @item.Name
+            </div>
+
+            <div class="rating">
+                <span>"@item.Rate?.ToString("F1")"</span>
+                @foreach (var state in item.StarStates)
+                {
+                    if (state == "full")
+                    {
+                        <i class="bi bi-star-fill"></i>
+                    }
+                    else if (state == "half")
+                    {
+                        <i class="bi bi-star-half"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-star"></i>
+                    }
+                }
+                <div class="rating-count">✔ @item.RateCount</div>
+            </div>
+
+            <div class="price">
+                @if (item.NewPrice != 0)
+                {
+                    <span>EGP @item.NewPrice</span>
+                    <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                }
+                else
+                {
+                     <span>EGP @item.Price</span>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<nav>
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li>
+                <a href="@Url.Action(Model.ActionName, new {
+                    page = 1,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des,
+                    name = Model.Brand,
+                    price1=Model.Price1,
+                    price2=Model.Price2
+                })">First</a>
+            </li>
+            <li>
+                <a href="@Url.Action(Model.ActionName, new {
+                    page = Model.CurrentPage - 1,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des,
+                    name = Model.Brand,
+                    price1=Model.Price1,
+                    price2=Model.Price2
+                })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>First</span></li>
+            <li class="disabled"><span>Previous</span></li>
+        }
+
+        @{
+            int totalPagesToShow = 7;
+            int startPage = Math.Max(1, Model.CurrentPage - totalPagesToShow / 2);
+            int endPage = Math.Min(Model.TotalPages, startPage + totalPagesToShow - 1);
+
+            if (endPage - startPage + 1 < totalPagesToShow)
+            {
+                startPage = Math.Max(1, endPage - totalPagesToShow + 1);
+            }
+        }
+
+        @if (startPage > 1)
+        {
+            <li><span>...</span></li>
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="@(i == Model.CurrentPage ? "active" : "")">
+                <a href="@Url.Action(Model.ActionName, new {
+                    page = i,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des,
+                    name = Model.Brand,
+                    price1=Model.Price1,
+                    price2=Model.Price2
+                })">@i</a>
+            </li>
+        }
+
+        @if (endPage < Model.TotalPages)
+        {
+            <li><span>...</span></li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li>
+                <a href="@Url.Action(Model.ActionName, new {
+                    page = Model.CurrentPage + 1,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des,
+                    name = Model.Brand,
+                    price1=Model.Price1,
+                    price2=Model.Price2
+                })">Next</a>
+            </li>
+            <li>
+                <a href="@Url.Action(Model.ActionName, new {
+                    page = Model.TotalPages,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des,
+                    name = Model.Brand,
+                    price1=Model.Price1,
+                    price2=Model.Price2
+                })">Last</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>Next</span></li>
+            <li class="disabled"><span>Last</span></li>
+        }
+    </ul>
+</nav>
+
+<script>
+    async function addToWishlist(itemId, itemType) {
+        try {
+            var response = await fetch(`/UserInteractions/AddItemToWishList?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status === 200) {
+                location.reload(); 
+            }
+        } catch (err) {
+            console.log("Add error:", err);
+        }
+    }
+
+    async function removeFromWishlist(itemId, itemType) {
+        try {
+            var response = await fetch(`/UserInteractions/RemoveItemFromWishList?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status === 200) {
+                location.reload();
+            }
+        } catch (err) {
+            console.log("Remove error:", err);
+        }
+    }
+</script>

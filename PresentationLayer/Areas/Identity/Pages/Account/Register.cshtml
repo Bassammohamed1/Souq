@@ -1,66 +1,100 @@
 ﻿@page
+@using PresentationLayer.Areas.Identity.Pages.Account
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = "_AuthLayout";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    body.auth-bg {
+        background-color: #0e0e0e;
+        background-image: radial-gradient(circle at top left, rgba(212, 175, 55, 0.15), transparent 70%);
+        min-height: 100vh;
+    }
 
-<div class="row">
-    <div class="col-md-4">
+    .auth-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        backdrop-filter: blur(12px);
+        border-radius: 15px;
+        padding: 2rem;
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+        .auth-card h2 {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+    .btn-gold {
+        background-color: #d4af37;
+        color: #000;
+        border-radius: 30px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #b9962d;
+            transform: scale(1.03);
+        }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: #fff;
+        border-radius: 10px;
+    }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #d4af37;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+    a.text-gold {
+        color: #d4af37 !important;
+        text-decoration: none;
+    }
+
+        a.text-gold:hover {
+            text-decoration: underline;
+        }
+
+</style>
+
+<body class="auth-bg d-flex align-items-center justify-content-center">
+    <div class="auth-card text-center" style="max-width: 450px; width: 100%;">
+        <h2 class="mb-4">Join Souq</h2>
+        <p class="mb-4">Create your free account today</p>
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
+            <div class="mb-3 text-start">
+                <label asp-for="Input.UserName" class="form-label text-gold"></label>
+                <input asp-for="Input.UserName" class="form-control" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+            </div>
+            <div class="mb-3 text-start">
+                <label asp-for="Input.Email" class="form-label text-gold"></label>
+                <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
+            <div class="mb-3 text-start">
+                <label asp-for="Input.Password" class="form-label text-gold"></label>
+                <input asp-for="Input.Password" type="password" class="form-control" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+            <div class="mb-3 text-start">
+                <label asp-for="Input.ConfirmPassword" class="form-label text-gold"></label>
+                <input asp-for="Input.ConfirmPassword" type="password" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <button id="registerSubmit" type="submit" class="btn btn-gold w-100 mb-3">Register</button>
+            <p>Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-gold">Login</a></p>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
+</body>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

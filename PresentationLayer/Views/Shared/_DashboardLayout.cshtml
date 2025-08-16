@@ -1,0 +1,121 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard - Souq</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Souq.styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Amiri", serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            background-color: black;
+            color: white;
+        }
+
+            .sidebar a {
+                color: white;
+                padding: 10px 20px;
+                display: block;
+                text-decoration: none;
+            }
+
+                .sidebar a.active {
+                    background-color: gold;
+                    color: black;
+                }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .topbar {
+            height: 60px;
+            background-color: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+            .pagination li {
+                margin: 0 5px;
+            }
+
+            .pagination a, .pagination span {
+                display: block;
+                padding: 5px 10px;
+                border: 1px solid #ddd;
+                color: #000;
+                text-decoration: none;
+            }
+
+                .pagination a:hover {
+                    background-color: black;
+                    color: gold;
+                }
+
+            .pagination .active a, .pagination .active span {
+                background-color: black;
+                color: gold;
+                border-color: black;
+            }
+
+            .pagination .disabled a, .pagination .disabled span {
+                color: #000;
+                pointer-events: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        @await Html.PartialAsync("_PartialSidebar")
+    </div>
+    <div class="content">
+
+        <div class="topbar">
+            @await Html.PartialAsync("_PartialTopbar")
+        </div>
+
+        <main class="mt-4">
+            @RenderBody()
+        </main>
+
+        @RenderSection("Scripts", required: false)
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

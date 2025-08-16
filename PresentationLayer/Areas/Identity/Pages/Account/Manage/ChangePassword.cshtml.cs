@@ -5,27 +5,31 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using DomainLayer.Interfaces;
+using DomainLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
-namespace Souq.Areas.Identity.Pages.Account.Manage
+namespace PresentationLayer.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ChangePasswordModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            ILogger<ChangePasswordModel> logger,
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -79,6 +83,9 @@ namespace Souq.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

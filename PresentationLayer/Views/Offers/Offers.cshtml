@@ -1,0 +1,59 @@
+﻿@model IEnumerable<OfferViewModel>
+
+@{
+    ViewData["Title"] = "Offers";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2 class="my-4 fw-bold text-black">📦 Current Offers</h2>
+
+<div class="table-responsive">
+    <table class="table align-middle table-bordered border-dark-subtle shadow-sm rounded bg-white">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>Image</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>Brand</th>
+                <th>Item ID</th>
+                <th>Fixed 💲</th>
+                <th>Percent %</th>
+                <th>Buy ID</th>
+                <th>Get ID</th>
+                <th>Promo</th>
+                <th>Promo Type</th>
+                <th>Promo Value</th>
+                <th>⚙️</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @foreach (var offer in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@offer.ImageSrc" alt="Offer image" class="img-thumbnail" style="width: 80px; height: auto;" />
+                    </td>
+                    <td>@(offer.OfferType.ToString() ?? "None")</td>
+                    <td>@(offer.DepartmentName ?? "None")</td>
+                    <td>@(offer.CategoryName ?? "None")</td>
+                    <td>@(offer.ItemID)</td>
+                    <td>@(offer.FixedDiscountValue?.ToString() ?? "—")</td>
+                    <td>@(offer.PercentDiscount?.ToString() ?? "—")</td>
+                    <td>@(offer.ItemOneID)</td>
+                    <td>@(offer.ItemTwoID)</td>
+                    <td>@(offer.PromoCode ?? "—")</td>
+                    <td>@(offer.PromoDiscountType ?? "—")</td>
+                    <td>@(offer.PromoDiscountValue?.ToString() ?? "—")</td>
+                    <td>
+                        <a asp-action="Update" asp-route-id="@offer.ID" class="btn btn-sm btn-outline-success me-1">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@offer.ID" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

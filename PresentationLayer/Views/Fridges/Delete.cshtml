@@ -1,0 +1,15 @@
+﻿@model Fridge
+@{
+    ViewData["Title"] = "Delete Fridge";
+}
+<form method="post">
+    <div class="card" style="margin-top:25px; padding:20px;">
+        <h4>Are you sure you want to delete this Fridge</h4>
+        <div class="buttons" style="padding-top:10px;">
+            <button type="submit" class="text-white btn bg-danger">Okay</button>
+            <a asp-controller="Fridges" asp-action="IndexAdmin" class="btn btn-dark">
+                Back to Fridges
+            </a>
+        </div>
+    </div>
+</form>

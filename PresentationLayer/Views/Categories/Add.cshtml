@@ -1,0 +1,35 @@
+﻿@model CategoryDTO
+
+@{
+    ViewData["Title"] = "Add Category";
+}
+<form method="post" enctype="multipart/form-data">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-black">Add New Category</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="DepartmentsIds"></label>
+            <select asp-for="DepartmentsIds" class="form-select" asp-items="@ViewBag.departmentsViewBag" multiple></select>
+            <span asp-validation-for="DepartmentsIds"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="clientFile"></label>
+            <input type="file" asp-for="clientFile" class="form-control" />
+            <span asp-validation-for="clientFile" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn bg-gold">Save</button>
+        <a asp-action="Index" asp-controller="Categories" class="btn btn-dark">
+            Back To Categories
+        </a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

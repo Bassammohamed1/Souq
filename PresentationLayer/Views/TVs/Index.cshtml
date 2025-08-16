@@ -1,0 +1,270 @@
+﻿@model ItemViewModel<TVViewModel>
+
+@{
+    ViewData["Title"] = "TVs Index";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<div class="series">
+    <div class="header-container">
+        <h2 class="series-h">Shop by Brand</h2>
+    </div>
+    <div class="brand-grid-container">
+        @foreach (var category in Model.ItemCategories)
+        {
+            <a asp-action="Brands" asp-route-name="@category.Name" class="brand-grid-item">
+                <img src="@category.imageSrc" alt="@category.Name" class="brand-img" />
+            </a>
+        }
+    </div>
+</div>
+
+<div class="series">
+    <div class="header-container">
+        <h2 class="series-h">Hot New Releases</h2>
+        <a asp-action="Latest" class="series-link">More</a>
+    </div>
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            @foreach (var item in Model.latestItems)
+            {
+                <div class="swiper-slide">
+                    <div class="cardHeader">
+                        <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'TVs')" : $"addToWishlist({item.Id}, 'TVs')")">
+                            <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                        </button>
+                    </div>
+
+                    <div class="image-container">
+                        <a asp-action="Details" asp-route-id="@item.Id"><img src="@item.imageSrc" alt="@item.Name" /></a>
+                    </div>
+
+                    <div class="product-brand">
+                        @item.CategoryName
+                    </div>
+
+                    <div class="product-title">
+                        @item.Name
+                    </div>
+
+                    <div class="rating">
+                        <span>"@item.Rate?.ToString("F1")"</span>
+                        @foreach (var state in item.StarStates)
+                        {
+                            if (state == "full")
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else if (state == "half")
+                            {
+                                <i class="bi bi-star-half"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        }
+                        <div class="rating-count">✔ @item.RateCount</div>
+                    </div>
+
+                    <div class="price">
+                        @if (item.NewPrice != 0)
+                        {
+                            <span>EGP @item.NewPrice</span>
+                            <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                        }
+                        else
+                        {
+                            <span>EGP @item.Price</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</div>
+
+<div class="series">
+    <div class="header-container">
+        <h2 class="series-h">Check our Discounted Phones</h2>
+        <a asp-action="Discounted" class="series-link">More</a>
+    </div>
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            @foreach (var item in Model.DiscountedItems)
+            {
+                <div class="swiper-slide">
+                    <div class="cardHeader">
+                        <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'TVs')" : $"addToWishlist({item.Id}, 'TVs')")">
+                            <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                        </button>
+                    </div>
+
+                    <div class="image-container">
+                        <a asp-action="Details" asp-route-id="@item.Id"><img src="@item.imageSrc" alt="@item.Name" /></a>
+                    </div>
+
+                    <div class="product-brand">
+                        @item.CategoryName
+                    </div>
+
+                    <div class="product-title">
+                        @item.Name
+                    </div>
+
+                    <div class="rating">
+                        <span>"@item.Rate?.ToString("F1")"</span>
+                        @foreach (var state in item.StarStates)
+                        {
+                            if (state == "full")
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else if (state == "half")
+                            {
+                                <i class="bi bi-star-half"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        }
+                        <div class="rating-count">✔ @item.RateCount</div>
+                    </div>
+
+                    <div class="price">
+                        @if (item.NewPrice != 0)
+                        {
+                            <span>EGP @item.NewPrice</span>
+                            <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                        }
+                        else
+                        {
+                            <span>EGP @item.Price</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</div>
+
+<div class="series">
+    <div class="header-container">
+        <h2 class="series-h">Top Rated Phones</h2>
+        <a asp-action="TopRated" class="series-link">More</a>
+    </div>
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            @foreach (var item in Model.TopRatedItems)
+            {
+                <div class="swiper-slide">
+                    <div class="cardHeader">
+                        <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'TVs')" : $"addToWishlist({item.Id}, 'TVs')")">
+                            <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                        </button>
+                    </div>
+
+                    <div class="image-container">
+                        <a asp-action="Details" asp-route-id="@item.Id"><img src="@item.imageSrc" alt="@item.Name" /></a>
+                    </div>
+
+                    <div class="product-brand">
+                        @item.CategoryName
+                    </div>
+
+                    <div class="product-title">
+                        @item.Name
+                    </div>
+
+                    <div class="rating">
+                        <span>"@item.Rate?.ToString("F1")"</span>
+                        @foreach (var state in item.StarStates)
+                        {
+                            if (state == "full")
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else if (state == "half")
+                            {
+                                <i class="bi bi-star-half"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        }
+                        <div class="rating-count">✔ @item.RateCount</div>
+                    </div>
+
+                    <div class="price">
+                        @if (item.NewPrice != 0)
+                        {
+                            <span>EGP @item.NewPrice</span>
+                            <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                        }
+                        else
+                        {
+                            <span>EGP @item.Price</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</div>
+
+<div class="price-storage-container">
+    <h1>Shop by price</h1>
+    <div class="button-links">
+        <a asp-action="PriceFilter" asp-route-price1=14999 asp-route-price2=0 class="button-link">EGP 14999 & below</a>
+        <a asp-action="PriceFilter" asp-route-price1=15000 asp-route-price2=24999 class="button-link">EGP 15,000 - 24,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=25000 asp-route-price2=34999 class="button-link">EGP 25,000 - 34,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=35000 asp-route-price2=44999 class="button-link">EGP 35,000 - 44,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=45000 asp-route-price2=54999 class="button-link">EGP 45,000 - 54,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=55000 asp-route-price2=1 class="button-link">EGP 55,000 & above</a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var swiper = new Swiper('.swiper', {
+            slidesPerView: 5,
+            centeredSlides: false,
+            spaceBetween: 0,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    });
+
+    async function addToWishlist(itemId, itemType) {
+        try {
+            var response = await fetch(`/UserInteractions/AddItemToWishList?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status === 200) {
+                location.reload();
+            }
+        } catch (err) {
+            console.log("Add error:", err);
+        }
+    }
+
+    async function removeFromWishlist(itemId, itemType) {
+        try {
+            var response = await fetch(`/UserInteractions/RemoveItemFromWishList?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status === 200) {
+                location.reload();
+            }
+        } catch (err) {
+            console.log("Remove error:", err);
+        }
+    }
+</script>

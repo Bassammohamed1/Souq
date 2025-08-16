@@ -1,10 +1,27 @@
 ﻿@model RoleFormViewModel
 
-<form method="post" asp-action="Add">
+<style>
+    .input:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: #ccc;
+    }
+
+    .input{
+        border-right: none;
+    }
+
+    .button {
+        border-left: none;
+        border-radius: 0 4px 4px 0;
+    }
+</style>
+
+<form method="post" asp-action="Create">
     <div class="input-group mb-3">
-        <input asp-for="Name" class="form-control" placeholder="Role name..." />
+        <input asp-for="Name" class="form-control input" placeholder="Role name..." />
         <div class="input-group-append">
-            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add New Role</button>
+            <button type="submit" class="btn btn-primary button">Create Role</button>
         </div>
     </div>
     <span asp-validation-for="Name" class="text-danger"></span>

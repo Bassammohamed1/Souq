@@ -1078,7 +1078,7 @@ const TOUCHEVENT_COMPAT_WAIT = 500; // Time for mouse compat events to fire afte
 const SWIPE_THRESHOLD = 40;
 const Default$a = {
   interval: 5000,
-  Keyboard: true,
+  keyboard: true,
   slide: false,
   pause: 'hover',
   wrap: true,
@@ -1086,7 +1086,7 @@ const Default$a = {
 };
 const DefaultType$a = {
   interval: '(number|boolean)',
-  Keyboard: 'boolean',
+  keyboard: 'boolean',
   slide: '(boolean|string)',
   pause: '(string|boolean)',
   wrap: 'boolean',
@@ -1267,7 +1267,7 @@ class Carousel extends BaseComponent {
   }
 
   _addEventListeners() {
-    if (this._config.Keyboard) {
+    if (this._config.keyboard) {
       EventHandler.on(this._element, EVENT_KEYDOWN, event => this._keydown(event));
     }
 
@@ -2730,12 +2730,12 @@ const DATA_API_KEY$3 = '.data-api';
 const ESCAPE_KEY$1 = 'Escape';
 const Default$5 = {
   backdrop: true,
-  Keyboard: true,
+  keyboard: true,
   focus: true
 };
 const DefaultType$5 = {
   backdrop: '(boolean|string)',
-  Keyboard: 'boolean',
+  keyboard: 'boolean',
   focus: 'boolean'
 };
 const EVENT_HIDE$3 = `hide${EVENT_KEY$6}`;
@@ -2947,10 +2947,10 @@ class Modal extends BaseComponent {
   _setEscapeEvent() {
     if (this._isShown) {
       EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS$1, event => {
-        if (this._config.Keyboard && event.key === ESCAPE_KEY$1) {
+        if (this._config.keyboard && event.key === ESCAPE_KEY$1) {
           event.preventDefault();
           this.hide();
-        } else if (!this._config.Keyboard && event.key === ESCAPE_KEY$1) {
+        } else if (!this._config.keyboard && event.key === ESCAPE_KEY$1) {
           this._triggerBackdropTransition();
         }
       });
@@ -3152,12 +3152,12 @@ const EVENT_LOAD_DATA_API$1 = `load${EVENT_KEY$5}${DATA_API_KEY$2}`;
 const ESCAPE_KEY = 'Escape';
 const Default$4 = {
   backdrop: true,
-  Keyboard: true,
+  keyboard: true,
   scroll: false
 };
 const DefaultType$4 = {
   backdrop: 'boolean',
-  Keyboard: 'boolean',
+  keyboard: 'boolean',
   scroll: 'boolean'
 };
 const CLASS_NAME_SHOW$3 = 'show';
@@ -3320,7 +3320,7 @@ class Offcanvas extends BaseComponent {
 
   _addEventListeners() {
     EventHandler.on(this._element, EVENT_KEYDOWN_DISMISS, event => {
-      if (this._config.Keyboard && event.key === ESCAPE_KEY) {
+      if (this._config.keyboard && event.key === ESCAPE_KEY) {
         this.hide();
       }
     });

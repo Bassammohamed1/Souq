@@ -1,0 +1,76 @@
+﻿@model IPagedList<CategoryIndexVM>
+
+@{
+
+    TempData["Title"] = "Categories";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-black">Categories</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Categories" asp-action="Add" class="btn bg-gold">
+                Add New
+            </a>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">
+                    Image
+                </th>
+                <th scope="col">
+                    Name
+                </th>
+                <th scope="col">
+                    Departments
+                </th>
+                <th scope="col">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table-light">
+                    <td scope="row">
+                        <img class="Photos" src="@item.Image" alt="@item.Name"  />
+                    </td>
+                    <td scope="row">
+                        @item.Name
+                    </td>
+                    <td scope="row">
+                        @string.Join(" - ", item.Departments)
+                    </td>
+                    <td>
+                        <a asp-controller="Categories" asp-action="Update" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+{
+    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+    DisplayLinkToIndividualPages = true,
+    LinkToFirstPageFormat = "First",
+    LinkToPreviousPageFormat = "Previous",
+    LinkToIndividualPageFormat = "{0}",
+    LinkToNextPageFormat = "Next",
+    LinkToLastPageFormat = "Last"
+})
+</div>

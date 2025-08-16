@@ -1,0 +1,149 @@
+﻿@model AdminChatViewModel
+
+@{
+    ViewData["Title"] = "Support-Admin";
+}
+
+<div class="admin-chat-container">
+    <div class="admin-sidebar">
+        <h3>Users</h3>
+        @foreach (var user in Model.Users)
+        {
+            <table class="table table-light table-hover">
+                <tbody>
+                    <tr>
+                        <td onclick="openChat('@user.User.UserName','@user.User.Id')" style="cursor:pointer;">
+                            @user.User.UserName
+                            @if (user.ChatCount > 0)
+                            {
+                                <span id="badge-@user.User.Id" class="badge admin-badge">
+                                    @user.ChatCount
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div class="chat-area">
+        <div id="chatHeader" class="chat-header" style="display:none;">
+        </div>
+        <div class="chat-messages" id="messages">
+            <p style="text-align:center; color:#888;">No active chats</p>
+        </div>
+        <div id="chatInput" class="chat-input" style="display:none;">
+            <input type="text" id="txt" placeholder="Type a reply..." />
+            <button type="submit" onclick="send()"><i class="bi bi-send"></i></button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        //SignalR connection
+        con = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+        con.start();
+
+        // define call back function
+        con.on("YourMessage", function (message, flag) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const checkIcon = flag
+                ? `<span class="check blue-check">✓✓</span>`
+                : `<span class="check gray-check">✓</span>`;
+
+            $("#messages").append(`
+                <div class="message caller">
+                    ${message}
+                    <div class="timestamp">
+                        ${time}
+                        ${checkIcon}
+                    </div>
+                </div>
+            `);
+            $("#messages").find("#unread-messages-divider").remove();
+            scrollToBottom();
+        });
+
+        con.on("NewMessage", function (message) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            $("#messages").append(`
+                <div class="message other">
+                    ${message}
+                    <div class="timestamp">
+                        ${time}
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        });
+
+        con.on("MessagesRead", function () {
+            $(".message .gray-check").removeClass("gray-check").addClass("blue-check").text("✓✓");
+        });
+
+        // define function to consume server
+        function send() {
+            con.invoke("SendMessageFromAdmin", currentUserID, $("#txt").val());
+            $("#txt").val("");
+        }
+    </script>
+
+    <script>
+        function scrollToBottom() {
+            const messages = document.getElementById('messages');
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        $("#txt").keypress(function(e) {
+            if (e.which === 13) {
+                send();
+            }
+        });
+
+        let currentUser = null;
+        let currentUserID = null;
+
+        function openChat(userName, userID) {
+            con.invoke("CurrentChatUserID", userID);
+
+            let badge = document.getElementById("badge-" + userID);
+            if (badge) {
+             badge.remove();
+            }
+
+            currentUser = userName;
+            currentUserID = userID;
+
+            $("#chatHeader").text("Chat with " + userName).show();
+            $("#chatInput").show();
+            $("#messages").find("p").remove();
+
+            $.get("/Support/LoadChatMessages", { senderID: '@ViewBag.AdminID', receiverID: currentUserID }, function (html) {
+                $("#messages").html(html);
+
+                const unreadDivider = document.getElementById('unread-messages-divider');
+                if (unreadDivider) {
+                    unreadDivider.scrollIntoView({ behavior: 'smooth' });
+
+                    unreadDivider.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                    setTimeout(() => {
+                        unreadDivider.style.backgroundColor = '';
+                    }, 1000);
+                } else {
+                    scrollToBottom();
+                }
+            });
+
+
+        setTimeout(function () {
+            con.invoke("MarkMessagesAsRead", userID);
+        }, 1000);
+
+        }
+    </script>
+}

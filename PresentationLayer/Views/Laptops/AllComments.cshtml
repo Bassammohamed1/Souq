@@ -1,0 +1,69 @@
+﻿@model LaptopViewModel
+
+@{
+    ViewData["Title"] = "All Comments";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<section class="allComments-container">
+    <div class="allComments-top-section">
+        <div class="Stars">
+            <span>@Model.Rate?.ToString("F1")</span>
+            @foreach (var state in Model.StarStates)
+            {
+                if (state == "full")
+                {
+                    <i class="fa-solid fa-star full"></i>
+                }
+                else if (state == "half")
+                {
+                    <i class="fa-solid fa-star-half-stroke half"></i>
+                }
+                else
+                {
+                    <i class="fa-regular fa-star empty"></i>
+                }
+            }
+            <span>out of 5</span>
+        </div>
+
+        <div class="allComments-product-name">
+            <div class="allComments-product-text">
+                <p><strong>@Model.Name</strong></p>
+                <p class="by-category">by @Model.CategoryName</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="rating-bars">
+        @for (int i = 5; i >= 1; i--)
+        {
+            var pct = Model.StarPercentages[i - 1];
+            <div class="bar">
+                <span>@i star</span>
+                <div class="progress">
+                    <div class="fill" style="width:@pct%"></div>
+                </div>
+                <span>@pct%</span>
+            </div>
+        }
+    </div>
+
+    <div class="review-button">
+        <h3>Review this product</h3>
+        <p>Share your thoughts with other customers</p>
+        <a asp-controller="UserInteractions" asp-action="Rate" asp-route-itemId=@Model.Id asp-route-itemType="Laptops" class="btn details-button">Write a customer review</a>
+    </div>
+
+    <section class="reviews-detail mt-5">
+        <h3>Users reviews</h3>
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="review">
+                <div class="user-info">👤 <strong>@comment.User.UserName</strong></div>
+                <p class="date">@comment.CommentTime</p>
+                <p>@comment.Value</p>
+            </div>
+        }
+    </section>
+</section>

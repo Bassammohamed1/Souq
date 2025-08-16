@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Support";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+<div class="user-chat-container">
+    <div class="user-chat-header">Chat with us</div>
+    <div class="user-chat-messages" id="messages">
+    </div>
+    <div class="chat-input">
+        <input type="text" id="txt" placeholder="Type your message..." />
+        <button type="submit" onclick="send()"><i class="bi bi-send"></i></button>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+
+    <script>
+        $.get("/Support/LoadChatMessages", {
+            senderID: '@ViewBag.CurrentUserID',
+            receiverID: '@ViewBag.AdminID'
+        }, function(html) {
+            $("#messages").html(html);
+
+            const unreadDivider = document.getElementById('unread-messages-divider');
+            if (unreadDivider) {
+                unreadDivider.scrollIntoView({ behavior: 'smooth' });
+
+                unreadDivider.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                setTimeout(() => {
+                    unreadDivider.style.backgroundColor = '';
+                }, 1000);
+            } else {
+                scrollToBottom();
+            }
+        });
+
+        // SignalR connection
+        const con = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+        con.start().then(function() {
+            setTimeout(function() {
+                con.invoke("MarkMessagesAsRead", "@ViewBag.AdminID");
+            }, 1000);
+        });
+
+        // define call back function
+        con.on("YourMessage", function(message, flag) {
+            const checkIcon = flag
+                ? `<span class="check blue-check">✓✓</span>`
+                : `<span class="check gray-check">✓</span>`;
+
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            $("#messages").append(`
+                <div class="message caller">
+                    ${message}
+                    <div class="timestamp">
+                        ${time}
+                        ${checkIcon}
+                    </div>
+                </div>
+            `);
+            $("#messages").find("#unread-messages-divider").remove();
+            scrollToBottom();
+        });
+
+        con.on("NewMessage", function(message) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            $("#messages").append(`
+                <div class="message other">
+                    ${message}
+                    <div class="timestamp">
+                        ${time}
+                    </div>
+                </div>
+            `);
+            scrollToBottom();
+        });
+
+        con.on("MessagesRead", function () {
+            $(".message .gray-check").removeClass("gray-check").addClass("blue-check").text("✓✓");
+        });
+
+        // define function to consume server
+        function send() {
+            const message = $("#txt").val().trim();
+            if (message) {
+                con.invoke("SendMessageFromUser", "@ViewBag.AdminID", message);
+                $("#txt").val("");
+            }
+        }
+
+        function scrollToBottom() {
+            const messages = document.getElementById('messages');
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        $("#txt").keypress(function(e) {
+            if (e.which === 13) {
+                send();
+            }
+        });
+    </script>
+}

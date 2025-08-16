@@ -1,33 +1,105 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+<style>
+    .nav-icon-link {
+        color: black;
+        position: relative;
+        transition: color 0.3s ease;
+    }
 
-<ul class="navbar-nav">
+        .nav-icon-link:hover {
+            color: gold;
+        }
+
+    .nav-icon {
+        font-size: 1.6rem;
+    }
+
+    .badge-count {
+        font-size: 0.7rem;
+        padding: 0.35em 0.5em;
+    }
+
+    .btn-logout {
+        color: #000;
+        transition: color 0.3s ease;
+    }
+
+        .btn-logout:hover {
+            color: gold;
+        }
+
+   
+    .btn-outline-dark:hover {
+        background-color: #000;
+        color: gold;
+        border-color: #000;
+    }
+
+    .btn-dark:hover {
+        background-color: #000;
+        color: gold;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        transition: all 0.3s ease;
+    }
+
+
+</style>
+
+<ul class="navbar-nav align-items-center gap-2">
+
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link" href="/Cart/GetUserCart">
-                <span id="cartCount" class="badge text-bg-primary text-white">0</span>
-                <i class="bi bi-cart text-dark"></i>
+            <a class="nav-link nav-icon-link" href="/UserInteractions/GetUserWishingList" title="Wishlist">
+                <i class="bi bi-heart nav-icon"></i>
+                <span id="wishCount"
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white badge-count">
+                    0
+                </span>
             </a>
         </li>
+
         <li class="nav-item">
-            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+            <a class="nav-link nav-icon-link" href="/Cart/GetUserCart" title="Cart">
+                <i class="bi bi-cart nav-icon"></i>
+                <span id="cartCount"
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white badge-count">
+                    0
+                </span>
+            </a>
         </li>
+
         <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            <a class="nav-link nav-icon-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                <i class="bi bi-person-circle nav-icon"></i>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <form id="logoutForm" class="d-inline" asp-area="Identity" asp-page="/Account/Logout"
+                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="btn btn-link btn-logout nav-text-link border-0">Logout</button>
             </form>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="btn btn-outline-dark btn-sm rounded-pill px-3" asp-area="Identity" asp-page="/Account/Register">
+                <i class="bi bi-person-plus me-1"></i>Register
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="btn btn-dark btn-sm rounded-pill px-3" asp-area="Identity" asp-page="/Account/Login">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+            </a>
         </li>
     }
 </ul>

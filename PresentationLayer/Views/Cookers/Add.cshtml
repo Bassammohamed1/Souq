@@ -1,0 +1,99 @@
+﻿@model Cooker
+@{
+    ViewData["Title"] = "Add Cooker";
+}
+<form method="post" enctype="multipart/form-data">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-black">Add New Cooker</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ItemDimensions"></label>
+            <input asp-for="ItemDimensions" class="form-control" />
+            <span asp-validation-for="ItemDimensions" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="DrawerType"></label>
+            <input asp-for="DrawerType" class="form-control" />
+            <span asp-validation-for="DrawerType" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Color"></label>
+            <input asp-for="Color" class="form-control" />
+            <span asp-validation-for="Color" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Material"></label>
+            <input asp-for="Material" class="form-control" />
+            <span asp-validation-for="Material" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FinishType"></label>
+            <input asp-for="FinishType" class="form-control" />
+            <span asp-validation-for="FinishType" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ModelName"></label>
+            <input asp-for="ModelName" class="form-control" />
+            <span asp-validation-for="ModelName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FormFactor"></label>
+            <input asp-for="FormFactor" class="form-control" />
+            <span asp-validation-for="FormFactor" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ControlsType"></label>
+            <input asp-for="ControlsType" class="form-control" />
+            <span asp-validation-for="ControlsType" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ItemWeight"></label>
+            <input asp-for="ItemWeight" class="form-control" />
+            <span asp-validation-for="ItemWeight" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NumberOfHeatingElements"></label>
+            <input asp-for="NumberOfHeatingElements" class="form-control" />
+            <span asp-validation-for="NumberOfHeatingElements" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="SpecialFeatures"></label>
+            <input asp-for="SpecialFeatures" class="form-control" />
+            <span asp-validation-for="SpecialFeatures" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" class="form-select" asp-items="@ViewBag.categoriesViewBag"></select>
+            <span asp-validation-for="CategoryId"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="clientFile"></label>
+            <input type="file" asp-for="clientFile" class="form-control" />
+            <span asp-validation-for="clientFile" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn bg-gold">Save</button>
+        <a asp-action="IndexAdmin" asp-controller="Cookers" class="btn btn-dark">
+            Back to Cookers
+        </a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

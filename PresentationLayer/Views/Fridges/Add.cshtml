@@ -1,0 +1,84 @@
+﻿@model Fridge
+@{
+    ViewData["Title"] = "Add Fridge";
+}
+<form method="post" enctype="multipart/form-data">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-black">Add New Fridge</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ItemDimensions"></label>
+            <input asp-for="ItemDimensions" class="form-control" />
+            <span asp-validation-for="ItemDimensions" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Color"></label>
+            <input asp-for="Color" class="form-control" />
+            <span asp-validation-for="Color" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Capacity"></label>
+            <input asp-for="Capacity" class="form-control" />
+            <span asp-validation-for="Capacity" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="EnergyStar"></label>
+            <input asp-for="EnergyStar" class="form-control" />
+            <span asp-validation-for="EnergyStar" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NumberOfDoors"></label>
+            <input asp-for="NumberOfDoors" class="form-control" />
+            <span asp-validation-for="NumberOfDoors" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="InstallationType"></label>
+            <input asp-for="InstallationType" class="form-control" />
+            <span asp-validation-for="InstallationType" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="DefrostSystem"></label>
+            <input asp-for="DefrostSystem" class="form-control" />
+            <span asp-validation-for="DefrostSystem" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="SpecialFeatures"></label>
+            <input asp-for="SpecialFeatures" class="form-control" />
+            <span asp-validation-for="SpecialFeatures" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" class="form-select" asp-items="@ViewBag.FridgesViewBag"></select>
+            <span asp-validation-for="CategoryId"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="clientFile"></label>
+            <input type="file" asp-for="clientFile" class="form-control" />
+            <span asp-validation-for="clientFile" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn bg-gold">Save</button>
+        <a asp-action="IndexAdmin" asp-controller="Fridges" class="btn btn-dark">
+            Back to Fridges
+        </a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

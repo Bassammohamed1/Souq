@@ -1,0 +1,71 @@
+﻿@model Rate
+
+@{
+    ViewData["Title"] = "Rate";
+}
+
+<div class="rating-item-container">
+    <div class="rating-item-label">Rate this product</div>
+    <div class="rating-item-star-rating" id="starRating">
+        @for (int i = 1; i <= 5; i++)
+        {
+            <div class="rating-item-star-container" data-rating="@i">
+                <div class="rating-item-star-empty">★</div>
+                <div class="rating-item-star-filled">★</div>
+            </div>
+        }
+    </div>
+    <form id="ratingForm" method="post" asp-action="Rate" asp-controller="UserInteractions">
+        <input type="hidden" asp-for="ItemId" />
+        <input type="hidden" asp-for="ItemType" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="Value" id="ratingValue" />
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const containers  = document.querySelectorAll('.rating-item-star-container');
+        const ratingInput = document.getElementById('ratingValue');
+
+        containers.forEach(container => {
+            const star   = container.querySelector('.rating-item-star-filled');
+            const rating = parseInt(container.getAttribute('data-rating'));
+
+            container.addEventListener('mousemove', (e) => {
+                const rect    = container.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+
+                containers.forEach(c => {
+                    const cRating = parseInt(c.getAttribute('data-rating'));
+                    const cStar   = c.querySelector('.rating-item-star-filled');
+
+                    if (cRating < rating) {
+                        cStar.style.width = '100%';
+                    }
+                    else if (cRating === rating) {
+                        cStar.style.width = (percent * 100) + '%';
+                    }
+                    else {
+                        cStar.style.width = '0%';
+                    }
+                });
+            });
+
+            container.addEventListener('click', (e) => {
+                const rect    = container.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                const value   = percent > 0.5 ? rating : rating - 0.5;
+
+                ratingInput.value = value;
+                document.getElementById('ratingForm').submit();
+            });
+
+            container.addEventListener('mouseleave', () => {
+                containers.forEach(c => {
+                    c.querySelector('.rating-item-star-filled').style.width = '0%';
+                });
+            });
+        });
+    });
+</script>

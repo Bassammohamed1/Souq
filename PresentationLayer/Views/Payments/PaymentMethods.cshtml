@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Payment Methods";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Please choose the payment method</h2>
+
+    <form method="post" action="/Payments/PaymentMethods">
+        <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Payment Method</label>
+            <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                <option value="" disabled selected>Select a method</option>
+                <option value="paypal">PayPal</option>
+                <option value="stripe">Stripe</option>
+                <option value="cod">Cash on Delivery</option>
+            </select>
+        </div>
+
+        <button type="submit" class="px-3 py-2 bg-gold rounded border-0 hover-shadow">Continue</button>
+    </form>
+</div>

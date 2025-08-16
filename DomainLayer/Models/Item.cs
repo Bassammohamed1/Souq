@@ -1,19 +1,30 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Souq.Models.Cart_Orders;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DomainLayer.Models
 {
-    public class Item
+    public abstract class Item
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
+        [Required, MaxLength(250)]
         public string Name { get; set; }
+        [Required]
         public double Price { get; set; }
+        [Required]
         public int Amount { get; set; }
-        [DisplayName("date")]
-        public DateTime AddedOn { get; set; }
-        public string ItemType { get; set; }
-        [NotMapped, DisplayName("Image")]
+        [Required, DisplayName("Date")]
+        public DateTime AddedOn { get; set; } = DateTime.Now;
+        [Required, Range(0, 5)]
+        public double Rate { get; set; } = 0;
+        [Required]
+        public bool IsDiscounted { get; set; } = false;
+        public bool IsBOGOBuy { get; set; } = false;
+        public bool IsBOGOGet { get; set; } = false;
+        public double? NewPrice { get; set; }
+        [Required, NotMapped, DisplayName("Image")]
         public IFormFile clientFile { get; set; }
         public byte[]? dbImage { get; set; }
         [NotMapped]
@@ -32,9 +43,10 @@ namespace DomainLayer.Models
                 }
             }
         }
-        [DisplayName("Department")]
-        public int DepartmentID { get; set; }
-        [ForeignKey(nameof(DepartmentID))]
-        public Department? Department { get; set; }
+        [Required, DisplayName("Category")]
+        public int CategoryId { get; set; }
+        [ForeignKey(nameof(CategoryId))]
+        public Category? Category { get; set; }
+        public List<CartDetails>? CartDetails { get; set; }
     }
 }

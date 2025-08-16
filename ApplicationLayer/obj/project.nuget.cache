@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "rr+qgADwcoE=",
+  "success": true,
+  "projectFilePath": "E:\\My Projects\\Souq\\ApplicationLayer\\ApplicationLayer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\bassa\\.nuget\\packages\\x.pagedlist\\10.5.7\\x.pagedlist.10.5.7.nupkg.sha512",
+    "C:\\Users\\bassa\\.nuget\\packages\\x.pagedlist.mvc.core\\10.5.7\\x.pagedlist.mvc.core.10.5.7.nupkg.sha512"
+  ],
+  "logs": []
+}

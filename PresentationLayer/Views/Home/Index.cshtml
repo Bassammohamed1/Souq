@@ -1,298 +1,173 @@
-﻿@model HomePageVM
+﻿@model HomePageViewModel
+
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-<style>
-    html,
-    body {
-        position: relative;
-        height: 100%;
-    }
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
-    body {
-        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-        font-size: 14px;
-        color: #000;
-        margin: 0;
-        padding: 0;
-    }
-
-    .swiper {
-        width: 100%;
-        height: 100%;
-    }
-
-    .swiper-slide {
-        text-align: center;
-        font-size: 18px;
-        background: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
-
-<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-dark">Categories</h2>
-        </div>
-        <div class="swiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide"> <a asp-controller="ComputerAccessories" asp-action="Index"><img src="~/imgs/ComAcc.jpg" class="catItem" /></a></div>
-                <div class="swiper-slide"> <a asp-controller="ElectricalDevices" asp-action="Index"><img src="~/imgs/ElcDev.jpg" class="catItem" /></a></div>
-                <div class="swiper-slide"> <a asp-controller="Laptops" asp-action="Index"><img src="~/imgs/Lap.jpg" class="catItem" /></a></div>
-                <div class="swiper-slide"> <a asp-controller="MobilesAndTablets" asp-action="Index"><img src="~/imgs/Mob.jpg" class="catItem" /></a></div>
-            </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        </div>
+<!-- Hero Banner -->
+<div class="hero-section text-dark d-flex align-items-center" style="center/cover; height: 65vh;">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold mb-3">Welcome to Souq</h1>
+        <p class="lead mb-4">Exclusive deals on the latest products — shop smarter today</p>
+        <a href="#featured-products" class="btn bg-gold btn-lg rounded-pill px-5 shadow">Shop Now</a>
     </div>
+</div>
 
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-dark">Recently Added</h2>
-        </div>
-        <div class="swiper">
-            <div class="swiper-wrapper">
-                @foreach (var item in Model.AddedOnItems)
-                {
-                    if (item.Name.Contains("Keyboard"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ComputerAccessories" asp-action="KeyboardDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Mouse"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ComputerAccessories" asp-action="MouseDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Headphone"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ComputerAccessories" asp-action="HeadphoneDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Fridge"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="FridgeDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("TV"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="TvDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("WashingMachine"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="WashingMachineDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("GasStove"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="GasStoveDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Dell"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="DellDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("HP"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="HpDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Lenovo"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="LenovoDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Mac"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="MacDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("iPhone") || item.Name.Contains("iPad"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="IPhoneAndIPadDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Samsung"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="SamsungDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Xiaomi"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="XiaomiDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Huawei"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="HuaweiDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Oppo"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="OppoDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                }
+<!-- Categories Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-5 fw-bold">Shop by Category</h2>
+    <div class="row text-center g-4 justify-content-around">
+        @foreach (var department in Model.Departments)
+        {
+            var nameAfterSplit = department.Name.Split(' ');
+            string controllerName = nameAfterSplit[0];
+            for (int i = 1; i < nameAfterSplit.Length; i++)
+            {
+                controllerName += nameAfterSplit[i];
+            }
+
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="category-card p-3 border-0 shadow-sm rounded h-100">
+                    <a asp-controller="@controllerName" asp-action="Index" class="text-decoration-none">
+                        <img src="@Url.Content($"~/imgs/{department.Name}.png")"
+                             class="img-fluid mb-3"
+                             alt="@department.Name">
+                        <h6 class="fw-bold text-black">@department.Name</h6>
+                    </a>
+                </div>
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-        </div>
+        }
     </div>
+</div>
 
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-dark">Check Out Our New Offers</h2>
-        </div>
-        <div class="swiper">
-            <div class="swiper-wrapper">
-                @foreach (var item in Model.OfferedItems)
-                {
-                    if (item.Name.Contains("Keyboard"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ComputerAccessories" asp-action="KeyboardDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Mouse"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ComputerAccessories" asp-action="MouseDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Headphone"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ComputerAccessories" asp-action="HeadphoneDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Fridge"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="FridgeDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("TV"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="TvDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("WashingMachine"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="WashingMachineDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("GasStove"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="ElectricalDevices" asp-action="GasStoveDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Dell"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="DellDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("HP"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="HpDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Lenovo"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="LenovoDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Mac"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="Laptops" asp-action="MacDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("iPhone") || item.Name.Contains("iPad"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="IPhoneAndIPadDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Samsung"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="SamsungDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Xiaomi"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="XiaomiDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Huawei"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="HuaweiDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                    else if (item.Name.Contains("Oppo"))
-                    {
-                        <div class="swiper-slide">
-                            <a asp-controller="MobilesAndTablets" asp-action="OppoDetails" asp-route-id="@item.Id"><img class="rounded-circle" src="@item.imageSrc" alt="@item.Name" style="width:170px; height:170px; max-width:100%" /></a>
-                        </div>
-                    }
-                }
+<!-- Featured Products -->
+<div id="featured-products" class="container my-5">
+    <h2 class="text-center mb-5 fw-bold">Featured Products</h2>
+    <div class="row g-4">
+        @foreach (var item in Model.Featured)
+        {
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm h-100 product-card">
+                    <div class="image-container">
+                        <img src="@item.imageSrc" class="card-img-top" alt="@item.Name">
+                    </div>
+                    <div class="card-body text-center">
+                        <h6 class="product-title">
+                            @(item.Name.Length > 50 ? item.Name.Substring(0, 50) + "..." : item.Name)
+                        </h6>
+                        <p class="price">
+                            @if (item.NewPrice > 0)
+                            {
+                                <span>EGP @item.NewPrice</span>
+                                <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                            }
+                            else
+                            {
+                                <span>EGP @item.Price</span>
+                            }
+                        </p>
+                        <a asp-route-id="@item.ID" asp-action="Details" class="btn btn-outline-dark btn-sm">View</a>
+                    </div>
+                </div>
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
+        }
+    </div>
+</div>
+
+<!-- Offers -->
+<div class="container my-5">
+    <h2 class="text-center mb-5 fw-bold text-danger">Special Offers</h2>
+
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            @foreach (var offer in Model.Offers)
+            {
+                <div class="swiper-slide">
+                    <div class="offer-card position-relative overflow-hidden rounded shadow-sm">
+                        <img src="@offer.ImageSrc" alt="@offer.OfferType">
+                        <div class="offer-overlay d-flex align-items-center justify-content-center">
+                            <a asp-action="OfferDetails" asp-route-id="@offer.ID" class="btn btn-dark fw-bold">Shop Now</a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-    var swiper = new Swiper('.swiper', {
-        slidesPerView: 3,
-        direction: getDirection(),
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        on: {
-            resize: function () {
-                swiper.changeDirection(getDirection());
-            },
-        },
-    });
-    function getDirection() {
-        var windowWidth = window.innerWidth;
-        var direction = window.innerWidth <= 760 ? 'vertical' : 'horizontal';
+<!-- Latest Products -->
+<div class="container my-5">
+    <h2 class="text-center mb-5 fw-bold">Latest Products</h2>
+    <div class="row g-4">
+        @foreach (var item in Model.Latest)
+        {
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm h-100 product-card">
+                    <div class="image-container">
+                        <img src="@item.imageSrc" class="card-img-top" alt="@item.Name">
+                    </div>
+                    <div class="card-body text-center">
+                        <h6 class="product-title">
+                            @(item.Name.Length > 50 ? item.Name.Substring(0, 50) + "..." : item.Name)
+                        </h6>
+                        <p class="price">
+                            @if (item.NewPrice > 0)
+                            {
+                                <span>EGP @item.NewPrice</span>
+                                <span style="text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                            }
+                            else
+                            {
+                                <span>EGP @item.Price</span>
+                            }
+                        </p>
+                        <a asp-route-id="@item.ID" asp-action="Details" class="btn btn-outline-dark btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 
-        return direction;
-    }
+<!-- Footer -->
+<footer class="bg-dark text-white mt-5 pt-5 pb-4">
+    <div class="container justify-content-around">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5 class="fw-bold mb-3">Souq</h5>
+                <p>Discover amazing deals and shop from thousands of products at unbeatable prices.</p>
+            </div>
+            <div class="col-md-2 mb-3">
+                <h6 class="fw-bold mb-3">Shop</h6>
+                <ul class="list-unstyled">
+                    <li><a asp-controller="Electronics" class="text-white-50">Electronics</a></li>
+                    <li><a asp-controller="Appliances" class="text-white-50">Appliances</a></li>
+                    <li><a asp-controller="Home" class="text-white-50">Home</a></li>
+                    <li><a asp-controller="MobilePhones" class="text-white-50">Mobile Phones</a></li>
+                    <li><a asp-controller="VideoGames" class="text-white-50">Video Games</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h6 class="fw-bold mb-3">Follow Us</h6>
+                <a href="https://www.linkedin.com/in/bassam-mohamed-52b110262/" class="text-white me-3"><i class="bi bi-linkedin"></i></a>
+                <a href="https://github.com/Bassammohamed1" class="text-white me-3"><i class="bi bi-github"></i></a>
+                <a href="https://www.facebook.com/bassammohamed333" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+            </div>
+        </div>
+        <hr class="border-secondary mt-4">
+        <p class="text-center mb-0">&copy; @DateTime.Now.Year Souq. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    new Swiper('.swiper', {
+        loop: true,
+        autoplay: { delay: 3500 },
+        effect: 'fade',
+        fadeEffect: { crossFade: true },
+        slidesPerView: 1
+    });
 </script>

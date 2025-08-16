@@ -1,0 +1,177 @@
+﻿@model OfferDTO
+
+@{
+    ViewData["Title"] = "Create Offer";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2>Create New Offer</h2>
+
+<form enctype="multipart/form-data" method="post">
+    <div class="mb-3">
+        <label class="form-label">Offer Type</label>
+        <select class="form-select" id="offerTypeSelect" onchange="handleOfferType(this.value)" asp-for="OfferType">
+            <option value="">-- Select Offer Type --</option>
+            <option value="1">Fixed Discount</option>
+            <option value="2">Percent Discount</option>
+            <option value="3">Buy One Get One</option>
+            <option value="4">Promo Code</option>
+        </select>
+    </div>
+
+    <div id="department" class="mb-3 d-none">
+        <label class="form-label">Offer by Category</label>
+        <select class="form-select" asp-for="DepartmentName">
+            <option value="">-- Select Category --</option>
+            @foreach (var department in Model.Departments)
+            {
+                <option value="@department.Name">@department.Name</option>
+            }
+        </select>
+    </div>
+
+    <div id="category" class="mb-3 d-none">
+        <label class="form-label">Offer by Brand</label>
+        <select class="form-select" asp-for="CategoryName">
+            <option value="">-- Select Brand --</option>
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Name">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div id="item" class="mb-3 d-none">
+        <label class="form-label">Offer by Item</label>
+        <select class="form-select" asp-for="ItemID">
+            <option value="">-- Select Item --</option>
+            @foreach (var item in Model.Items)
+            {
+                <option value="@item.ID">@item.Name</option>
+            }
+        </select>
+    </div>
+
+    <div id="fixedDiscount" class="mb-3 d-none">
+        <label class="form-label">Fixed Discount Value</label>
+        <input type="number" class="form-control" placeholder="$10" asp-for="FixedDiscountValue">
+    </div>
+
+    <div id="percentDiscount" class="mb-3 d-none">
+        <label class="form-label">Percent Discount (%)</label>
+        <input type="number" class="form-control" placeholder="10%" asp-for="PercentDiscount">
+    </div>
+
+    <div id="buyOneGetOne" class="mb-3 d-none">
+        <div class="row">
+            <div class="col-md-6">
+                <label class="form-label">Buy One - Type</label>
+                <select class="form-select mb-2" id="buyType" onchange="updateBuyItems(this.value)">
+                    <option value="">-- Select Type --</option>
+                    @foreach (var department in Model.Departments)
+                    {
+                        <option value="@department.Name">@department.Name</option>
+                    }
+                </select>
+
+                <label class="form-label">Buy One - Item</label>
+                <select class="form-select" id="buyItem" asp-for="ItemOneID"></select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Get One - Type</label>
+                <select class="form-select mb-2" id="getType" onchange="updateGetItems(this.value)">
+                    <option value="">-- Select Type --</option>
+                    @foreach (var department in Model.Departments)
+                    {
+                        <option value="@department.Name">@department.Name</option>
+                    }
+                </select>
+
+                <label class="form-label">Get One - Item</label>
+                <select class="form-select" id="getItem" asp-for="ItemTwoID"></select>
+            </div>
+        </div>
+    </div>
+
+    <div id="promoCode" class="mb-3 d-none">
+        <label class="form-label">Promo Code</label>
+        <input type="text" class="form-control mb-2" placeholder="e.g. SAVE20" asp-for="PromoCode">
+
+        <label class="form-label">Promo Discount Type</label>
+        <select class="form-select" id="promoCodeOfferTypeSelect" asp-for="PromoDiscountType">
+            <option value="">-- Select Promo Code Offer Type --</option>
+            <option value="fixed">Fixed Discount</option>
+            <option value="percent">Percent Discount</option>
+        </select>
+
+        <label class="form-label">Promo Discount Value</label>
+        <input type="number" class="form-control mb-2" asp-for="PromoDiscountValue">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Offer Image</label>
+        <input type="file" class="form-control" asp-for="ClientFile">
+    </div>
+
+    <button type="submit" class="btn btn-success">Create Offer</button>
+</form>
+
+@section Scripts {
+    <script>
+        function handleOfferType(value) {
+            document.getElementById("department").classList.add("d-none");
+            document.getElementById("category").classList.add("d-none");
+            document.getElementById("item").classList.add("d-none");
+            document.getElementById("fixedDiscount").classList.add("d-none");
+            document.getElementById("percentDiscount").classList.add("d-none");
+            document.getElementById("buyOneGetOne").classList.add("d-none");
+            document.getElementById("promoCode").classList.add("d-none");
+
+            if (value === "1") document.getElementById("fixedDiscount").classList.remove("d-none");
+            if (value === "1") document.getElementById("department").classList.remove("d-none");
+            if (value === "1") document.getElementById("category").classList.remove("d-none");
+            if (value === "1") document.getElementById("item").classList.remove("d-none");
+            if (value === "2") document.getElementById("percentDiscount").classList.remove("d-none");
+            if (value === "2") document.getElementById("department").classList.remove("d-none");
+            if (value === "2") document.getElementById("category").classList.remove("d-none");
+            if (value === "2") document.getElementById("item").classList.remove("d-none");
+            if (value === "3") document.getElementById("buyOneGetOne").classList.remove("d-none");
+            if (value === "4") document.getElementById("promoCode").classList.remove("d-none");
+        }
+
+        const appliances = @Html.Raw(Json.Serialize(ViewBag.Appliances));
+        const electronics = @Html.Raw(Json.Serialize(ViewBag.Electronics));
+        const phones = @Html.Raw(Json.Serialize(ViewBag.Phones));
+        const videoGames = @Html.Raw(Json.Serialize(ViewBag.Games));
+
+        function getItemsByType(type) {
+            switch (type.trim()) {
+                case "Appliances": return appliances;
+                case "Electronics": return electronics;
+                case "Mobile Phones": return phones;
+                case "Video Games": return videoGames;
+                default: return [];
+            }
+        }
+
+
+        function updateBuyItems(type) {
+            const items = getItemsByType(type);
+            const select = document.getElementById("buyItem");
+            select.innerHTML = "";
+            items.forEach(item => {
+                select.appendChild(new Option(item.name, item.id));
+            });
+        }
+
+        function updateGetItems(type) {
+            const items = getItemsByType(type);
+            const select = document.getElementById("getItem");
+            select.innerHTML = "";
+            items.forEach(item => {
+                select.appendChild(new Option(item.name, item.id));
+            });
+        }
+    </script>
+}

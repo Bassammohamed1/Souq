@@ -1,0 +1,104 @@
+﻿@model OrdersViewModel
+
+@{
+    ViewData["Title"] = "Orders";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h2 class="my-5">Users Orders</h2>
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>UserName</th>
+            <th>Total Price</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @foreach(var order in Model.Orders)
+        {
+            <tr>
+                <td>@order.UserName</td>
+                <td>@order.TotalPrice EGP</td>
+                <td>@(order.PaymentMethod ?? "-")</td>
+                <td>@order.Status</td>
+                <td>@order.CreatedAt</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = 1
+                })">First</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.CurrentPage - 1
+                })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>First</span></li>
+            <li class="disabled"><span>Previous</span></li>
+        }
+
+        @{
+            int totalPagesToShow = 7;
+            int startPage = Math.Max(1, Model.CurrentPage - totalPagesToShow / 2);
+            int endPage = Math.Min(Model.TotalPages, startPage + totalPagesToShow - 1);
+
+            if (endPage - startPage + 1 < totalPagesToShow)
+            {
+                startPage = Math.Max(1, endPage - totalPagesToShow + 1);
+            }
+        }
+
+        @if (startPage > 1)
+        {
+            <li><span>...</span></li>
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="@(i == Model.CurrentPage ? "active" : "")">
+                <a href="@Url.Action("Index", new {
+                    page = i
+                })">@i</a>
+            </li>
+        }
+
+        @if (endPage < Model.TotalPages)
+        {
+            <li><span>...</span></li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.CurrentPage + 1
+                })">Next</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.TotalPages
+                })">Last</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>Next</span></li>
+            <li class="disabled"><span>Last</span></li>
+        }
+    </ul>
+</nav>

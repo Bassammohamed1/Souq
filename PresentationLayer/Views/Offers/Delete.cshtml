@@ -1,0 +1,16 @@
+﻿@model Offer
+@{
+    ViewData["Title"] = "Delete Offer";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<form method="post">
+    <div class="card" style="padding:20px;">
+        <h4>Are you sure you want to delete this Offer</h4>
+        <div class="buttons" style="padding-top:10px;">
+            <button type="submit" class="btn btn-danger">Okay</button>
+            <a asp-controller="Offers" asp-action="Offers" class="btn btn-dark">
+                Back to Offers
+            </a>
+        </div>
+    </div>
+</form>

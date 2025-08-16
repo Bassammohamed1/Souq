@@ -1,0 +1,12 @@
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfoInputs.cache
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.AssemblyInfo.cs
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.CoreCompileInputs.cache
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.csproj.AssemblyReference.cache
+E:\My Projects\Souq\DomainLayer\bin\Debug\net8.0\DomainLayer.deps.json
+E:\My Projects\Souq\DomainLayer\bin\Debug\net8.0\DomainLayer.dll
+E:\My Projects\Souq\DomainLayer\bin\Debug\net8.0\DomainLayer.pdb
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.dll
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\refint\DomainLayer.dll
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\DomainLayer.pdb
+E:\My Projects\Souq\DomainLayer\obj\Debug\net8.0\ref\DomainLayer.dll

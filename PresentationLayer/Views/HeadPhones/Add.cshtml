@@ -1,0 +1,74 @@
+﻿@model HeadPhone
+@{
+    ViewData["Title"] = "Add HeadPhone";
+}
+<form method="post" enctype="multipart/form-data">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-black">Add New HeadPhone</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" class="form-control" />
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Color"></label>
+            <input asp-for="Color" class="form-control" />
+            <span asp-validation-for="Color" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="HeadphonesEarPlacement"></label>
+            <input asp-for="HeadphonesEarPlacement" class="form-control" />
+            <span asp-validation-for="HeadphonesEarPlacement" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="HeadphonesFormFactor"></label>
+            <input asp-for="HeadphonesFormFactor" class="form-control" />
+            <span asp-validation-for="HeadphonesFormFactor" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ModelName"></label>
+            <input asp-for="ModelName" class="form-control" />
+            <span asp-validation-for="ModelName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NoiseControl"></label>
+            <input asp-for="NoiseControl" class="form-control" />
+            <span asp-validation-for="NoiseControl" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ConnectivityTechnology"></label>
+            <input asp-for="ConnectivityTechnology" class="form-control" />
+            <span asp-validation-for="ConnectivityTechnology" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" class="form-select" asp-items="@ViewBag.categoriesViewBag"></select>
+            <span asp-validation-for="CategoryId"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="clientFile"></label>
+            <input type="file" asp-for="clientFile" class="form-control" />
+            <span asp-validation-for="clientFile" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn bg-gold">Save</button>
+        <a asp-action="IndexAdmin" asp-controller="HeadPhones" class="btn btn-dark">
+            Back to HeadPhones
+        </a>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

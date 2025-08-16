@@ -1,0 +1,421 @@
+﻿@model VideoGameViewModel
+
+@{
+    ViewData["Title"] = "VideoGame Details";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<div class="details-container">
+    <div class="product-container">
+        <div class="product-image-container">
+            <img src="@Model.imageSrc" alt="@Model.Name" class="product-image">
+        </div>
+
+        <div class="product-info">
+            <h1 class="detailsProduct-title">@Model.Name</h1>
+
+            <div class="rating">
+                <span>@Model.Rate?.ToString("F1") out of 5</span>
+                @foreach (var state in Model.StarStates)
+                {
+                    if (state == "full")
+                    {
+                        <i class="bi bi-star-fill"></i>
+                    }
+                    else if (state == "half")
+                    {
+                        <i class="bi bi-star-half"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-star"></i>
+                    }
+                }
+                <span>(@Model.RateCount) ratings</span>
+            </div>
+
+            <div class="price-section">
+                @if (Model.NewPrice != 0)
+                {
+                    <span class="discount">-@Model.DiscountValue</span>
+                    <span class="current-price">EGP @Model.NewPrice</span>
+                    <span class="original-price">EGP @Model.Price</span>
+                }
+                else
+                {
+                    <span class="current-price">EGP @Model.Price</span>
+                }
+            </div>
+
+            <div class="delivery-info">
+                <div class="delivery-info-item">
+                    <span class="info-icon">✓</span>
+                    <span><strong>FREE Returns</strong> All prices include VAT.</span>
+                </div>
+                <div class="delivery-info-item">
+                    <span class="info-icon">✓</span>
+                    <span>Buy with installments and pay EGP 572.50 for 48 months with select banks.</span>
+                </div>
+                <div class="delivery-info-item">
+                    <span class="info-icon">✓</span>
+                    <span><strong>Cash on Delivery</strong> 15 days Returnable</span>
+                </div>
+                <div class="delivery-info-item">
+                    <span class="info-icon">✓</span>
+                    <span>Free Delivery Fulfilled by Amazon Secure transaction</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                @if (Model.TotalQuantity == 0)
+                {
+                    <button type="button" onclick="addToCart(@Model.Id, '@Model.ControllerName')" class="btn btn-cart">
+                        Add to Cart
+                    </button>
+                }
+                else
+                {
+                    <div class="counter-box">
+                        <a onclick="removeFromCart(@Model.Id, '@Model.ControllerName')" class="counter-box-icon-btn"><i class="bi bi-trash3"></i></a>
+                        <span class="counter-box-count">@Model.TotalQuantity</span>
+                        <a onclick="addToCart(@Model.Id, '@Model.ControllerName',1)" class="counter-box-icon-btn"><i class="bi bi-plus"></i></a>
+                    </div>
+                }
+            </div>
+
+            <table class="specs-table">
+                <tr>
+                    <td>Brand Name</td>
+                    <td>@Model.CategoryName</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <hr>
+
+    <div class="container my-5">
+        <div class="d-flex justify-content-center flex-wrap gap-5">
+            @foreach (var offer in Model.Offers)
+            {
+                <div class="card border-0 w-100">
+                    <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap mb-3">
+
+                        @if (Model.IsBOGOBuy)
+                        {
+                            <div class="image-wrapper">
+                                <img src="@Model.imageSrc" alt="Buy Item"
+                                     style="width: 250px; height: 250px; object-fit: contain;" />
+                            </div>
+
+                            <div class="d-flex justify-content-center align-items-center"
+                                 style="width: 100px; height: 100px; font-size: 60px; font-weight: bold; color: black;">
+                                +
+                            </div>
+
+                            <div class="image-wrapper">
+                                <img src="@Model.BOGOGet.imageSrc" alt="Get Item"
+                                     style="width: 250px; height: 250px; object-fit: contain;" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-dark fw-bold">@offer.OfferType!!</h5>
+
+                        @if (offer.OfferType == OfferType.PercentDiscount || offer.OfferType == OfferType.FixedDiscount)
+                        {
+                            <img src="@offer.ImageSrc" alt="@offer.OfferType"
+                                 style="width: 700px; height: 300px; object-fit: contain;" />
+                            <div class="mt-2">
+                                <span class="badge bg-success mb-2">Discount</span>
+                                <div>
+                                    <span class="text-muted text-decoration-line-through">EGP @Model.Price</span>
+                                    <span class="fw-bold text-danger ms-2">Now EGP @Model.NewPrice</span>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.IsBOGOBuy)
+                        {
+                            <div class="mt-3">
+                                <h6 class="text-success mb-1">Buy 1 Get 1 Free!</h6>
+                                <p class="mb-0 product-title">Get <strong>@Model.BOGOGet.Name</strong> free with this product.</p>
+                                <small class="text-muted">Limited stock available.</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="series">
+        <div class="header-container">
+            <h2 class="series-h">VideoGames with similar price</h2>
+        </div>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model.SimilarPriceVideoGames)
+                {
+                    <div class="swiper-slide">
+                        <div class="cardHeader">
+                            <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'VideoGames')" : $"addToWishlist({item.Id}, 'VideoGames')")">
+                                <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                            </button>
+                        </div>
+
+                        <div class="image-container">
+                            <a asp-action="Details" asp-route-id="@item.Id"><img src="@item.imageSrc" alt="@item.Name" /></a>
+                        </div>
+
+                        <div class="product-brand">
+                            @item.CategoryName
+                        </div>
+
+                        <div class="product-title">
+                            @item.Name
+                        </div>
+
+                        <div class="rating">
+                            <span>"@Model.Rate?.ToString("F1")"</span>
+                            @foreach (var state in Model.StarStates)
+                            {
+                                if (state == "full")
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else if (state == "half")
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                            <div class="rating-count">✔ @item.RateCount</div>
+                        </div>
+
+                        <div class="price">
+                            @if (item.NewPrice != 0)
+                            {
+                                <span>EGP @item.NewPrice</span>
+                                <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                            }
+                            else
+                            {
+                                <span>EGP @item.Price</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+    <div class="series">
+        <div class="header-container">
+            <h2 class="series-h">More from @Model.CategoryName</h2>
+        </div>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                @foreach (var item in Model.RelatedVideoGames)
+                {
+                    <div class="swiper-slide">
+                        <div class="cardHeader">
+                            <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'VideoGames')" : $"addToWishlist({item.Id}, 'VideoGames')")">
+                                <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                            </button>
+                        </div>
+
+                        <div class="image-container">
+                            <a asp-action="Details" asp-route-id="@item.Id"><img src="@item.imageSrc" alt="@item.Name" /></a>
+                        </div>
+
+                        <div class="product-brand">
+                            @item.CategoryName
+                        </div>
+
+                        <div class="product-title">
+                            @item.Name
+                        </div>
+
+                        <div class="rating">
+                            <span>"@Model.Rate?.ToString("F1")"</span>
+                            @foreach (var state in Model.StarStates)
+                            {
+                                if (state == "full")
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else if (state == "half")
+                                {
+                                    <i class="bi bi-star-half"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                            <div class="rating-count">✔ @item.RateCount</div>
+                        </div>
+
+                        <div class="price">
+                            @if (item.NewPrice != 0)
+                            {
+                                <span>EGP @item.NewPrice</span>
+                                <span style="  text-decoration: line-through;color: #888;">EGP @item.Price</span>
+                            }
+                            else
+                            {
+                                <span>EGP @item.Price</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+    <div class="ratingSection-container">
+        <section class="reviews-summary">
+            <h2>Customer Reviews</h2>
+            <div class="Stars">
+                <span>@Model.Rate?.ToString("F1")</span>
+                @foreach (var state in Model.StarStates)
+                {
+                    if (state == "full")
+                    {
+                        <i class="bi bi-star-fill"></i>
+                    }
+                    else if (state == "half")
+                    {
+                        <i class="bi bi-star-half"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-star"></i>
+                    }
+                }
+                <span>out of 5</span>
+            </div>
+            <p><strong>"@Model.RateCount" Global Ratings</strong></p>
+
+            <div class="rating-bars">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    var pct = Model.StarPercentages[i - 1];
+                    <div class="bar">
+                        <span>@i star</span>
+                        <div class="progress">
+                            <div class="fill" style="width:@pct%"></div>
+                        </div>
+                        <span>@pct%</span>
+                    </div>
+                }
+            </div>
+
+            <div class="review-button">
+                <h3>Review this product</h3>
+                <p>Share your thoughts with other customers</p>
+                <a asp-controller="UserInteractions" asp-action="Rate" asp-route-itemId=@Model.Id asp-route-itemType="VideoGames" class="btn details-button">Write a customer review</a>
+            </div>
+        </section>
+
+        <section class="reviews-detail">
+            @if (Model.Comments.Any())
+            {
+                <h3>Users reviews</h3>
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="review">
+                        <div class="user-info">👤 <strong>@comment.User.UserName</strong></div>
+                        <p class="date">@comment.CommentTime</p>
+                        <p>@comment.Value</p>
+                    </div>
+                }
+                <a class="more-reviews" asp-action="AllPhoneComments" asp-route-id="@Model.Id">See more reviews &gt;</a>
+
+                <a class="btn details-button ms-5" asp-controller="UserInteractions" asp-action="Comment" asp-route-itemId="@Model.Id" asp-route-itemType="VideoGames">Write a customer Comment </a>
+            }
+            else
+            {
+                <h3 class="mb-5"> Be the first to post a comment !!</h3>
+
+                <a class="btn details-button ms-5" asp-controller="UserInteractions" asp-action="Comment" asp-route-itemId=@Model.Id asp-route-itemType="VideoGames">Write a customer Comment </a>
+            }
+        </section>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var swiper = new Swiper('.swiper', {
+            slidesPerView: 5,
+            centeredSlides: false,
+            spaceBetween: 0,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    });
+
+    async function addToWishlist(itemId, itemType) {
+        try {
+            var response = await fetch(`/UserInteractions/AddItemToWishList?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status === 200) {
+                location.reload();
+            }
+        } catch (err) {
+            console.log("Add error:", err);
+        }
+    }
+
+    async function removeFromWishlist(itemId, itemType) {
+        try {
+            var response = await fetch(`/UserInteractions/RemoveItemFromWishList?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status === 200) {
+                location.reload();
+            }
+        } catch (err) {
+            console.log("Remove error:", err);
+        }
+    }
+
+    async function addToCart(itemId, itemType,qty) {
+        try {
+            var response = await fetch(`/Cart/AddItemToCart?itemId=${itemId}&itemType=${itemType}&qty=${qty}`);
+            if (response.status == 200) {
+                var result = await response.json();
+                var cartCountEl = document.getElementById("cartCount");
+                cartCountEl.innerHTML = result;
+                location.reload();
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+      async function removeFromCart(itemId, itemType) {
+        try {
+            var response = await fetch(`/Cart/RemoveItemFromCart?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status == 200) {
+                var result = await response.json();
+                var cartCountEl = document.getElementById("cartCount");
+                cartCountEl.innerHTML = result;
+                location.reload();
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+</script>

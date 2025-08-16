@@ -1,0 +1,128 @@
+﻿@model IPagedList<WishingListViewModel>
+
+@{
+    ViewData["Title"] = "WishingList";
+}
+
+@if (Model is not null)
+{
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+                <h2 class="text-dark mb-0">WishingList</h2>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        Image
+                    </th>
+                    <th scope="col">
+                        Name
+                    </th>
+                    <th scope="col">
+                        Type
+                    </th>
+                    <th scope="col">
+                        Price (EGP)
+                    </th>
+                    <th class="text-center">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td scope="row" class"image-container">
+                            <img src="@item.imageSrc" alt="@item.Name" class="wishList-cart-img" />
+                        </td>
+                        <td scope="row" style="width:50%">
+                            @item.Name
+                        </td>
+                        <td scope="row">
+                            @item.ItemType
+                        </td>
+                        <td scope="row">
+                            @item.Price
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                @if (item.Quantity == 0)
+                                {
+                                    <button type="button" onclick="addToCart(@item.ItemId, '@item.ItemType')" class="btn bg-gold ms-5">
+                                        Add to Cart
+                                    </button>
+                                }
+                                @if (item.Quantity > 0)
+                                {
+                                    <div class="wishList-counter-box">
+                                        <a onclick="removeFromCart(@item.ItemId, '@item.ItemType')" class="wishList-icon-btn"><i class="bi bi-trash3"></i></a>
+                                        <span class="wishList-count">@item.Quantity</span>
+                                        <a onclick="addToCart(@item.ItemId, '@item.ItemType',1)" class="wishList-icon-btn"><i class="bi bi-plus"></i></a>
+                                    </div>
+                                }
+                                <a class="btn bg-black text-light ms-5" style="width:120px" asp-action="RemoveItemFromWishList" asp-route-itemId=@item.ItemId asp-route-itemType="@item.ItemType">
+                                    Remove
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        @Html.PagedListPager(Model, page => Url.Action("GetUserWishingList", new { page }), new PagedListRenderOptions
+        {
+            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        DisplayLinkToIndividualPages = true,
+        LinkToFirstPageFormat = "First",
+        LinkToPreviousPageFormat = "Previous",
+        LinkToIndividualPageFormat = "{0}",
+        LinkToNextPageFormat = "Next",
+        LinkToLastPageFormat = "Last"
+        })
+</div>
+}
+
+<script>
+    async function addToCart(itemId, itemType,qty) {
+        try {
+            var response = await fetch(`/Cart/AddItemToCart?itemId=${itemId}&itemType=${itemType}&qty=${qty}`);
+            if (response.status == 200) {
+                var result = await response.json();
+                var cartCountEl = document.getElementById("cartCount");
+                cartCountEl.innerHTML = result;
+                location.reload();
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+      async function removeFromCart(itemId, itemType) {
+        try {
+            var response = await fetch(`/Cart/RemoveItemFromCart?itemId=${itemId}&itemType=${itemType}`);
+            if (response.status == 200) {
+                var result = await response.json();
+                var cartCountEl = document.getElementById("cartCount");
+                cartCountEl.innerHTML = result;
+                location.reload();
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+</script>

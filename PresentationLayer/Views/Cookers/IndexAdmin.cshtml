@@ -1,0 +1,81 @@
+﻿@model IPagedList<Cooker>
+
+@{
+    ViewData["Title"] = "Cookers";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-black">Cookers</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Cookers" asp-action="Add" class="btn bg-gold">
+                Add New
+            </a>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">
+                    Image
+                </th>
+                <th scope="col">
+                    Name
+                </th>
+                <th scope="col">
+                    Date Added
+                </th>
+                <th scope="col">
+                    Amount
+                </th>
+                <th scope="col">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table-light">
+                    <td scope="row">
+                        <img class="Photos" src="@item.imageSrc" alt="@item.Name" />
+                    </td>
+                    <td class="w-50">
+                        @item.Name
+                    </td>
+                    <td scope="row">
+                        @item.AddedOn
+                    </td>
+                    <td scope="row">
+                        @item.Amount
+                    </td>
+                    <td>
+                        <a asp-controller="Cookers" asp-action="Update" asp-route-id="@item.ID" class="btn btn-sm btn-success">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-controller="Cookers" asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("IndexAdmin", new { page }), new PagedListRenderOptions
+{
+    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+    DisplayLinkToIndividualPages = true,
+    LinkToFirstPageFormat = "First",
+    LinkToPreviousPageFormat = "Previous",
+    LinkToIndividualPageFormat = "{0}",
+    LinkToNextPageFormat = "Next",
+    LinkToLastPageFormat = "Last"
+})
+</div>

@@ -1,0 +1,91 @@
+﻿@model CartViewModel
+
+@{
+    ViewData["Title"] = "Paypal Checkout";
+}
+
+<div class="container mt-5">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">
+                    Name
+                </th>
+                <th scope="col">
+                    Unit Price
+                </th>
+                <th scope="col">
+                    Total Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Carts)
+            {
+                <tr>
+                    <td scope="row">
+                        @item.Name
+                    </td>
+                    <td>@item.Price X @item.Quantity</td>
+                    <td>@(item.Price* item.Quantity)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3 class="text-center fw-bold fs-1">@Model.TotalPrice EGP</h3>
+</div>
+
+<div class="mx-auto mt-5" style="width:700px">
+    <div id="paypal-button-container"></div>
+</div>
+
+@section Scripts {
+    <script src="https://www.paypal.com/sdk/js?client-id=@ViewBag.ClientId"></script>
+
+    <script>
+        paypal.Buttons({
+            style: {
+                layout: 'vertical',
+                color: 'silver',
+                tagline: 'false'
+            },
+
+            createOrder: (data, actions) => {
+
+                debugger
+                return fetch('@Url.Action("PaypalOrder")?totalPrice=@Model.TotalPrice', {
+                    method: "post",
+                }).then((response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
+                            throw error; });
+                    }
+
+                    return response.json();
+                }).then((order) => order.id)
+                    .catch(error => {
+                        console.error(error);
+                        window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
+                    });
+            },
+
+            onApprove: (data, actions) => {
+                return fetch(`@Url.Action("PaypalCapture")?orderId=${data.orderID}`, {
+                    method: "post",
+                }).then((response) => {
+                    if (!response.ok) {
+                        window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
+                    }
+
+                   window.location.href = "@Url.Action("SucceedOrder")" + "?method=Paypal";
+                    }).catch(error => {
+
+                        console.error(error);
+                         window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
+                    });
+            }
+        }).render('#paypal-button-container');
+    </script>
+}

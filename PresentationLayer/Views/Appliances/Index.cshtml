@@ -1,0 +1,60 @@
+﻿@model IndexViewModel
+
+@{
+    ViewData["Title"] = "Appliances Index";
+}
+
+<div style="width: 100%; padding: 0; margin: 0;">
+    @foreach (var offer in Model.Offers)
+    {
+        <div class="offer-image">
+            <img src="@offer.ImageSrc" alt="@offer.OfferType" />
+        </div>
+    }
+</div>
+
+<div class="series">
+    <div class="header-container">
+        <h2 class="series-h">Shop by Type</h2>
+    </div>
+    <div class="d-flex flex-wrap justify-content-center gap-3 brand-image-row">
+        <a asp-controller="AirConditioners" asp-action="Index" class="m-5">
+            <img src="~/imgs/air.jpg" alt="AirConditioners" class="brand-img" />
+        </a>
+        <a asp-controller="Cookers" asp-action="Index" class="m-5">
+            <img src="~/imgs/cooker.jpg" alt="Cookers" class="brand-img" />
+        </a>
+        <a asp-controller="Fridges" asp-action="Index" class="m-5">
+            <img src="~/imgs/fridge.jpg" alt="Fridges" class="brand-img" />
+        </a>
+        <a asp-controller="WashingMachines" asp-action="Index" class="m-5">
+            <img src="~/imgs/washing.jpg" alt="WashingMachines" class="brand-img" />
+        </a>
+    </div>
+</div>
+
+<div class="series">
+    <div class="header-container">
+        <h2 class="series-h">Shop by Category</h2>
+    </div>
+    <div class="brand-grid-container">
+        @foreach (var category in Model.Categories)
+        {
+            <a asp-action="Brands" asp-route-name="@category.Name" class="brand-grid-item">
+                <img src="@category.imageSrc" alt="@category.Name" class="brand-img" />
+            </a>
+        }
+    </div>
+</div>
+
+<div class="price-storage-container">
+    <h1>Shop by price</h1>
+    <div class="button-links">
+        <a asp-action="PriceFilter" asp-route-price1=14999 asp-route-price2=0 class="button-link">EGP 14999 & below</a>
+        <a asp-action="PriceFilter" asp-route-price1=15000 asp-route-price2=24999 class="button-link">EGP 15,000 - 24,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=25000 asp-route-price2=34999 class="button-link">EGP 25,000 - 34,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=35000 asp-route-price2=44999 class="button-link">EGP 35,000 - 44,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=45000 asp-route-price2=54999 class="button-link">EGP 45,000 - 54,999</a>
+        <a asp-action="PriceFilter" asp-route-price1=55000 asp-route-price2=1 class="button-link">EGP 55,000 & above</a>
+    </div>
+</div>

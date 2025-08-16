@@ -1,82 +1,105 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DomainLayer.Interfaces;
+using DomainLayer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Souq.Models;
-using Souq.Repository.Interfaces;
 
-namespace Souq.Controllers
+namespace PresentationLayer.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class DepartmentsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public DepartmentsController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<Department> data = _unitOfWork.Departments.GetAll();
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
+            var data = await _unitOfWork.Departments.GetAllWithoutPagination();
+
             return View(data);
         }
-        public IActionResult Add()
+
+        public async Task<ActionResult> Add()
         {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
             return View();
         }
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult Add(Department data)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Departments.Add(data);
-                _unitOfWork.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                return View(data);
-            }
-        }
-        public IActionResult Update(int id)
-        {
-            if (id == null || id == 0)
-                return NotFound();
-            var result = _unitOfWork.Departments.GetById(id);
-            if (result == null)
-                return NotFound();
-            return View(result);
-        }
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult Update(Department data)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Departments.Update(data);
-                _unitOfWork.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                return View(data);
-            }
-        }
-        public IActionResult Delete(int id)
-        {
-            if (id == null || id == 0)
-                return NotFound();
-            var result = _unitOfWork.Departments.GetById(id);
-            if (result == null)
-                return NotFound();
-            return View(result);
-        }
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
 
-        public IActionResult Delete(Department data)
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<ActionResult> Add(Department data)
         {
-            _unitOfWork.Departments.Delete(data);
-            _unitOfWork.SaveChanges();
+            if (data is not null)
+            {
+                await _unitOfWork.Departments.Add(data);
+                await _unitOfWork.Commit();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(data);
+        }
+
+        public async Task<IActionResult> Update(int id)
+        {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
+            if (id == null && id != 0)
+                throw new ArgumentNullException("Invalid id!!");
+
+            var department = await _unitOfWork.Departments.GetById(id);
+
+            if (department != null)
+                return View(department);
+
+            else
+                throw new ArgumentNullException("Invalid id!!");
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Update(Department data)
+        {
+            if (data is not null)
+            {
+                await _unitOfWork.Departments.Update(data);
+                await _unitOfWork.Commit();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(data);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            ViewData["Departments"] = departments;
+
+            if (id == null && id != 0)
+                throw new ArgumentNullException("Invalid id!!");
+
+            var department = await _unitOfWork.Departments.GetById(id);
+
+            if (department != null)
+                return View();
+            else
+                throw new ArgumentNullException("Invalid id!!");
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Delete(Department data)
+        {
+            await _unitOfWork.Departments.Delete(data);
+            await _unitOfWork.Commit();
             return RedirectToAction(nameof(Index));
         }
     }

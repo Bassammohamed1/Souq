@@ -1,13 +1,16 @@
-﻿using DomainLayer.Models.Cart;
+﻿using DomainLayer.Models;
+using Souq.Models.Cart_Orders;
 
 namespace DomainLayer.Interfaces
 {
     public interface ICartRepository
     {
-        Task<int> AddItem(int itemId, int qty);
-        Task<int> RemoveItem(int itemId);
-        Task<ShoppingCart> GetUserCart();
-        Task<int> GetCartItemCount(string userId = "");
-        Task<bool> DoCheckout();
+        Task<int> Add(int itemID, string itemType, int? qty);
+        Task<int> Remove(int itemID, string itemType);
+        Task<int> TotalItemsInCart();
+        Task<CartViewModel> GetUserCart();
+        Task<int> TotalItemQuantityInCart(int itemID, string itemType);
+        Task EmptyCart();
+        Task<CartViewModel> ApplyPromoCode(CartViewModel cart, Offer promoCodeOffer);
     }
 }

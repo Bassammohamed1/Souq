@@ -1,32 +1,36 @@
-using DomainLayer.Interfaces;
-using InfrastructureLayer.Data;
-using InfrastructureLayer.Data.IdentitySeeds;
-using InfrastructureLayer.Repository;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Stripe;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using InfrastructureLayer.Repository;
+using DomainLayer.Interfaces;
+using DomainLayer.Models;
+using InfrastructureLayer.Data;
+using ApplicationLayer.Services;
+using InfrastructureLayer.Helpers;
+using InfrastructureLayer.Mailing;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+builder.Services.AddSignalR();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+//Configure database Connection
+builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+
+builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+     .AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddSingleton<PaypalClient>();
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddScoped<IEmailSender, EmailService>();
 
 var app = builder.Build();
-
-var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-
-var usermanager = services.GetRequiredService<UserManager<IdentityUser>>();
-var rolemanager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-await Roles.AddRoles(rolemanager);
-await Users.CreateAdmin(usermanager);
-await Users.CreateUser(usermanager);
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -39,9 +43,13 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapHub<ChatHub>("/chat");
 
 app.MapControllerRoute(
     name: "default",

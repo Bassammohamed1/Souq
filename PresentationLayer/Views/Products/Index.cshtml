@@ -1,0 +1,241 @@
+﻿@model ProductsViewModel
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    string filtersParam = string.Join(",", Model.SelectedFilters ?? Enumerable.Empty<string>());
+}
+
+<form method="post">
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Appliances"
+                    @(Model.SelectedFilters.Contains("Appliances") ? "checked" : "")/>
+                <label class="form-check-label fw-bold">Appliances</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Air Conditioners" 
+                    @(Model.SelectedFilters.Contains("Air Conditioners") ? "checked" : "")/>
+                <label class="form-check-label">Air Conditioners</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Cookers" 
+                    @(Model.SelectedFilters.Contains("Cookers") ? "checked" : "")/>
+                <label class="form-check-label">Cookers</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Fridges" 
+                    @(Model.SelectedFilters.Contains("Fridges") ? "checked" : "")/>
+                <label class="form-check-label">Fridges</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Washing Machines"
+                    @(Model.SelectedFilters.Contains("Washing Machines") ? "checked" : "")/>
+                <label class="form-check-label">Washing Machines</label>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Electronics"
+                    @(Model.SelectedFilters.Contains("Electronics") ? "checked" : "")/>
+                <label class="form-check-label fw-bold">Electronics</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Laptops" 
+                    @(Model.SelectedFilters.Contains("Laptops") ? "checked" : "")/>
+                <label class="form-check-label">Laptops</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="TVs" 
+                    @(Model.SelectedFilters.Contains("TVs") ? "checked" : "")/>
+                <label class="form-check-label">TVs</label>
+            </div>
+            <div class="form-check ms-3">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Headphones" 
+                    @(Model.SelectedFilters.Contains("Headphones") ? "checked" : "")/>
+                <label class="form-check-label">HeadPhones</label>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Mobile Phones" 
+                    @(Model.SelectedFilters.Contains("Mobile Phones") ? "checked" : "")/>
+                <label class="form-check-label fw-bold">Mobile Phones</label>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="SelectedFilters" value="Video Games" 
+                    @(Model.SelectedFilters.Contains("Video Games") ? "checked" : "")/>
+                <label class="form-check-label fw-bold">Video Games</label>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<hr />
+
+ <div class="container mt-4">
+     <div class="d-flex justify-content-between align-items-center">
+            <h3>Products</h3>
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    @(
+                        Model.OrderIndex == null || Model.OrderIndex == "ID"
+                        ? "SortBy" 
+                        : (Model.Des.GetValueOrDefault() ? $"{Model.OrderIndex} : High to Low" : $"{Model.OrderIndex}: Low to High")
+                     )
+                </a>
+                <div class="dropdown-menu">
+                    <form method="post">
+                        @foreach (var item in Model.Items)
+                        {
+                            <input type="hidden" name="items[]" value="@item.ID" />
+                        }
+
+                        <a asp-route-orderIndex="Amount" class="dropdown-item">
+                            Amount: Low to High
+                        </a>
+                        <a asp-route-orderIndex="Amount" asp-route-Des=@true class="dropdown-item">
+                            Amount: High to Low
+                        </a>
+                        <a asp-route-orderIndex="Price" class="dropdown-item">
+                            Price: Low to High
+                        </a>
+                        <a asp-route-orderIndex="Price" asp-route-Des=@true class="dropdown-item">
+                            Price: High to Low
+                        </a>
+                        <a asp-route-orderIndex="AddedOn" class="dropdown-item">
+                            Newest Arrivals: Low to High
+                        </a>
+                        <a asp-route-orderIndex="AddedOn" asp-route-Des=@true class="dropdown-item">
+                            Newest Arrivals: High to Low
+                        </a>
+                        <a asp-route-orderIndex="Rate" class="dropdown-item">
+                            Top Rated: Low to High
+                        </a>
+                        <a asp-route-orderIndex="Rate" asp-route-Des=@true class="dropdown-item">
+                            Top Rated: High to Low
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+ </div>
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Price</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td class="w-75">@item.Name</td>
+                <td>@item.Amount</td>
+                <td>@item.Price EGP</td>
+                <td><span class="@(item.Amount >= 25 ? "badge bg-success" : item.Amount >=10 ? "badge bg-warning" : "badge bg-danger")">Active</span></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = 1,
+                    filters = filtersParam ?? string.Empty,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des
+                })">First</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.CurrentPage - 1,
+                    filters = filtersParam ?? string.Empty,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des
+                })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>First</span></li>
+            <li class="disabled"><span>Previous</span></li>
+        }
+
+        @{
+            int totalPagesToShow = 7;
+            int startPage = Math.Max(1, Model.CurrentPage - totalPagesToShow / 2);
+            int endPage = Math.Min(Model.TotalPages, startPage + totalPagesToShow - 1);
+
+            if (endPage - startPage + 1 < totalPagesToShow)
+            {
+                startPage = Math.Max(1, endPage - totalPagesToShow + 1);
+            }
+        }
+
+        @if (startPage > 1)
+        {
+            <li><span>...</span></li>
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="@(i == Model.CurrentPage ? "active" : "")">
+                <a href="@Url.Action("Index", new {
+                    page = i,
+                    filters = filtersParam ?? string.Empty,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des
+                })">@i</a>
+            </li>
+        }
+
+        @if (endPage < Model.TotalPages)
+        {
+            <li><span>...</span></li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.CurrentPage + 1,
+                    filters = filtersParam ?? string.Empty,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des
+                })">Next</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.TotalPages,
+                    filters = filtersParam ?? string.Empty,
+                    orderIndex = Model.OrderIndex,
+                    des = Model.Des
+                })">Last</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>Next</span></li>
+            <li class="disabled"><span>Last</span></li>
+        }
+    </ul>
+</nav>

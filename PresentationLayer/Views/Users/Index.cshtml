@@ -1,31 +1,117 @@
-﻿@model IEnumerable<UserViewModel>
+﻿@model UsersViewModel
 
 @{
     ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<h1>Users</h1>
+<h2>Users</h2>
 
-<table class="table table-striped mt-4">
-    <thead>
-        <tr class="bg-warning text-dark">
-            <th>User Name</th>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th class="w-25">Email</th>
+            <th style="width:150px">Roles</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
+        @foreach (var user in Model.Users)
         {
             <tr>
                 <td>@user.Name</td>
                 <td>@user.Email</td>
                 <td>@string.Join(" , ", user.Roles.ToList())</td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="Users" asp-action="ManageRoles" asp-route-userId="@user.Id">Manage Roles</a>
+                    <div class="row g-1">
+                        <div class="col-6">
+                            <a class="btn btn-outline-primary btn-sm w-100" asp-controller="Orders" asp-action="UserOrders" asp-route-userID="@user.ID">Orders</a>
+                        </div>
+                        <div class="col-6">
+                            <a class="btn btn-outline-secondary btn-sm w-100" asp-action="ManageRoles" asp-route-userID="@user.ID">Manage Roles</a>
+                        </div>
+                        <div class="col-6">
+                            <a class="btn btn-outline-info btn-sm w-100" asp-action="Settings" asp-route-userID="@user.ID">Settings</a>
+                        </div>
+                        <div class="col-6">
+                            <a class="btn btn-outline-danger btn-sm w-100" asp-action="Delete" asp-route-userID="@user.ID">Delete</a>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<nav>
+    <ul class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = 1
+                })">First</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.CurrentPage - 1
+                })">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>First</span></li>
+            <li class="disabled"><span>Previous</span></li>
+        }
+
+        @{
+            int totalPagesToShow = 7;
+            int startPage = Math.Max(1, Model.CurrentPage - totalPagesToShow / 2);
+            int endPage = Math.Min(Model.TotalPages, startPage + totalPagesToShow - 1);
+
+            if (endPage - startPage + 1 < totalPagesToShow)
+            {
+                startPage = Math.Max(1, endPage - totalPagesToShow + 1);
+            }
+        }
+
+        @if (startPage > 1)
+        {
+            <li><span>...</span></li>
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="@(i == Model.CurrentPage ? "active" : "")">
+                <a href="@Url.Action("Index", new {
+                    page = i
+                })">@i</a>
+            </li>
+        }
+
+        @if (endPage < Model.TotalPages)
+        {
+            <li><span>...</span></li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.CurrentPage + 1
+                })">Next</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", new {
+                    page = Model.TotalPages
+                })">Last</a>
+            </li>
+        }
+        else
+        {
+            <li class="disabled"><span>Next</span></li>
+            <li class="disabled"><span>Last</span></li>
+        }
+    </ul>
+</nav>
