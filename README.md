@@ -75,7 +75,7 @@
 
 ## 🌐 Live Demo
 
-🔗 [Souq Live](https://souq.runasp.net/)
+🔗 [Souq Live](https://souqq.runasp.net/)
 
 ---
 ## 📄 License
