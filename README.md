@@ -75,7 +75,7 @@
 
 ## 🌐 Live Demo
 
-🔗 [Aflamak Live](https://souq.runasp.net/)
+🔗 [Souq Live](https://souq.runasp.net/)
 
 ---
 ## 📄 License
