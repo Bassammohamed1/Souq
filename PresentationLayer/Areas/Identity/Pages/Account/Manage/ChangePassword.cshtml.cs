@@ -2,14 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
 using DomainLayer.Interfaces;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace PresentationLayer.Areas.Identity.Pages.Account.Manage
 {
@@ -18,18 +19,18 @@ namespace PresentationLayer.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDepartmentsService _departments;
 
         public ChangePasswordModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             ILogger<ChangePasswordModel> logger,
-            IUnitOfWork unitOfWork)
+            IDepartmentsService departments)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _unitOfWork = unitOfWork;
+            _departments = departments;
         }
 
         /// <summary>
@@ -83,7 +84,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =  await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             var user = await _userManager.GetUserAsync(User);

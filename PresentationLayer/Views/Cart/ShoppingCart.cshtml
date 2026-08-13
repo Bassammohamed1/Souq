@@ -51,7 +51,7 @@
                             @item.ItemType
                         </td>
                         <td>@item.Price X @item.Quantity</td>
-                        <td>@(item.Price* item.Quantity)</td>
+                        <td>@(item.Price * item.Quantity)</td>
                         <td scope="row">
                             @if (item.Price == 0)
                             {
@@ -75,7 +75,15 @@
         <div class="card text-end border-0" style="min-width: 250px;">
             <div class="card-body">
                 <h5 class="card-title text-dark">Total:</h5>
-                <h4 class="card-text text-black fw-bold">EGP @Model.TotalPrice</h4>
+                @if (Model.OldPrice != 0)
+                {
+                    <h4 class="original-price card-text fw-bold">EGP @Model.OldPrice</h4>
+                    <h4 class="card-text text-black fw-bold">EGP @Model.TotalPrice</h4>
+                }
+                else
+                {
+                    <h4 class="card-text text-black fw-bold">EGP @Model.TotalPrice</h4>
+                }
             </div>
         </div>
     </div>
@@ -107,21 +115,15 @@
         @Html.PagedListPager(Model.Carts, page => Url.Action("GetUserCart", new { page }), new PagedListRenderOptions
         {
             DisplayLinkToFirstPage = PagedListDisplayMode.Always,
-        DisplayLinkToLastPage = PagedListDisplayMode.Always,
-        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-        DisplayLinkToNextPage = PagedListDisplayMode.Always,
-        DisplayLinkToIndividualPages = true,
-        LinkToFirstPageFormat = "First",
-        LinkToPreviousPageFormat = "Previous",
-        LinkToIndividualPageFormat = "{0}",
-        LinkToNextPageFormat = "Next",
-        LinkToLastPageFormat = "Last"
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            DisplayLinkToIndividualPages = true,
+            LinkToFirstPageFormat = "First",
+            LinkToPreviousPageFormat = "Previous",
+            LinkToIndividualPageFormat = "{0}",
+            LinkToNextPageFormat = "Next",
+            LinkToLastPageFormat = "Last"
         })
-</div>
-}
-@* else
-{
-    <div class="d-flex justify-content-center align-items-center mt-5">
-        <h3>Your cart is empty.</h3>
     </div>
-} *@
+}

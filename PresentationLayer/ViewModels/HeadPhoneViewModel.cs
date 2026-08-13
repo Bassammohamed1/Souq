@@ -24,9 +24,9 @@ namespace PresentationLayer.ViewModels
         public bool isLiked { get; set; } = false;
         public string? CategoryName { get; set; }
         public string? ControllerName { get; set; }
-        public List<HeadPhoneViewModel>? RelatedHeadPhones { get; set; }
-        public List<HeadPhoneViewModel>? SimilarPriceHeadPhones { get; set; }
-        public IQueryable<Comment>? Comments { get; set; }
+        public IEnumerable<HeadPhoneViewModel>? RelatedHeadPhones { get; set; }
+        public IEnumerable<HeadPhoneViewModel>? SimilarPriceHeadPhones { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
         public IQueryable<Offer>? Offers { get; set; }
         public Item? BOGOGet { get; set; }
         public int[]? StarCounts { get; set; }

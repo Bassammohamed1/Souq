@@ -1,10 +1,9 @@
-﻿using DomainLayer.Enums;
-using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
+using ApplicationLayer.Services;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using PresentationLayer.ViewModels;
 using PresentationLayer.ViewModels.ItemVMs;
 
@@ -15,109 +14,105 @@ namespace PresentationLayer.Controllers
     {
         private async Task CreateCategoriesSelectList()
         {
-            var allCategories = await _unitOfWork.Categories.GetSpecificCategories("Appliances");
+            var allCategories = await _cooker.GetSpecificCategoriesForSelectList();
 
             var categoriesList = new SelectList(allCategories.OrderBy(c => c.Name), "ID", "Name");
 
             ViewBag.categoriesViewBag = categoriesList;
         }
 
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
-        public CookersController(IUnitOfWork unitOfWork, IUserService userService)
+        private readonly ICookersService _cooker;
+        private readonly IDepartmentsService _departments;
+
+        public CookersController(ICookersService cooker, IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
-            _userService = userService;
+            _cooker = cooker;
+            _departments = departments;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var cookersCategories = await _unitOfWork.Cookers.GetItemCategories().Result.ToListAsync();
-
-            var discountedCookers = _unitOfWork.Cookers.GetDiscountedItems(1, 10, "ID", false).Result.ToList().
-                Select(c => new CookerViewModel
-                {
-                    Id = c.ID,
-                    Name = c.Name,
-                    Rate = c.Rate,
-                    Price = c.Price,
-                    NewPrice = c.NewPrice ?? 0,
-                    imageSrc = c.imageSrc,
-                    ModelName = c.ModelName,
-                    Material = c.Material,
-                    ItemWeight = c.ItemWeight,
-                    Color = c.Color,
-                    ItemDimensions = c.ItemDimensions,
-                    DrawerType = c.DrawerType,
-                    ControlsType = c.ControlsType,
-                    FinishType = c.FinishType,
-                    FormFactor = c.FormFactor,
-                    NumberOfHeatingElements = c.NumberOfHeatingElements,
-                    SpecialFeatures = c.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                    CategoryName = c.Category.Name,
-                    RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                }).OrderBy(c => Guid.NewGuid()).ToList();
-
-            var topRatedCookers = _unitOfWork.Cookers.GetTopRatedItems(1, 10, "ID", false).Result.ToList().
-                Select(c => new CookerViewModel
-                {
-                    Id = c.ID,
-                    Name = c.Name,
-                    Rate = c.Rate,
-                    Price = c.Price,
-                    NewPrice = c.NewPrice ?? 0,
-                    imageSrc = c.imageSrc,
-                    ModelName = c.ModelName,
-                    Material = c.Material,
-                    ItemWeight = c.ItemWeight,
-                    Color = c.Color,
-                    ItemDimensions = c.ItemDimensions,
-                    DrawerType = c.DrawerType,
-                    ControlsType = c.ControlsType,
-                    FinishType = c.FinishType,
-                    FormFactor = c.FormFactor,
-                    NumberOfHeatingElements = c.NumberOfHeatingElements,
-                    SpecialFeatures = c.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                    CategoryName = c.Category.Name,
-                    RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                }).OrderBy(c => Guid.NewGuid()).ToList();
-
-            var latestCookers = _unitOfWork.Cookers.GetLatestItems(1, 10, "ID", false).Result.ToList().
-                Select(c => new CookerViewModel
-                {
-                    Id = c.ID,
-                    Name = c.Name,
-                    Rate = c.Rate,
-                    Price = c.Price,
-                    NewPrice = c.NewPrice ?? 0,
-                    imageSrc = c.imageSrc,
-                    ModelName = c.ModelName,
-                    Material = c.Material,
-                    ItemWeight = c.ItemWeight,
-                    Color = c.Color,
-                    ItemDimensions = c.ItemDimensions,
-                    DrawerType = c.DrawerType,
-                    ControlsType = c.ControlsType,
-                    FinishType = c.FinishType,
-                    FormFactor = c.FormFactor,
-                    NumberOfHeatingElements = c.NumberOfHeatingElements,
-                    SpecialFeatures = c.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                    CategoryName = c.Category.Name,
-                    RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                }).OrderBy(c => Guid.NewGuid()).ToList();
+            var result = _cooker.GetCookersWithRelatedOnes();
 
             var cookersVM = new ItemViewModel<CookerViewModel>()
             {
-                ItemCategories = cookersCategories,
-                DiscountedItems = discountedCookers,
-                latestItems = latestCookers,
-                TopRatedItems = topRatedCookers
+                ItemCategories = result.ItemCategories,
+                DiscountedItems = result.DiscountedItems
+                .Select(c => new CookerViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Rate = c.Rate,
+                    Price = c.Price,
+                    NewPrice = c.NewPrice,
+                    imageSrc = c.imageSrc,
+                    ModelName = c.ModelName,
+                    Material = c.Material,
+                    ItemWeight = c.ItemWeight,
+                    Color = c.Color,
+                    ItemDimensions = c.ItemDimensions,
+                    DrawerType = c.DrawerType,
+                    ControlsType = c.ControlsType,
+                    FinishType = c.FinishType,
+                    FormFactor = c.FormFactor,
+                    NumberOfHeatingElements = c.NumberOfHeatingElements,
+                    SpecialFeatures = c.SpecialFeatures,
+                    isLiked = c.isLiked,
+                    CategoryName = c.CategoryName,
+                    RateCount = c.RateCount
+                }),
+                latestItems = result.latestItems
+                .Select(c => new CookerViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Rate = c.Rate,
+                    Price = c.Price,
+                    NewPrice = c.NewPrice,
+                    imageSrc = c.imageSrc,
+                    ModelName = c.ModelName,
+                    Material = c.Material,
+                    ItemWeight = c.ItemWeight,
+                    Color = c.Color,
+                    ItemDimensions = c.ItemDimensions,
+                    DrawerType = c.DrawerType,
+                    ControlsType = c.ControlsType,
+                    FinishType = c.FinishType,
+                    FormFactor = c.FormFactor,
+                    NumberOfHeatingElements = c.NumberOfHeatingElements,
+                    SpecialFeatures = c.SpecialFeatures,
+                    isLiked = c.isLiked,
+                    CategoryName = c.CategoryName,
+                    RateCount = c.RateCount
+                }),
+                TopRatedItems = result.TopRatedItems
+                .Select(c => new CookerViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Rate = c.Rate,
+                    Price = c.Price,
+                    NewPrice = c.NewPrice,
+                    imageSrc = c.imageSrc,
+                    ModelName = c.ModelName,
+                    Material = c.Material,
+                    ItemWeight = c.ItemWeight,
+                    Color = c.Color,
+                    ItemDimensions = c.ItemDimensions,
+                    DrawerType = c.DrawerType,
+                    ControlsType = c.ControlsType,
+                    FinishType = c.FinishType,
+                    FormFactor = c.FormFactor,
+                    NumberOfHeatingElements = c.NumberOfHeatingElements,
+                    SpecialFeatures = c.SpecialFeatures,
+                    isLiked = c.isLiked,
+                    CategoryName = c.CategoryName,
+                    RateCount = c.RateCount
+                }),
+                Offers = result.Offers ?? Enumerable.Empty<Offer>().AsQueryable()
             };
 
             return View(cookersVM);
@@ -125,13 +120,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> IndexAdmin(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
-            var cookers = await _unitOfWork.Cookers.GetAll(pageNumber, pageSize);
+            var cookers = _cooker.GetCookers(pageNumber, pageSize);
 
             return View(cookers);
         }
@@ -139,7 +134,7 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             await CreateCategoriesSelectList();
@@ -153,12 +148,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _cooker.Add(data);
 
-                await _unitOfWork.Cookers.Add(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -168,13 +159,13 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var Cooker = await _unitOfWork.Cookers.GetById(id);
+            var Cooker = await _cooker.GetCooker(id);
 
             if (Cooker != null)
             {
@@ -191,12 +182,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _cooker.Update(data);
 
-                await _unitOfWork.Cookers.Update(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -206,13 +193,13 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var Cooker = await _unitOfWork.Cookers.GetById(id);
+            var Cooker = await _cooker.GetCooker(id);
 
             if (Cooker != null)
                 return View();
@@ -224,14 +211,14 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(Cooker data)
         {
-            await _unitOfWork.Cookers.Delete(data);
-            await _unitOfWork.Commit();
+            await _cooker.Delete(data);
+
             return RedirectToAction(nameof(IndexAdmin));
         }
 
         public async Task<IActionResult> Cookers()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             return View();
@@ -241,273 +228,153 @@ namespace PresentationLayer.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+                var departments = await _departments.GetDepartments();
                 ViewData["Departments"] = departments;
 
-                bool desOrder = des ?? false;
-                int pageSize = 9;
-                int pageNumber = page ?? 1;
-                var totalPages = (int)Math.Ceiling(await _unitOfWork.Cookers.TotalItems("Brands", null, null, name) / (double)pageSize);
-
-                var cookers = _unitOfWork.Cookers.GetCategoryItems(name, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                     Select(c => new CookerViewModel
-                     {
-                         Id = c.ID,
-                         Name = c.Name,
-                         Rate = c.Rate,
-                         Price = c.Price,
-                         NewPrice = c.NewPrice ?? 0,
-                         imageSrc = c.imageSrc,
-                         ModelName = c.ModelName,
-                         Material = c.Material,
-                         ItemWeight = c.ItemWeight,
-                         Color = c.Color,
-                         ItemDimensions = c.ItemDimensions,
-                         DrawerType = c.DrawerType,
-                         ControlsType = c.ControlsType,
-                         FinishType = c.FinishType,
-                         FormFactor = c.FormFactor,
-                         NumberOfHeatingElements = c.NumberOfHeatingElements,
-                         SpecialFeatures = c.SpecialFeatures,
-                         isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                         CategoryName = c.Category.Name,
-                         RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                     }).ToList();
+                var result = await _cooker.GetBrandsCookers(orderIndex, page, name, des);
 
                 var data = new ItemsViewModel
                 {
-                    Items = cookers,
-                    CurrentPage = pageNumber,
-                    TotalPages = totalPages,
-                    OrderIndex = orderIndex,
-                    Des = des,
-                    ActionName = "Brands",
-                    Brand = name
+                    Items = result.Items,
+                    CurrentPage = result.CurrentPage,
+                    TotalPages = result.TotalPages,
+                    OrderIndex = result.OrderIndex,
+                    Des = result.Des,
+                    ActionName = result.ActionName,
+                    Brand = result.Brand
                 };
+
                 return View("Cookers", data);
             }
+
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Discounted(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Cookers.TotalItems("Discounted") / (double)pageSize);
-
-            var discountedCookers = _unitOfWork.Cookers.GetDiscountedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(c => new CookerViewModel
-                 {
-                     Id = c.ID,
-                     Name = c.Name,
-                     Rate = c.Rate,
-                     Price = c.Price,
-                     NewPrice = c.NewPrice ?? 0,
-                     imageSrc = c.imageSrc,
-                     ModelName = c.ModelName,
-                     Material = c.Material,
-                     ItemWeight = c.ItemWeight,
-                     Color = c.Color,
-                     ItemDimensions = c.ItemDimensions,
-                     DrawerType = c.DrawerType,
-                     ControlsType = c.ControlsType,
-                     FinishType = c.FinishType,
-                     FormFactor = c.FormFactor,
-                     NumberOfHeatingElements = c.NumberOfHeatingElements,
-                     SpecialFeatures = c.SpecialFeatures,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                     CategoryName = c.Category.Name,
-                     RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                 }).ToList();
+            var result = await _cooker.GetDiscountedCookers(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = discountedCookers,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Discounted",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("Cookers", data);
         }
 
         public async Task<IActionResult> TopRated(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Cookers.TotalItems("Rated") / (double)pageSize);
-
-            var ratedCookers = _unitOfWork.Cookers.GetTopRatedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(c => new CookerViewModel
-                 {
-                     Id = c.ID,
-                     Name = c.Name,
-                     Rate = c.Rate,
-                     Price = c.Price,
-                     NewPrice = c.NewPrice ?? 0,
-                     imageSrc = c.imageSrc,
-                     ModelName = c.ModelName,
-                     Material = c.Material,
-                     ItemWeight = c.ItemWeight,
-                     Color = c.Color,
-                     ItemDimensions = c.ItemDimensions,
-                     DrawerType = c.DrawerType,
-                     ControlsType = c.ControlsType,
-                     FinishType = c.FinishType,
-                     FormFactor = c.FormFactor,
-                     NumberOfHeatingElements = c.NumberOfHeatingElements,
-                     SpecialFeatures = c.SpecialFeatures,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                     CategoryName = c.Category.Name,
-                     RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                 }).ToList();
+            var result = await _cooker.GetTopRatedCookers(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = ratedCookers,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "TopRated",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("Cookers", data);
         }
 
         public async Task<IActionResult> Latest(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Cookers.TotalItems("Latest") / (double)pageSize);
-
-            var latestCookers = _unitOfWork.Cookers.GetLatestItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(c => new CookerViewModel
-                 {
-                     Id = c.ID,
-                     Name = c.Name,
-                     Rate = c.Rate,
-                     Price = c.Price,
-                     NewPrice = c.NewPrice ?? 0,
-                     imageSrc = c.imageSrc,
-                     ModelName = c.ModelName,
-                     Material = c.Material,
-                     ItemWeight = c.ItemWeight,
-                     Color = c.Color,
-                     ItemDimensions = c.ItemDimensions,
-                     DrawerType = c.DrawerType,
-                     ControlsType = c.ControlsType,
-                     FinishType = c.FinishType,
-                     FormFactor = c.FormFactor,
-                     NumberOfHeatingElements = c.NumberOfHeatingElements,
-                     SpecialFeatures = c.SpecialFeatures,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                     CategoryName = c.Category.Name,
-                     RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                 }).ToList();
+            var result = await _cooker.GetLatestCookers(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = latestCookers,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Latest",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("Cookers", data);
         }
 
         public async Task<IActionResult> PriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Cookers.TotalItems("Price", price1, price2, null) / (double)pageSize);
-
-            var priceCookers = _unitOfWork.Cookers.GetItemsFilteredByPrice(price1, price2, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(c => new CookerViewModel
-                 {
-                     Id = c.ID,
-                     Name = c.Name,
-                     Rate = c.Rate,
-                     Price = c.Price,
-                     NewPrice = c.NewPrice ?? 0,
-                     imageSrc = c.imageSrc,
-                     ModelName = c.ModelName,
-                     Material = c.Material,
-                     ItemWeight = c.ItemWeight,
-                     Color = c.Color,
-                     ItemDimensions = c.ItemDimensions,
-                     DrawerType = c.DrawerType,
-                     ControlsType = c.ControlsType,
-                     FinishType = c.FinishType,
-                     FormFactor = c.FormFactor,
-                     NumberOfHeatingElements = c.NumberOfHeatingElements,
-                     SpecialFeatures = c.SpecialFeatures,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                     CategoryName = c.Category.Name,
-                     RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                 }).ToList();
+            var result = await _cooker.GetCookersWithPriceFilter(orderIndex, page, price1, price2, des);
 
             var data = new ItemsViewModel
             {
-                Items = priceCookers,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "PriceFilter",
-                Price1 = price1,
-                Price2 = price2
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
+                Price1 = result.Price1,
+                Price2 = result.Price2
             };
+
             return View("Cookers", data);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var Cooker = await _unitOfWork.Cookers.GetById(id);
+                var result = await _cooker.GetCookerDetails(id);
 
-                if (Cooker != null)
+                if (result != null)
                 {
-                    var comments = await _unitOfWork.Cookers.GetItemComments(id, "Cookers", "Default");
-
-                    var rateList = await _unitOfWork.Cookers.GetItemRates(id, "Cookers");
-                    var rateCount = rateList.Count();
-
-                    var starCounts = await _unitOfWork.Cookers.GetItemRateDetails(id, "Cookers");
-
-                    var totalQuantity = await _unitOfWork.Carts.TotalItemQuantityInCart(id, "Cookers");
-
-                    var similarPriceCookers = _unitOfWork.Cookers.GetAllWithoutPagination().Result.
-                        Where(c => c.Price == Cooker.Price || Math.Abs(c.Price - Cooker.Price) <= 1000).ToList().
-                        Select(c => new CookerViewModel
+                    var cookers = new CookerViewModel
+                    {
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        Price = result.Price,
+                        NewPrice = result.NewPrice,
+                        IsDiscounted = result.IsDiscounted,
+                        DiscountValue = result.DiscountValue,
+                        IsBOGOBuy = result.IsBOGOBuy,
+                        IsBOGOGet = result.IsBOGOGet,
+                        imageSrc = result.imageSrc,
+                        ModelName = result.ModelName,
+                        Material = result.Material,
+                        ItemWeight = result.ItemWeight,
+                        Color = result.Color,
+                        ItemDimensions = result.ItemDimensions,
+                        DrawerType = result.DrawerType,
+                        ControlsType = result.ControlsType,
+                        FinishType = result.FinishType,
+                        FormFactor = result.FormFactor,
+                        NumberOfHeatingElements = result.NumberOfHeatingElements,
+                        SpecialFeatures = result.SpecialFeatures,
+                        CategoryName = result.CategoryName,
+                        RelatedCookers = result.RelatedCookers
+                        .Select(c => new CookerViewModel
                         {
-                            Id = c.ID,
+                            Id = c.Id,
                             Name = c.Name,
                             Rate = c.Rate,
                             Price = c.Price,
-                            NewPrice = c.NewPrice ?? 0,
+                            NewPrice = c.NewPrice,
                             imageSrc = c.imageSrc,
                             ModelName = c.ModelName,
                             Material = c.Material,
@@ -520,20 +387,18 @@ namespace PresentationLayer.Controllers
                             FormFactor = c.FormFactor,
                             NumberOfHeatingElements = c.NumberOfHeatingElements,
                             SpecialFeatures = c.SpecialFeatures,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                            CategoryName = c.Category.Name,
-                            RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                        }).ToList();
-
-                    var relatedCookers = _unitOfWork.Cookers.GetAllWithoutPagination().Result
-                        .Where(c => c.CategoryId == Cooker.CategoryId).Take(10).ToList().
-                        Select(c => new CookerViewModel
+                            isLiked = c.isLiked,
+                            CategoryName = c.CategoryName,
+                            RateCount = c.RateCount
+                        }),
+                        SimilarPriceCookers = result.SimilarPriceCookers
+                        .Select(c => new CookerViewModel
                         {
-                            Id = c.ID,
+                            Id = c.Id,
                             Name = c.Name,
                             Rate = c.Rate,
                             Price = c.Price,
-                            NewPrice = c.NewPrice ?? 0,
+                            NewPrice = c.NewPrice,
                             imageSrc = c.imageSrc,
                             ModelName = c.ModelName,
                             Material = c.Material,
@@ -546,59 +411,20 @@ namespace PresentationLayer.Controllers
                             FormFactor = c.FormFactor,
                             NumberOfHeatingElements = c.NumberOfHeatingElements,
                             SpecialFeatures = c.SpecialFeatures,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, c.ID, "Cookers"),
-                            CategoryName = c.Category.Name,
-                            RateCount = _unitOfWork.Cookers.GetItemRates(c.ID, "Cookers").Result.Count()
-                        }).ToList();
-
-                    var offers = await _unitOfWork.Offers.GetOffers("Appliances", Cooker.Category?.Name, Cooker.ID);
-
-                    var discountValue = string.Empty;
-                    if (offers.Any())
-                    {
-                        discountValue = offers.First().OfferType == OfferType.PercentDiscount ?
-                           $"{offers.First().PercentDiscount}%" :
-                           offers.First().OfferType == OfferType.FixedDiscount ? $"{offers.First().FixedDiscountValue} EGP" : null;
-                    }
-
-                    var BOGOGetItem = await _unitOfWork.Offers.GetBOGOGetItem(Cooker);
-
-                    var cooker = new CookerViewModel
-                    {
-                        Id = Cooker.ID,
-                        Name = Cooker.Name,
-                        Rate = Cooker.Rate,
-                        Price = Cooker.Price,
-                        NewPrice = Cooker.NewPrice ?? 0,
-                        IsDiscounted = Cooker.IsDiscounted,
-                        DiscountValue = discountValue,
-                        IsBOGOBuy = Cooker.IsBOGOBuy,
-                        IsBOGOGet = Cooker.IsBOGOGet,
-                        imageSrc = Cooker.imageSrc,
-                        ModelName = Cooker.ModelName,
-                        Material = Cooker.Material,
-                        ItemWeight = Cooker.ItemWeight,
-                        Color = Cooker.Color,
-                        ItemDimensions = Cooker.ItemDimensions,
-                        DrawerType = Cooker.DrawerType,
-                        ControlsType = Cooker.ControlsType,
-                        FinishType = Cooker.FinishType,
-                        FormFactor = Cooker.FormFactor,
-                        NumberOfHeatingElements = Cooker.NumberOfHeatingElements,
-                        SpecialFeatures = Cooker.SpecialFeatures,
-                        CategoryName = Cooker.Category.Name,
-                        RelatedCookers = relatedCookers,
-                        SimilarPriceCookers = similarPriceCookers,
-                        Comments = comments,
-                        Offers = offers,
-                        BOGOGet = BOGOGetItem,
-                        StarCounts = starCounts,
-                        RateCount = rateCount,
-                        ControllerName = "Cookers",
-                        TotalQuantity = totalQuantity
+                            isLiked = c.isLiked,
+                            CategoryName = c.CategoryName,
+                            RateCount = c.RateCount
+                        }),
+                        Comments = result.Comments,
+                        Offers = result.Offers,
+                        BOGOGet = result.BOGOGet,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount,
+                        ControllerName = result.ControllerName,
+                        TotalQuantity = result.TotalQuantity
                     };
 
-                    return View(cooker);
+                    return View(cookers);
                 }
                 else
                     return RedirectToAction("Index");
@@ -608,37 +434,27 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> AllCookerComments(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var Cooker = await _unitOfWork.Cookers.GetById(id);
+                var result = await _cooker.GetCookerAllComments(id);
 
-                var rateList = await _unitOfWork.Cookers.GetItemRates(id, "Cookers");
-                var rateCount = rateList.Count();
-
-                var starCounts = await _unitOfWork.Cookers.GetItemRateDetails(id, "Cookers");
-
-                if (Cooker != null)
+                if (result is not null)
                 {
-                    var comments = await _unitOfWork.Cookers.GetItemComments(id, "Cookers", "All");
-
-                    if (comments.Any())
+                    var cooker = new CookerViewModel
                     {
-                        var cooker = new CookerViewModel
-                        {
-                            Id = Cooker.ID,
-                            Name = Cooker.Name,
-                            Rate = Cooker.Rate,
-                            CategoryName = Cooker.Category.Name,
-                            Comments = comments,
-                            StarCounts = starCounts,
-                            RateCount = rateCount
-                        };
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        CategoryName = result.CategoryName,
+                        Comments = result.Comments,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount
+                    };
 
-                        return View("AllComments", cooker);
-                    }
+                    return View("AllComments", cooker);
                 }
                 else
                     return RedirectToAction("Details", id);

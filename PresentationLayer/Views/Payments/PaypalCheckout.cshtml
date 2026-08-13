@@ -27,11 +27,16 @@
                         @item.Name
                     </td>
                     <td>@item.Price X @item.Quantity</td>
-                    <td>@(item.Price* item.Quantity)</td>
+                    <td>@(item.Price * item.Quantity)</td>
                 </tr>
             }
         </tbody>
     </table>
+
+    @if(Model.OldPrice != 0)
+    {
+        <h3 class="original-price text-center fw-bold fs-2">@Model.OldPrice EGP</h3>
+    }
 
     <h3 class="text-center fw-bold fs-1">@Model.TotalPrice EGP</h3>
 </div>
@@ -60,7 +65,8 @@
                     if (!response.ok) {
                         return response.json().then(error => {
                             window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
-                            throw error; });
+                            throw error;
+                        });
                     }
 
                     return response.json();
@@ -79,12 +85,12 @@
                         window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
                     }
 
-                   window.location.href = "@Url.Action("SucceedOrder")" + "?method=Paypal";
-                    }).catch(error => {
+                    window.location.href = "@Url.Action("SucceedOrder")" + "?method=Paypal";
+                }).catch(error => {
 
-                        console.error(error);
-                         window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
-                    });
+                    console.error(error);
+                    window.location.href = "@Url.Action("FailedOrder")" + "?method=Paypal";
+                });
             }
         }).render('#paypal-button-container');
     </script>

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using ApplicationLayer.Interfaces.ServicesInterfaces;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace PresentationLayer.Areas.Identity.Pages.Account
@@ -12,12 +13,21 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
     /// </summary>
     public class AccessDeniedModel : PageModel
     {
+        private readonly IDepartmentsService _departments;
+
+        public AccessDeniedModel(IDepartmentsService departments)
+        {
+            _departments = departments;
+        }
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public void OnGet()
+        public async Task OnGet()
         {
+            var departments =  await _departments.GetDepartments();
+            ViewData["Departments"] = departments;
         }
     }
 }

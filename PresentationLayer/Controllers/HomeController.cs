@@ -1,7 +1,4 @@
-using DomainLayer.DTOs;
-using DomainLayer.Enums;
-using DomainLayer.Interfaces;
-using DomainLayer.Models;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.ViewModels;
@@ -12,31 +9,28 @@ namespace PresentationLayer.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDepartmentsService _departments;
+        private readonly IHomePageService _homePageServices;
 
-        public HomeController(IUnitOfWork unitOfWork)
+        public HomeController(IDepartmentsService departments, IHomePageService homePageServices)
         {
-            _unitOfWork = unitOfWork;
+            _departments = departments;
+            _homePageServices = homePageServices;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
-            var latestItems = items.OrderByDescending(i => i.AddedOn).Take(8).OrderBy(i => Guid.NewGuid());
-            var featuredItems = items.OrderByDescending(i => i.Rate).Take(8).OrderBy(i => Guid.NewGuid());
-
-            var offers = _unitOfWork.Offers.GetAllOffers().Result
-                .Where(o => o.OfferType != OfferType.PromoCode);
+            var result = await _homePageServices.GetHomePageRelatedData();
 
             var homePageVM = new HomePageViewModel()
             {
-                Departments = departments ?? Enumerable.Empty<Department>(),
-                Latest = latestItems ?? Enumerable.Empty<Item>(),
-                Featured = featuredItems ?? Enumerable.Empty<Item>(),
-                Offers = offers ?? Enumerable.Empty<OfferDTO>()
+                Departments = result.Departments,
+                Latest = result.Latest,
+                Featured = result.Featured,
+                Offers = result.Offers
             };
 
             return View(homePageVM);
@@ -44,64 +38,36 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+            var itemType = await _homePageServices.GetItemType(id);
 
-            var itemType = items.FirstOrDefault(i => i.ID == id)?.GetType().Name;
-
-            if (itemType is not null)
-            {
-                return RedirectToAction("Details", $"{itemType}s", new { id });
-            }
-
-            return RedirectToAction("Index");
+            return itemType is not null ? RedirectToAction("Details", $"{itemType}s", new { id }) :
+                RedirectToAction("Index");
         }
 
         public async Task<IActionResult> OfferDetails(int id)
         {
-            var offer = await _unitOfWork.Offers.FindOfferByID(id);
+            var result = await _homePageServices.GetHomePageOfferDetails(id);
 
-            if (offer is not null)
+
+            switch (result.ActionName)
             {
-                if (offer.OfferType == OfferType.BuyOneGetOne)
-                {
-                    var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+                case "Index":
 
-                    var itemType = items.FirstOrDefault(i => i.ID == offer.ItemOneID)?.GetType().Name;
-
-                    if (itemType is not null)
-                    {
-                        return RedirectToAction("Details", $"{itemType}s", new { id = offer.ItemOneID });
-                    }
-                }
-                else if (offer.OfferType == OfferType.FixedDiscount || offer.OfferType == OfferType.PercentDiscount)
-                {
-                    if (offer.DepartmentName is not null)
-                    {
-                        var nameAfterSplit = offer.DepartmentName.Split(' ');
-                        string controllerName = nameAfterSplit[0];
-                        for (int i = 1; i < nameAfterSplit.Length; i++)
-                        {
-                            controllerName += nameAfterSplit[i];
-                        }
-
-                        return RedirectToAction("Index", controllerName);
-                    }
-                    else if (offer.CategoryName is not null)
-                    {
-                        return RedirectToAction("Items", new { categoryName = offer.CategoryName });
-                    }
+                    if (string.IsNullOrEmpty(result.ControllerName))
+                        return RedirectToAction("Index");
                     else
-                    {
-                        var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
+                        return RedirectToAction("Index", result.ControllerName);
 
-                        var itemType = items.FirstOrDefault(i => i.ID == offer.ItemID)?.GetType().Name;
+                case "Items":
 
-                        if (itemType is not null)
-                        {
-                            return RedirectToAction("Details", $"{itemType}s", new { id = offer.ItemID });
-                        }
-                    }
-                }
+                    return RedirectToAction("Items", new { categoryName = result.CategoryName });
+
+                case "Details":
+
+                    if (result.ItemOneID is not null)
+                        return RedirectToAction("Details", result.ItemType, new { id = result.ItemOneID });
+                    else
+                        return RedirectToAction("Details", result.ItemType, new { id = result.ItemID });
             }
 
             return RedirectToAction("Index");
@@ -109,115 +75,42 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Items(string categoryName, string? orderIndex, int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            int pageNumber = page ?? 1;
-            int pageSize = 9;
-
-            var allItems = _unitOfWork.Items.GetAll(1, int.MaxValue)
-                .Result.Where(i => i.Category?.Name == categoryName);
-
-            allItems = await _unitOfWork.Items.SortItems(allItems, orderIndex ?? "ID", false);
-
-            var totalPages = (int)Math.Ceiling(allItems.Count() / (double)pageSize);
+            var result = await _homePageServices.GetAllItems(categoryName, orderIndex, page);
 
             var items = new ItemsViewModel()
             {
-                Items = allItems.Skip((pageNumber - 1) * pageSize).Take(pageSize),
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Brand = categoryName
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Brand = result.Brand
             };
 
-            return await Task.FromResult(View(items));
+            return View(items);
         }
 
         public async Task<IActionResult> Filter(string key, int? page, string? orderIndex)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (!string.IsNullOrWhiteSpace(key))
             {
-                int pageNumber = page ?? 1;
-                int pageSize = 10;
+                var result = await _homePageServices.GetFilteredItems(key, page, orderIndex);
 
                 var filterVM = new FilterViewModel()
                 {
-                    SearchPhrase = key,
-                    CurrentPage = pageNumber,
-                    OrderIndex = orderIndex ?? "ID"
+                    SearchPhrase = result.SearchPhrase,
+                    CurrentPage = result.CurrentPage,
+                    OrderIndex = result.OrderIndex,
+                    MatchedItems = result.MatchedItems,
+                    TotalPages = result.TotalPages
                 };
 
-                var adjusted = key.Split(' ');
-                var items = await _unitOfWork.Items.GetAll(1, int.MaxValue);
-
-                foreach (var word in adjusted)
-                {
-                    filterVM.MatchedItems = items.Where(i => i.Name.ToLower().Contains(word.ToLower()));
-                    items = filterVM.MatchedItems;
-                }
-
-                if (filterVM.MatchedItems.Any())
-                {
-                    var totalPages = (int)Math.Ceiling(filterVM.MatchedItems.Count() / (double)pageSize);
-                    filterVM.TotalPages = totalPages;
-
-                    filterVM.MatchedItems = filterVM.MatchedItems
-                        .OrderBy(i => i.GetType().GetProperty(orderIndex ?? "ID").GetValue(i, null))
-                        .Skip((pageNumber - 1) * pageSize).Take(pageSize);
-
-                    return View(filterVM);
-                }
-
-                if (!filterVM.MatchedItems.Any())
-                {
-                    foreach (var word in adjusted)
-                    {
-                        foreach (var department in departments)
-                        {
-                            if (department.Name.ToLower().Contains(word.ToLower()))
-                            {
-                                var matched = await _unitOfWork.Departments.GetDepartmentItems(department);
-
-                                var totalPages = (int)Math.Ceiling(matched.Count() / (double)pageSize);
-                                filterVM.TotalPages = totalPages;
-
-                                filterVM.MatchedItems = matched
-                                    .OrderBy(i => i.GetType().GetProperty(orderIndex ?? "ID").GetValue(i, null))
-                                    .Skip((pageNumber - 1) * pageSize).Take(pageSize);
-
-                                return View(filterVM);
-                            }
-                        }
-                    }
-                }
-
-                if (!filterVM.MatchedItems.Any())
-                {
-                    var categories = await _unitOfWork.Categories.GetAllWithoutPagination();
-                    foreach (var word in adjusted)
-                    {
-                        foreach (var category in categories)
-                        {
-                            if (category.Name.ToLower().Contains(word.ToLower()))
-                            {
-                                var matched = await _unitOfWork.Categories.GetCategoryItems(category);
-
-                                var totalPages = (int)Math.Ceiling(matched.Count() / (double)pageSize);
-                                filterVM.TotalPages = totalPages;
-
-                                filterVM.MatchedItems = matched
-                                    .OrderBy(i => i.GetType().GetProperty(orderIndex ?? "ID").GetValue(i, null))
-                                    .Skip((pageNumber - 1) * pageSize).Take(pageSize);
-
-                                return View(filterVM);
-                            }
-                        }
-                    }
-                }
+                return View(filterVM);
             }
 
             return RedirectToAction("Index");

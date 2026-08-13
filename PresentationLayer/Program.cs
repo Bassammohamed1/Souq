@@ -1,20 +1,23 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Stripe;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using InfrastructureLayer.Repository;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
+using ApplicationLayer.Services;
 using DomainLayer.Interfaces;
 using DomainLayer.Models;
 using InfrastructureLayer.Data;
-using ApplicationLayer.Services;
 using InfrastructureLayer.Helpers;
 using InfrastructureLayer.Mailing;
+using InfrastructureLayer.Payments;
+using InfrastructureLayer.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddHttpContextAccessor();
 
 //Configure database Connection
 builder.Services.AddDbContext<AppDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
@@ -23,7 +26,34 @@ builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireCo
      .AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAirConditionersService, AirConditionersService>();
+builder.Services.AddScoped<IAppliancesService, AppliancesService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<IChatsService, ChatsService>();
+builder.Services.AddScoped<ICookersService, CookersService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IDepartmentsService, DepartmentsService>();
+builder.Services.AddScoped<IElectronicsService, ElectronicsService>();
+builder.Services.AddScoped<IFridgesService, FridgesService>();
+builder.Services.AddScoped<IHeadPhonesService, HeadPhonesService>();
+builder.Services.AddScoped<IHomePageService, HomePageService>();
+builder.Services.AddScoped<IItemsService, ItemsService>();
+builder.Services.AddScoped<ILaptopsService, LaptopsService>();
+builder.Services.AddScoped<IMobilePhonesService, MobilePhonesService>();
+builder.Services.AddScoped<IOffersService, OffersService>();
+builder.Services.AddScoped<IOrdersService, OrdersService>();
+builder.Services.AddScoped<IPaymentsService, PaymentsService>();
+builder.Services.AddScoped<IPaymentMethodsImplementations, PaymetMethodsImplementations>();
+builder.Services.AddScoped<IRolesService, RolesService>();
+builder.Services.AddScoped<ITvsService, TvsService>();
+builder.Services.AddScoped<IUserInteractionsService, UserInteractionsService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IVideoGamesService, VideoGamesService>();
+builder.Services.AddScoped<IWashingMachinesService, WashingMachinesService>();
+builder.Services.AddScoped<IWishingListService, WishingListService>();
+builder.Services.AddScoped<IServicesInstanceProvider, ServicesInstanceProvider>();
+
 
 builder.Services.AddSingleton<PaypalClient>();
 

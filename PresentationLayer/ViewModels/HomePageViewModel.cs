@@ -1,4 +1,4 @@
-﻿using DomainLayer.DTOs;
+﻿using ApplicationLayer.DTOs;
 using DomainLayer.Models;
 
 namespace PresentationLayer.ViewModels

@@ -1,10 +1,9 @@
-﻿using DomainLayer.Enums;
-using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
+using ApplicationLayer.Services;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using PresentationLayer.ViewModels;
 using PresentationLayer.ViewModels.ItemVMs;
 
@@ -15,97 +14,93 @@ namespace PresentationLayer.Controllers
     {
         private async Task CreateCategoriesSelectList()
         {
-            var allCategories = await _unitOfWork.Categories.GetSpecificCategories("Electronics");
+            var allCategories = await _tvs.GetSpecificCategoriesForSelectList();
 
             var categoriesList = new SelectList(allCategories.OrderBy(c => c.Name), "ID", "Name");
 
             ViewBag.categoriesViewBag = categoriesList;
         }
 
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
-        public TVsController(IUnitOfWork unitOfWork, IUserService userService)
+        private readonly ITvsService _tvs;
+        private readonly IDepartmentsService _departments;
+
+        public TVsController(ITvsService tv, IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
-            _userService = userService;
+            _tvs = tv;
+            _departments = departments;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var tvsCategories = await _unitOfWork.TVs.GetItemCategories().Result.ToListAsync();
-
-            var discountedTVs = _unitOfWork.TVs.GetDiscountedItems(1, 10, "ID", false).Result.ToList().
-                Select(t => new TVViewModel
-                {
-                    Id = t.ID,
-                    Name = t.Name,
-                    Rate = t.Rate,
-                    Price = t.Price,
-                    NewPrice = t.NewPrice ?? 0,
-                    imageSrc = t.imageSrc,
-                    ConnectivityTechnology = t.ConnectivityTechnology,
-                    DisplayTechnology = t.DisplayTechnology,
-                    ItemDimensions = t.ItemDimensions,
-                    RefreshRate = t.RefreshRate,
-                    SpecialFeatures = t.SpecialFeatures,
-                    Resolution = t.Resolution,
-                    ScreenSize = t.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                    CategoryName = t.Category.Name,
-                    RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                }).OrderBy(t => Guid.NewGuid()).ToList();
-
-            var topRatedTVs = _unitOfWork.TVs.GetTopRatedItems(1, 10, "ID", false).Result.ToList().
-                Select(t => new TVViewModel
-                {
-                    Id = t.ID,
-                    Name = t.Name,
-                    Rate = t.Rate,
-                    Price = t.Price,
-                    NewPrice = t.NewPrice ?? 0,
-                    imageSrc = t.imageSrc,
-                    ConnectivityTechnology = t.ConnectivityTechnology,
-                    DisplayTechnology = t.DisplayTechnology,
-                    ItemDimensions = t.ItemDimensions,
-                    RefreshRate = t.RefreshRate,
-                    SpecialFeatures = t.SpecialFeatures,
-                    Resolution = t.Resolution,
-                    ScreenSize = t.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                    CategoryName = t.Category.Name,
-                    RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                }).OrderBy(t => Guid.NewGuid()).ToList();
-
-            var latestTVs = _unitOfWork.TVs.GetLatestItems(1, 10, "ID", false).Result.ToList().
-                Select(t => new TVViewModel
-                {
-                    Id = t.ID,
-                    Name = t.Name,
-                    Rate = t.Rate,
-                    Price = t.Price,
-                    NewPrice = t.NewPrice ?? 0,
-                    imageSrc = t.imageSrc,
-                    ConnectivityTechnology = t.ConnectivityTechnology,
-                    DisplayTechnology = t.DisplayTechnology,
-                    ItemDimensions = t.ItemDimensions,
-                    RefreshRate = t.RefreshRate,
-                    SpecialFeatures = t.SpecialFeatures,
-                    Resolution = t.Resolution,
-                    ScreenSize = t.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                    CategoryName = t.Category.Name,
-                    RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                }).OrderBy(t => Guid.NewGuid()).ToList();
+            var result = _tvs.GetTvsWithRelatedOnes();
 
             var tvsVM = new ItemViewModel<TVViewModel>()
             {
-                ItemCategories = tvsCategories,
-                DiscountedItems = discountedTVs,
-                latestItems = latestTVs,
-                TopRatedItems = topRatedTVs
+                ItemCategories = result.ItemCategories,
+                DiscountedItems = result.DiscountedItems
+                .Select(t => new TVViewModel
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Rate = t.Rate,
+                    Price = t.Price,
+                    NewPrice = t.NewPrice ?? 0,
+                    imageSrc = t.imageSrc,
+                    ConnectivityTechnology = t.ConnectivityTechnology,
+                    DisplayTechnology = t.DisplayTechnology,
+                    ItemDimensions = t.ItemDimensions,
+                    RefreshRate = t.RefreshRate,
+                    SpecialFeatures = t.SpecialFeatures,
+                    Resolution = t.Resolution,
+                    ScreenSize = t.ScreenSize,
+                    isLiked = t.isLiked,
+                    CategoryName = t.CategoryName,
+                    RateCount = t.RateCount
+                }),
+                latestItems = result.latestItems
+                .Select(t => new TVViewModel
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Rate = t.Rate,
+                    Price = t.Price,
+                    NewPrice = t.NewPrice ?? 0,
+                    imageSrc = t.imageSrc,
+                    ConnectivityTechnology = t.ConnectivityTechnology,
+                    DisplayTechnology = t.DisplayTechnology,
+                    ItemDimensions = t.ItemDimensions,
+                    RefreshRate = t.RefreshRate,
+                    SpecialFeatures = t.SpecialFeatures,
+                    Resolution = t.Resolution,
+                    ScreenSize = t.ScreenSize,
+                    isLiked = t.isLiked,
+                    CategoryName = t.CategoryName,
+                    RateCount = t.RateCount
+                }),
+                TopRatedItems = result.TopRatedItems
+                .Select(t => new TVViewModel
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Rate = t.Rate,
+                    Price = t.Price,
+                    NewPrice = t.NewPrice ?? 0,
+                    imageSrc = t.imageSrc,
+                    ConnectivityTechnology = t.ConnectivityTechnology,
+                    DisplayTechnology = t.DisplayTechnology,
+                    ItemDimensions = t.ItemDimensions,
+                    RefreshRate = t.RefreshRate,
+                    SpecialFeatures = t.SpecialFeatures,
+                    Resolution = t.Resolution,
+                    ScreenSize = t.ScreenSize,
+                    isLiked = t.isLiked,
+                    CategoryName = t.CategoryName,
+                    RateCount = t.RateCount
+                }),
+                Offers = result.Offers ?? Enumerable.Empty<Offer>().AsQueryable()
             };
 
             return View(tvsVM);
@@ -113,13 +108,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> IndexAdmin(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
-            var tvs = await _unitOfWork.TVs.GetAll(pageNumber, pageSize);
+            var tvs = _tvs.GetTvs(pageNumber, pageSize);
 
             return View(tvs);
         }
@@ -127,7 +122,7 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             await CreateCategoriesSelectList();
@@ -141,12 +136,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _tvs.Add(data);
 
-                await _unitOfWork.TVs.Add(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -156,18 +147,18 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var TV = await _unitOfWork.TVs.GetById(id);
+            var Tv = await _tvs.GetTv(id);
 
-            if (TV != null)
+            if (Tv != null)
             {
                 await CreateCategoriesSelectList();
-                return View(TV);
+                return View(Tv);
             }
 
             throw new ArgumentNullException("Invalid id!!");
@@ -179,12 +170,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _tvs.Update(data);
 
-                await _unitOfWork.TVs.Update(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -194,15 +181,15 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var TV = await _unitOfWork.TVs.GetById(id);
+            var Tv = await _tvs.GetTv(id);
 
-            if (TV != null)
+            if (Tv != null)
                 return View();
             else
                 throw new ArgumentNullException("Invalid id!!");
@@ -212,14 +199,14 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(TV data)
         {
-            await _unitOfWork.TVs.Delete(data);
-            await _unitOfWork.Commit();
+            await _tvs.Delete(data);
+
             return RedirectToAction(nameof(IndexAdmin));
         }
 
-        public async Task<IActionResult> TVs()
+        public async Task<IActionResult> Tvs()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             return View();
@@ -229,254 +216,149 @@ namespace PresentationLayer.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+                var departments = await _departments.GetDepartments();
                 ViewData["Departments"] = departments;
 
-                bool desOrder = des ?? false;
-                int pageSize = 9;
-                int pageNumber = page ?? 1;
-                var totalPages = (int)Math.Ceiling(await _unitOfWork.TVs.TotalItems("Brands", null, null, name) / (double)pageSize);
-
-                var tvs = _unitOfWork.TVs.GetCategoryItems(name, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                     Select(t => new TVViewModel
-                     {
-                         Id = t.ID,
-                         Name = t.Name,
-                         Rate = t.Rate,
-                         Price = t.Price,
-                         NewPrice = t.NewPrice ?? 0,
-                         imageSrc = t.imageSrc,
-                         ConnectivityTechnology = t.ConnectivityTechnology,
-                         DisplayTechnology = t.DisplayTechnology,
-                         ItemDimensions = t.ItemDimensions,
-                         RefreshRate = t.RefreshRate,
-                         SpecialFeatures = t.SpecialFeatures,
-                         Resolution = t.Resolution,
-                         ScreenSize = t.ScreenSize,
-                         isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                         CategoryName = t.Category.Name,
-                         RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                     }).ToList();
+                var result = await _tvs.GetBrandsTvs(orderIndex, page, name, des);
 
                 var data = new ItemsViewModel
                 {
-                    Items = tvs,
-                    CurrentPage = pageNumber,
-                    TotalPages = totalPages,
-                    OrderIndex = orderIndex,
-                    Des = des,
-                    ActionName = "Brands",
-                    Brand = name
+                    Items = result.Items,
+                    CurrentPage = result.CurrentPage,
+                    TotalPages = result.TotalPages,
+                    OrderIndex = result.OrderIndex,
+                    Des = result.Des,
+                    ActionName = result.ActionName,
+                    Brand = result.Brand
                 };
-                return View("TVs", data);
+
+                return View("Tvs", data);
             }
+
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Discounted(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.TVs.TotalItems("Discounted") / (double)pageSize);
-
-            var discountedTVs = _unitOfWork.TVs.GetDiscountedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(t => new TVViewModel
-                 {
-                     Id = t.ID,
-                     Name = t.Name,
-                     Rate = t.Rate,
-                     Price = t.Price,
-                     NewPrice = t.NewPrice ?? 0,
-                     imageSrc = t.imageSrc,
-                     ConnectivityTechnology = t.ConnectivityTechnology,
-                     DisplayTechnology = t.DisplayTechnology,
-                     ItemDimensions = t.ItemDimensions,
-                     RefreshRate = t.RefreshRate,
-                     SpecialFeatures = t.SpecialFeatures,
-                     Resolution = t.Resolution,
-                     ScreenSize = t.ScreenSize,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                     CategoryName = t.Category.Name,
-                     RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                 }).ToList();
+            var result = await _tvs.GetDiscountedTvs(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = discountedTVs,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Discounted",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
-            return View("TVs", data);
+
+            return View("Tvs", data);
         }
 
         public async Task<IActionResult> TopRated(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.TVs.TotalItems("Rated") / (double)pageSize);
-
-            var ratedTVs = _unitOfWork.TVs.GetTopRatedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(t => new TVViewModel
-                 {
-                     Id = t.ID,
-                     Name = t.Name,
-                     Rate = t.Rate,
-                     Price = t.Price,
-                     NewPrice = t.NewPrice ?? 0,
-                     imageSrc = t.imageSrc,
-                     ConnectivityTechnology = t.ConnectivityTechnology,
-                     DisplayTechnology = t.DisplayTechnology,
-                     ItemDimensions = t.ItemDimensions,
-                     RefreshRate = t.RefreshRate,
-                     SpecialFeatures = t.SpecialFeatures,
-                     Resolution = t.Resolution,
-                     ScreenSize = t.ScreenSize,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                     CategoryName = t.Category.Name,
-                     RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                 }).ToList();
+            var result = await _tvs.GetTopRatedTvs(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = ratedTVs,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "TopRated",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
-            return View("TVs", data);
+
+            return View("Tvs", data);
         }
 
         public async Task<IActionResult> Latest(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.TVs.TotalItems("Latest") / (double)pageSize);
-
-            var latestTVs = _unitOfWork.TVs.GetLatestItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(t => new TVViewModel
-                 {
-                     Id = t.ID,
-                     Name = t.Name,
-                     Rate = t.Rate,
-                     Price = t.Price,
-                     NewPrice = t.NewPrice ?? 0,
-                     imageSrc = t.imageSrc,
-                     ConnectivityTechnology = t.ConnectivityTechnology,
-                     DisplayTechnology = t.DisplayTechnology,
-                     ItemDimensions = t.ItemDimensions,
-                     RefreshRate = t.RefreshRate,
-                     SpecialFeatures = t.SpecialFeatures,
-                     Resolution = t.Resolution,
-                     ScreenSize = t.ScreenSize,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                     CategoryName = t.Category.Name,
-                     RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                 }).ToList();
+            var result = await _tvs.GetLatestTvs(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = latestTVs,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Latest",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
-            return View("TVs", data);
+
+            return View("Tvs", data);
         }
 
         public async Task<IActionResult> PriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.TVs.TotalItems("Price", price1, price2, null) / (double)pageSize);
-
-            var priceTVs = _unitOfWork.TVs.GetItemsFilteredByPrice(price1, price2, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                 Select(t => new TVViewModel
-                 {
-                     Id = t.ID,
-                     Name = t.Name,
-                     Rate = t.Rate,
-                     Price = t.Price,
-                     NewPrice = t.NewPrice ?? 0,
-                     imageSrc = t.imageSrc,
-                     ConnectivityTechnology = t.ConnectivityTechnology,
-                     DisplayTechnology = t.DisplayTechnology,
-                     ItemDimensions = t.ItemDimensions,
-                     RefreshRate = t.RefreshRate,
-                     SpecialFeatures = t.SpecialFeatures,
-                     Resolution = t.Resolution,
-                     ScreenSize = t.ScreenSize,
-                     isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                     CategoryName = t.Category.Name,
-                     RateCount = _unitOfWork.TVs.GetItemRates(t.ID, "TVs").Result.Count()
-                 }).ToList();
+            var result = await _tvs.GetTvsWithPriceFilter(orderIndex, page, price1, price2, des);
 
             var data = new ItemsViewModel
             {
-                Items = priceTVs,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "PriceFilter",
-                Price1 = price1,
-                Price2 = price2
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
+                Price1 = result.Price1,
+                Price2 = result.Price2
             };
-            return View("TVs", data);
+
+            return View("Tvs", data);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var TV = await _unitOfWork.TVs.GetById(id);
+                var result = await _tvs.GetTvDetails(id);
 
-                if (TV != null)
+                if (result != null)
                 {
-                    var comments = await _unitOfWork.TVs.GetItemComments(id, "TVs", "Default");
-
-                    var rateList = await _unitOfWork.TVs.GetItemRates(id, "TVs");
-                    var rateCount = rateList.Count();
-
-                    var starCounts = await _unitOfWork.TVs.GetItemRateDetails(id, "TVs");
-
-                    var totalQuantity = await _unitOfWork.Carts.TotalItemQuantityInCart(id, "TVs");
-
-                    var similarPriceTVs = _unitOfWork.TVs.GetAllWithoutPagination().Result.
-                        Where(t => t.Price == TV.Price || Math.Abs(t.Price - TV.Price) <= 1000).ToList()
+                    var tvs = new TVViewModel
+                    {
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        Price = result.Price,
+                        NewPrice = result.NewPrice,
+                        IsDiscounted = result.IsDiscounted,
+                        DiscountValue = result.DiscountValue,
+                        IsBOGOBuy = result.IsBOGOBuy,
+                        IsBOGOGet = result.IsBOGOGet,
+                        imageSrc = result.imageSrc,
+                        ConnectivityTechnology = result.ConnectivityTechnology,
+                        DisplayTechnology = result.DisplayTechnology,
+                        ItemDimensions = result.ItemDimensions,
+                        RefreshRate = result.RefreshRate,
+                        SpecialFeatures = result.SpecialFeatures,
+                        Resolution = result.Resolution,
+                        ScreenSize = result.ScreenSize,
+                        CategoryName = result.CategoryName,
+                        RelatedTVs = result.RelatedTVs
                         .Select(t => new TVViewModel
                         {
-                            Id = t.ID,
+                            Id = t.Id,
                             Name = t.Name,
                             Rate = t.Rate,
                             Price = t.Price,
-                            NewPrice = t.NewPrice ?? 0,
-                            IsDiscounted = t.IsDiscounted,
+                            NewPrice = t.NewPrice,
                             imageSrc = t.imageSrc,
                             ConnectivityTechnology = t.ConnectivityTechnology,
                             DisplayTechnology = t.DisplayTechnology,
@@ -485,21 +367,18 @@ namespace PresentationLayer.Controllers
                             SpecialFeatures = t.SpecialFeatures,
                             Resolution = t.Resolution,
                             ScreenSize = t.ScreenSize,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                            CategoryName = t.Category.Name,
-                            RateCount = rateCount
-                        }).ToList();
-
-                    var relatedTVs = _unitOfWork.TVs.GetAllWithoutPagination().Result
-                        .Where(t => t.CategoryId == TV.CategoryId).Take(10).ToList().
-                        Select(t => new TVViewModel
+                            isLiked = t.isLiked,
+                            CategoryName = t.CategoryName,
+                            RateCount = t.RateCount
+                        }),
+                        SimilarPriceTVs = result.SimilarPriceTVs
+                        .Select(t => new TVViewModel
                         {
-                            Id = t.ID,
+                            Id = t.Id,
                             Name = t.Name,
                             Rate = t.Rate,
                             Price = t.Price,
-                            NewPrice = t.NewPrice ?? 0,
-                            IsDiscounted = t.IsDiscounted,
+                            NewPrice = t.NewPrice,
                             imageSrc = t.imageSrc,
                             ConnectivityTechnology = t.ConnectivityTechnology,
                             DisplayTechnology = t.DisplayTechnology,
@@ -508,55 +387,20 @@ namespace PresentationLayer.Controllers
                             SpecialFeatures = t.SpecialFeatures,
                             Resolution = t.Resolution,
                             ScreenSize = t.ScreenSize,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, t.ID, "TVs"),
-                            CategoryName = t.Category.Name,
-                            RateCount = rateCount
-                        }).ToList();
-
-                    var offers = await _unitOfWork.Offers.GetOffers("Electronics", TV.Category?.Name, TV.ID);
-
-                    var discountValue = string.Empty;
-                    if (offers.Any())
-                    {
-                        discountValue = offers.First().OfferType == OfferType.PercentDiscount ?
-                           $"{offers.First().PercentDiscount}%" :
-                           offers.First().OfferType == OfferType.FixedDiscount ? $"{offers.First().FixedDiscountValue} EGP" : null;
-                    }
-
-                    var BOGOGetItem = await _unitOfWork.Offers.GetBOGOGetItem(TV);
-
-                    var tv = new TVViewModel
-                    {
-                        Id = id,
-                        Name = TV.Name,
-                        Rate = TV.Rate,
-                        Price = TV.Price,
-                        NewPrice = TV.NewPrice ?? 0,
-                        IsDiscounted = TV.IsDiscounted,
-                        DiscountValue = discountValue,
-                        IsBOGOBuy = TV.IsBOGOBuy,
-                        IsBOGOGet = TV.IsBOGOGet,
-                        imageSrc = TV.imageSrc,
-                        ConnectivityTechnology = TV.ConnectivityTechnology,
-                        DisplayTechnology = TV.DisplayTechnology,
-                        ItemDimensions = TV.ItemDimensions,
-                        RefreshRate = TV.RefreshRate,
-                        SpecialFeatures = TV.SpecialFeatures,
-                        Resolution = TV.Resolution,
-                        ScreenSize = TV.ScreenSize,
-                        CategoryName = TV.Category.Name,
-                        RelatedTVs = relatedTVs,
-                        SimilarPriceTVs = similarPriceTVs,
-                        Comments = comments,
-                        Offers = offers,
-                        BOGOGet = BOGOGetItem,
-                        StarCounts = starCounts,
-                        RateCount = rateCount,
-                        ControllerName = "TVs",
-                        TotalQuantity = totalQuantity
+                            isLiked = t.isLiked,
+                            CategoryName = t.CategoryName,
+                            RateCount = t.RateCount
+                        }),
+                        Comments = result.Comments,
+                        Offers = result.Offers,
+                        BOGOGet = result.BOGOGet,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount,
+                        ControllerName = result.ControllerName,
+                        TotalQuantity = result.TotalQuantity
                     };
 
-                    return View(tv);
+                    return View(tvs);
                 }
                 else
                     return RedirectToAction("Index");
@@ -564,39 +408,29 @@ namespace PresentationLayer.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> AllTVComments(int id)
+        public async Task<IActionResult> AllTvComments(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var TV = await _unitOfWork.TVs.GetById(id);
+                var result = await _tvs.GetTvAllComments(id);
 
-                var rateList = await _unitOfWork.TVs.GetItemRates(id, "TVs");
-                var rateCount = rateList.Count();
-
-                var starCounts = await _unitOfWork.TVs.GetItemRateDetails(id, "TVs");
-
-                if (TV != null)
+                if (result is not null)
                 {
-                    var comments = await _unitOfWork.TVs.GetItemComments(id, "TVs", "All");
-
-                    if (comments.Any())
+                    var tv = new TVViewModel
                     {
-                        var phone = new TVViewModel
-                        {
-                            Id = TV.ID,
-                            Name = TV.Name,
-                            Rate = TV.Rate,
-                            CategoryName = TV.Category.Name,
-                            Comments = comments,
-                            StarCounts = starCounts,
-                            RateCount = rateCount
-                        };
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        CategoryName = result.CategoryName,
+                        Comments = result.Comments,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount
+                    };
 
-                        return View("AllComments", phone);
-                    }
+                    return View("AllComments", tv);
                 }
                 else
                     return RedirectToAction("Details", id);

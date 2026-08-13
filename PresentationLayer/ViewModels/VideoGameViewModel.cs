@@ -18,9 +18,9 @@ namespace PresentationLayer.ViewModels
         public bool isLiked { get; set; } = false;
         public string? ControllerName { get; set; }
         public string? CategoryName { get; set; }
-        public List<VideoGameViewModel>? RelatedVideoGames { get; set; }
-        public List<VideoGameViewModel>? SimilarPriceVideoGames { get; set; }
-        public IQueryable<Comment>? Comments { get; set; }
+        public IEnumerable<VideoGameViewModel>? RelatedVideoGames { get; set; }
+        public IEnumerable<VideoGameViewModel>? SimilarPriceVideoGames { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
         public IQueryable<Offer>? Offers { get; set; }
         public Item? BOGOGet { get; set; }
         public int[]? StarCounts { get; set; }

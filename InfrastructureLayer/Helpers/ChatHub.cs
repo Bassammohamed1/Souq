@@ -1,4 +1,4 @@
-﻿using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
 using DomainLayer.Models.Chat;
 using InfrastructureLayer.Data;
 using Microsoft.AspNetCore.SignalR;
@@ -8,16 +8,16 @@ namespace InfrastructureLayer.Helpers
 {
     public class ChatHub : Hub
     {
-        private readonly IUserService _userService;
+        private readonly IUsersService _userService;
         private readonly AppDbContext _context;
         private static string _userID = string.Empty;
         private string _currentUserID;
 
-        public ChatHub(IUserService userService, AppDbContext context)
+        public ChatHub(IUsersService userService, AppDbContext context)
         {
             _userService = userService;
             _context = context;
-            _currentUserID = _userService.GetUserId().Result;
+            _currentUserID = _userService.GetUserId();
         }
 
         public override async Task OnConnectedAsync()
@@ -76,9 +76,9 @@ namespace InfrastructureLayer.Helpers
                 ReceiverId = receiverID,
                 MessageContent = message,
                 MessageDate = DateTime.Now,
-                IsRead = isInChat,
-
+                IsRead = isInChat
             };
+
             await _context.ChatMessages.AddAsync(msg);
             await _context.SaveChangesAsync();
 

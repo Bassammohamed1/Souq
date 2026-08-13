@@ -105,7 +105,7 @@ namespace InfrastructureLayer.Helpers
             return new Random().Next(999999).ToString();
         }
     }
-
+    
     public class AuthResponse
     {
         public string scope { get; set; }

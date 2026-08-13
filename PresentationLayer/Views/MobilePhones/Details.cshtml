@@ -360,7 +360,7 @@
                         <p>@comment.Value</p>
                     </div>
                 }
-                <a class="more-reviews" asp-action="AllPhoneComments" asp-route-id="@Model.Id">See more reviews &gt;</a>
+                <a class="more-reviews" asp-action="AllMobilePhoneComments" asp-route-id="@Model.Id">See more reviews &gt;</a>
 
                 <a class="btn details-button ms-5" asp-controller="UserInteractions" asp-action="Comment" asp-route-itemId="@Model.Id" asp-route-itemType="MobilePhones">Write a customer Comment </a>
             }
@@ -377,66 +377,66 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var swiper = new Swiper('.swiper', {
-            slidesPerView: 5,
-            centeredSlides: false,
-            spaceBetween: 0,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
+    var swiper = new Swiper('.swiper', {
+    slidesPerView: 5,
+    centeredSlides: false,
+    spaceBetween: 0,
+    navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+    },
+    });
     });
 
     async function addToWishlist(itemId, itemType) {
-        try {
-            var response = await fetch(`/UserInteractions/AddItemToWishList?itemId=${itemId}&itemType=${itemType}`);
-            if (response.status === 200) {
-                location.reload();
-            }
-        } catch (err) {
-            console.log("Add error:", err);
-        }
+    try {
+    var response = await fetch(`/UserInteractions/AddItemToWishList?itemId=${itemId}&itemType=${itemType}`);
+    if (response.status === 200) {
+    location.reload();
+    }
+    } catch (err) {
+    console.log("Add error:", err);
+    }
     }
 
     async function removeFromWishlist(itemId, itemType) {
-        try {
-            var response = await fetch(`/UserInteractions/RemoveItemFromWishList?itemId=${itemId}&itemType=${itemType}`);
-            if (response.status === 200) {
-                location.reload();
-            }
-        } catch (err) {
-            console.log("Remove error:", err);
-        }
+    try {
+    var response = await fetch(`/UserInteractions/RemoveItemFromWishList?itemId=${itemId}&itemType=${itemType}`);
+    if (response.status === 200) {
+    location.reload();
+    }
+    } catch (err) {
+    console.log("Remove error:", err);
+    }
     }
 
     async function addToCart(itemId, itemType,qty) {
-        try {
-            var response = await fetch(`/Cart/AddItemToCart?itemId=${itemId}&itemType=${itemType}&qty=${qty}`);
-            if (response.status == 200) {
-                var result = await response.json();
-                var cartCountEl = document.getElementById("cartCount");
-                cartCountEl.innerHTML = result;
-                location.reload();
-            }
-        }
-        catch (err) {
-            console.log(err);
-        }
+    try {
+    var response = await fetch(`/Cart/AddItemToCart?itemId=${itemId}&itemType=${itemType}&qty=${qty}`);
+    if (response.status == 200) {
+    var result = await response.json();
+    var cartCountEl = document.getElementById("cartCount");
+    cartCountEl.innerHTML = result;
+    location.reload();
+    }
+    }
+    catch (err) {
+    console.log(err);
+    }
     }
 
-      async function removeFromCart(itemId, itemType) {
-        try {
-            var response = await fetch(`/Cart/RemoveItemFromCart?itemId=${itemId}&itemType=${itemType}`);
-            if (response.status == 200) {
-                var result = await response.json();
-                var cartCountEl = document.getElementById("cartCount");
-                cartCountEl.innerHTML = result;
-                location.reload();
-            }
-        }
-        catch (err) {
-            console.log(err);
-        }
+    async function removeFromCart(itemId, itemType) {
+    try {
+    var response = await fetch(`/Cart/RemoveItemFromCart?itemId=${itemId}&itemType=${itemType}`);
+    if (response.status == 200) {
+    var result = await response.json();
+    var cartCountEl = document.getElementById("cartCount");
+    cartCountEl.innerHTML = result;
+    location.reload();
+    }
+    }
+    catch (err) {
+    console.log(err);
+    }
     }
 </script>

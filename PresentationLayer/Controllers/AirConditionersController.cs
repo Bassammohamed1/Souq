@@ -1,10 +1,9 @@
-﻿using DomainLayer.Enums;
-using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
+using ApplicationLayer.Services;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using PresentationLayer.ViewModels;
 using PresentationLayer.ViewModels.ItemVMs;
 
@@ -15,98 +14,93 @@ namespace PresentationLayer.Controllers
     {
         private async Task CreateCategoriesSelectList()
         {
-            var allCategories = await _unitOfWork.Categories.GetSpecificCategories("Appliances");
+            var allCategories = await _airConditioner.GetSpecificCategoriesForSelectList();
 
             var categoriesList = new SelectList(allCategories.OrderBy(c => c.Name), "ID", "Name");
 
             ViewBag.categoriesViewBag = categoriesList;
         }
 
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
+        private readonly IAirConditionersService _airConditioner;
+        private readonly IDepartmentsService _departments;
 
-        public AirConditionersController(IUnitOfWork unitOfWork, IUserService userService)
+        public AirConditionersController(IAirConditionersService airConditioner, IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
-            _userService = userService;
+            _airConditioner = airConditioner;
+            _departments = departments;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var airConditionersCategories = await _unitOfWork.AirConditioners.GetItemCategories().Result.ToListAsync();
-
-            var discountedAirConditioners = _unitOfWork.AirConditioners.GetDiscountedItems(1, 10, "ID", false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).OrderBy(a => Guid.NewGuid()).ToList();
-
-            var topRatedAirConditioners = _unitOfWork.AirConditioners.GetTopRatedItems(1, 10, "ID", false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).OrderBy(a => Guid.NewGuid()).ToList();
-
-            var latestAirConditioners = _unitOfWork.AirConditioners.GetLatestItems(1, 10, "ID", false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).OrderBy(a => Guid.NewGuid()).ToList();
+            var result = _airConditioner.GetAirConditionersWithRelatedOnes();
 
             var airConditionersVM = new ItemViewModel<AirConditionerViewModel>()
             {
-                ItemCategories = airConditionersCategories,
-                DiscountedItems = discountedAirConditioners,
-                latestItems = latestAirConditioners,
-                TopRatedItems = topRatedAirConditioners,
+                ItemCategories = result.ItemCategories,
+                DiscountedItems = result.DiscountedItems
+                .Select(a => new AirConditionerViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Rate = a.Rate,
+                    Price = a.Price,
+                    NewPrice = a.NewPrice,
+                    imageSrc = a.imageSrc,
+                    Color = a.Color,
+                    Capacity = a.Capacity,
+                    CoolingPower = a.CoolingPower,
+                    Voltage = a.Voltage,
+                    ItemDimensions = a.ItemDimensions,
+                    NoiseLevel = a.NoiseLevel,
+                    SpecialFeatures = a.SpecialFeatures,
+                    isLiked = a.isLiked,
+                    CategoryName = a.CategoryName,
+                    RateCount = a.RateCount,
+                }),
+                latestItems = result.latestItems
+                .Select(a => new AirConditionerViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Rate = a.Rate,
+                    Price = a.Price,
+                    NewPrice = a.NewPrice,
+                    imageSrc = a.imageSrc,
+                    Color = a.Color,
+                    Capacity = a.Capacity,
+                    CoolingPower = a.CoolingPower,
+                    Voltage = a.Voltage,
+                    ItemDimensions = a.ItemDimensions,
+                    NoiseLevel = a.NoiseLevel,
+                    SpecialFeatures = a.SpecialFeatures,
+                    isLiked = a.isLiked,
+                    CategoryName = a.CategoryName,
+                    RateCount = a.RateCount,
+                }),
+                TopRatedItems = result.TopRatedItems
+                .Select(a => new AirConditionerViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Rate = a.Rate,
+                    Price = a.Price,
+                    NewPrice = a.NewPrice,
+                    imageSrc = a.imageSrc,
+                    Color = a.Color,
+                    Capacity = a.Capacity,
+                    CoolingPower = a.CoolingPower,
+                    Voltage = a.Voltage,
+                    ItemDimensions = a.ItemDimensions,
+                    NoiseLevel = a.NoiseLevel,
+                    SpecialFeatures = a.SpecialFeatures,
+                    isLiked = a.isLiked,
+                    CategoryName = a.CategoryName,
+                    RateCount = a.RateCount,
+                }),
+                Offers = result.Offers ?? Enumerable.Empty<Offer>().AsQueryable()
             };
 
             return View(airConditionersVM);
@@ -114,13 +108,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> IndexAdmin(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
-            var airConditioners = await _unitOfWork.AirConditioners.GetAll(pageNumber, pageSize);
+            var airConditioners = _airConditioner.GetAirConditioners(pageNumber, pageSize);
 
             return View(airConditioners);
         }
@@ -128,7 +122,7 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             await CreateCategoriesSelectList();
@@ -142,12 +136,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _airConditioner.Add(data);
 
-                await _unitOfWork.AirConditioners.Add(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -157,13 +147,13 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var AirConditioner = await _unitOfWork.AirConditioners.GetById(id);
+            var AirConditioner = await _airConditioner.GetAirConditioner(id);
 
             if (AirConditioner != null)
             {
@@ -180,12 +170,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _airConditioner.Update(data);
 
-                await _unitOfWork.AirConditioners.Update(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -195,13 +181,13 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var AirConditioner = await _unitOfWork.AirConditioners.GetById(id);
+            var AirConditioner = await _airConditioner.GetAirConditioner(id);
 
             if (AirConditioner != null)
                 return View();
@@ -213,14 +199,14 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(AirConditioner data)
         {
-            await _unitOfWork.AirConditioners.Delete(data);
-            await _unitOfWork.Commit();
+            await _airConditioner.Delete(data);
+
             return RedirectToAction(nameof(IndexAdmin));
         }
 
         public async Task<IActionResult> AirConditioners()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             return View();
@@ -230,254 +216,149 @@ namespace PresentationLayer.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+                var departments = await _departments.GetDepartments();
                 ViewData["Departments"] = departments;
 
-                bool desOrder = des ?? false;
-                int pageSize = 9;
-                int pageNumber = page ?? 1;
-                var totalPages = (int)Math.Ceiling(await _unitOfWork.AirConditioners.TotalItems("Brands", null, null, name) / (double)pageSize);
-
-                var airConditioners = _unitOfWork.AirConditioners.GetCategoryItems(name, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                    Select(a => new AirConditionerViewModel
-                    {
-                        Id = a.ID,
-                        Name = a.Name,
-                        Rate = a.Rate,
-                        Price = a.Price,
-                        NewPrice = a.NewPrice ?? 0,
-                        imageSrc = a.imageSrc,
-                        Color = a.Color,
-                        Capacity = a.Capacity,
-                        CoolingPower = a.CoolingPower,
-                        Voltage = a.Voltage,
-                        ItemDimensions = a.ItemDimensions,
-                        NoiseLevel = a.NoiseLevel,
-                        SpecialFeatures = a.SpecialFeatures,
-                        isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                        CategoryName = a.Category.Name,
-                        RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                    }).ToList();
+                var result = await _airConditioner.GetBrandsAirConditioners(orderIndex, page, name, des);
 
                 var data = new ItemsViewModel
                 {
-                    Items = airConditioners,
-                    CurrentPage = pageNumber,
-                    TotalPages = totalPages,
-                    OrderIndex = orderIndex,
-                    Des = des,
-                    ActionName = "Brands",
-                    Brand = name
+                    Items = result.Items,
+                    CurrentPage = result.CurrentPage,
+                    TotalPages = result.TotalPages,
+                    OrderIndex = result.OrderIndex,
+                    Des = result.Des,
+                    ActionName = result.ActionName,
+                    Brand = result.Brand
                 };
+
                 return View("AirConditioners", data);
             }
+
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Discounted(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.AirConditioners.TotalItems("Discounted") / (double)pageSize);
-
-            var discountedAirConditioners = _unitOfWork.AirConditioners.GetDiscountedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).ToList();
+            var result = await _airConditioner.GetDiscountedAirConditioners(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = discountedAirConditioners,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Discounted",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("AirConditioners", data);
         }
 
         public async Task<IActionResult> TopRated(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.AirConditioners.TotalItems("Rated") / (double)pageSize);
-
-
-            var ratedAirConditioners = _unitOfWork.AirConditioners.GetTopRatedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).ToList();
+            var result = await _airConditioner.GetTopRatedAirConditioners(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = ratedAirConditioners,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "TopRated",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("AirConditioners", data);
         }
 
         public async Task<IActionResult> Latest(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.AirConditioners.TotalItems("Latest") / (double)pageSize);
-
-            var latestAirConditioners = _unitOfWork.AirConditioners.GetLatestItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).ToList();
+            var result = await _airConditioner.GetLatestAirConditioners(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = latestAirConditioners,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Latest",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("AirConditioners", data);
         }
 
         public async Task<IActionResult> PriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.AirConditioners.TotalItems("Price", price1, price2, null) / (double)pageSize);
-
-            var priceAirConditioners = _unitOfWork.AirConditioners.GetItemsFilteredByPrice(price1, price2, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(a => new AirConditionerViewModel
-                {
-                    Id = a.ID,
-                    Name = a.Name,
-                    Rate = a.Rate,
-                    Price = a.Price,
-                    NewPrice = a.NewPrice ?? 0,
-                    imageSrc = a.imageSrc,
-                    Color = a.Color,
-                    Capacity = a.Capacity,
-                    CoolingPower = a.CoolingPower,
-                    Voltage = a.Voltage,
-                    ItemDimensions = a.ItemDimensions,
-                    NoiseLevel = a.NoiseLevel,
-                    SpecialFeatures = a.SpecialFeatures,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                    CategoryName = a.Category.Name,
-                    RateCount = _unitOfWork.AirConditioners.GetItemRates(a.ID, "AirConditioners").Result.Count()
-                }).ToList();
+            var result = await _airConditioner.GetAirConditionersWithPriceFilter(orderIndex, page, price1, price2, des);
 
             var data = new ItemsViewModel
             {
-                Items = priceAirConditioners,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "PriceFilter",
-                Price1 = price1,
-                Price2 = price2
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
+                Price1 = result.Price1,
+                Price2 = result.Price2
             };
+
             return View("AirConditioners", data);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var AirConditioner = await _unitOfWork.AirConditioners.GetById(id);
+                var result = await _airConditioner.GetAirConditionerDetails(id);
 
-                if (AirConditioner != null)
+                if (result != null)
                 {
-                    var comments = await _unitOfWork.AirConditioners.GetItemComments(id, "AirConditioners", "Default");
-
-                    var rateList = await _unitOfWork.AirConditioners.GetItemRates(id, "AirConditioners");
-                    var rateCount = rateList.Count();
-
-                    var starCounts = await _unitOfWork.AirConditioners.GetItemRateDetails(id, "AirConditioners");
-
-                    var totalQuantity = await _unitOfWork.Carts.TotalItemQuantityInCart(id, "AirConditioners");
-
-                    var similarPriceAirConditioners = _unitOfWork.AirConditioners.GetAllWithoutPagination().Result
-                        .Where(a => a.Price == AirConditioner.Price || Math.Abs(a.Price - AirConditioner.Price) <= 1000).ToList().
-                        Select(a => new AirConditionerViewModel
+                    var airConditioners = new AirConditionerViewModel
+                    {
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        Price = result.Price,
+                        NewPrice = result.NewPrice,
+                        IsDiscounted = result.IsDiscounted,
+                        DiscountValue = result.DiscountValue,
+                        IsBOGOBuy = result.IsBOGOBuy,
+                        IsBOGOGet = result.IsBOGOGet,
+                        imageSrc = result.imageSrc,
+                        Color = result.Color,
+                        Capacity = result.Capacity,
+                        CoolingPower = result.CoolingPower,
+                        Voltage = result.Voltage,
+                        ItemDimensions = result.ItemDimensions,
+                        NoiseLevel = result.NoiseLevel,
+                        SpecialFeatures = result.SpecialFeatures,
+                        CategoryName = result.CategoryName,
+                        RelatedAirConditioners = result.RelatedAirConditioners
+                        .Select(a => new AirConditionerViewModel
                         {
-                            Id = a.ID,
+                            Id = a.Id,
                             Name = a.Name,
                             Rate = a.Rate,
                             Price = a.Price,
-                            NewPrice = a.NewPrice ?? 0,
+                            NewPrice = a.NewPrice,
                             imageSrc = a.imageSrc,
                             Color = a.Color,
                             Capacity = a.Capacity,
@@ -486,78 +367,40 @@ namespace PresentationLayer.Controllers
                             ItemDimensions = a.ItemDimensions,
                             NoiseLevel = a.NoiseLevel,
                             SpecialFeatures = a.SpecialFeatures,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                            CategoryName = a.Category.Name,
-                            RateCount = rateCount
-                        }).ToList();
-
-                    var relatedAirConditioners = _unitOfWork.AirConditioners.GetAllWithoutPagination().Result
-                        .Where(a => a.CategoryId == AirConditioner.CategoryId).Take(10).ToList().
-                        Select(a => new AirConditionerViewModel
-                        {
-                            Id = a.ID,
-                            Name = a.Name,
-                            Rate = a.Rate,
-                            Price = a.Price,
-                            NewPrice = a.NewPrice ?? 0,
-                            imageSrc = a.imageSrc,
-                            Color = a.Color,
-                            Capacity = a.Capacity,
-                            CoolingPower = a.CoolingPower,
-                            Voltage = a.Voltage,
-                            ItemDimensions = a.ItemDimensions,
-                            NoiseLevel = a.NoiseLevel,
-                            SpecialFeatures = a.SpecialFeatures,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, a.ID, "AirConditioners"),
-                            CategoryName = a.Category.Name,
-                            RateCount = rateCount
-                        }).ToList();
-
-                    var offers = await _unitOfWork.Offers.GetOffers("Appliances", AirConditioner.Category?.Name, AirConditioner.ID);
-
-                    var discountValue = string.Empty;
-                    if (offers.Any())
-                    {
-                        discountValue = offers.First().OfferType == OfferType.PercentDiscount ?
-                           $"{offers.First().PercentDiscount}%" :
-                           offers.First().OfferType == OfferType.FixedDiscount ? $"{offers.First().FixedDiscountValue} EGP" : null;
-                    }
-
-                    var BOGOGetItem = await _unitOfWork.Offers.GetBOGOGetItem(AirConditioner);
-
-                    var airConditioner = new AirConditionerViewModel
-                    {
-                        Id = AirConditioner.ID,
-                        Name = AirConditioner.Name,
-                        Rate = AirConditioner.Rate,
-                        Price = AirConditioner.Price,
-                        NewPrice = AirConditioner.NewPrice ?? 0,
-                        IsDiscounted = AirConditioner.IsDiscounted,
-                        DiscountValue = discountValue,
-                        IsBOGOBuy = AirConditioner.IsBOGOBuy,
-                        IsBOGOGet = AirConditioner.IsBOGOGet,
-                        imageSrc = AirConditioner.imageSrc,
-                        Color = AirConditioner.Color,
-                        Capacity = AirConditioner.Capacity,
-                        CoolingPower = AirConditioner.CoolingPower,
-                        Voltage = AirConditioner.Voltage,
-                        ItemDimensions = AirConditioner.ItemDimensions,
-                        NoiseLevel = AirConditioner.NoiseLevel,
-                        SpecialFeatures = AirConditioner.SpecialFeatures,
-                        CategoryName = AirConditioner.Category.Name,
-                        RelatedAirConditioners = relatedAirConditioners,
-                        SimilarPriceAirConditioners = similarPriceAirConditioners,
-                        Comments = comments,
-                        Offers = offers,
-                        BOGOGet = BOGOGetItem,
-                        StarCounts = starCounts,
-                        RateCount = rateCount,
-                        ControllerName = "AirConditioners",
-                        TotalQuantity = totalQuantity
+                            isLiked = a.isLiked,
+                            CategoryName = a.CategoryName,
+                            RateCount = a.RateCount
+                        }),
+                        SimilarPriceAirConditioners = result.SimilarPriceAirConditioners
+                         .Select(a => new AirConditionerViewModel
+                         {
+                             Id = a.Id,
+                             Name = a.Name,
+                             Rate = a.Rate,
+                             Price = a.Price,
+                             NewPrice = a.NewPrice,
+                             imageSrc = a.imageSrc,
+                             Color = a.Color,
+                             Capacity = a.Capacity,
+                             CoolingPower = a.CoolingPower,
+                             Voltage = a.Voltage,
+                             ItemDimensions = a.ItemDimensions,
+                             NoiseLevel = a.NoiseLevel,
+                             SpecialFeatures = a.SpecialFeatures,
+                             isLiked = a.isLiked,
+                             CategoryName = a.CategoryName,
+                             RateCount = a.RateCount
+                         }),
+                        Comments = result.Comments,
+                        Offers = result.Offers,
+                        BOGOGet = result.BOGOGet,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount,
+                        ControllerName = result.ControllerName,
+                        TotalQuantity = result.TotalQuantity
                     };
 
-                    return View(airConditioner);
-
+                    return View(airConditioners);
                 }
                 else
                     return RedirectToAction("Index");
@@ -567,37 +410,27 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> AllAirConditionerComments(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var AirConditioner = await _unitOfWork.AirConditioners.GetById(id);
+                var result = await _airConditioner.GetAirConditionerAllComments(id);
 
-                var rateList = await _unitOfWork.AirConditioners.GetItemRates(id, "AirConditioners");
-                var rateCount = rateList.Count();
-
-                var starCounts = await _unitOfWork.AirConditioners.GetItemRateDetails(id, "AirConditioners");
-
-                if (AirConditioner != null)
+                if (result is not null)
                 {
-                    var comments = await _unitOfWork.AirConditioners.GetItemComments(id, "AirConditioners", "All");
-
-                    if (comments.Any())
+                    var airConditioner = new AirConditionerViewModel
                     {
-                        var airConditioner = new AirConditionerViewModel
-                        {
-                            Id = AirConditioner.ID,
-                            Name = AirConditioner.Name,
-                            Rate = AirConditioner.Rate,
-                            CategoryName = AirConditioner.Category.Name,
-                            Comments = comments,
-                            StarCounts = starCounts,
-                            RateCount = rateCount
-                        };
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        CategoryName = result.CategoryName,
+                        Comments = result.Comments,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount
+                    };
 
-                        return View("AllComments", airConditioner);
-                    }
+                    return View("AllComments", airConditioner);
                 }
                 else
                     return RedirectToAction("Details", id);

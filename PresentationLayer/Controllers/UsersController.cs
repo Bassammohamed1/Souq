@@ -1,9 +1,8 @@
-﻿using DomainLayer.Interfaces;
+﻿using ApplicationLayer.DTOs;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PresentationLayer.ViewModels.Identity;
 
 namespace PresentationLayer.Controllers
@@ -11,91 +10,74 @@ namespace PresentationLayer.Controllers
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUsersService _users;
 
-        public UsersController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IUnitOfWork unitOfWork)
+        public UsersController(IUsersService users)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _unitOfWork = unitOfWork;
+            _users = users;
         }
 
         public async Task<IActionResult> Index(int? page)
         {
-            int pageNumber = page ?? 1;
-            int pageSize = 10;
-
-            var allUsers = _userManager.Users;
-
-            var totalPages = (int)Math.Ceiling(allUsers.Count() / (double)pageSize);
-
-            var users = await allUsers.Skip((pageNumber - 1) * pageSize).Take(pageSize)
-                .Select(u => new UserViewModel()
-                {
-                    ID = u.Id,
-                    Name = u.UserName,
-                    Email = u.Email,
-                    Roles = _userManager.GetRolesAsync(u).Result
-                }).ToListAsync();
+            var users = _users.AllUsers(page);
 
             var usersVM = new UsersViewModel()
             {
-                Users = users,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages
+                Users = users.Users.Select(u => new UserViewModel
+                {
+                    ID = u.ID,
+                    Email = u.Email,
+                    Name = u.Name,
+                    Roles = u.Roles
+                }),
+                CurrentPage = users.CurrentPage,
+                TotalPages = users.TotalPages
             };
 
             return View(usersVM);
         }
 
-        public async Task<IActionResult> ManageRoles(string userID)
+        public async Task<IActionResult> ManageRoles(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userID);
-            var roles = _roleManager.Roles.ToList();
+            if (userId == null)
+                return NotFound("Invalid userID");
 
-            if (user is not null)
+            var result = await _users.GetAllRolesWithUserSelectedRoles(userId);
+
+            var viewModel = new UserRolesViewModel()
             {
-                var userVM = new UserRolesViewModel()
+                ID = result.ID,
+                Name = result.Name,
+                Roles = result.Roles.Select(r => new RoleViewModel()
                 {
-                    ID = user.Id,
-                    Name = user.UserName,
-                    Roles = roles.Select(r => new RoleViewModel()
-                    {
-                        Name = r.Name,
-                        IsSelected = _userManager.IsInRoleAsync(user, r.Name).Result
-                    }).ToList()
-                };
+                    Name = r.Name,
+                    IsSelected = r.IsSelected
+                }).ToList()
+            };
 
-                return View(userVM);
-            }
-
-            return RedirectToAction("Index");
+            return View(viewModel);
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ManageRoles(UserRolesViewModel data)
         {
-            var user = await _userManager.FindByIdAsync(data.ID);
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            foreach (var role in data.Roles)
+            var dto = new UserRolesDTO()
             {
-                if (userRoles.Any(r => r == role.Name) && !role.IsSelected)
-                    await _userManager.RemoveFromRoleAsync(user, role.Name);
+                ID = data.ID,
+                Name = data.Name,
+                Roles = data.Roles.Select(r => new RoleDTO() { Name = r.Name, IsSelected = r.IsSelected }).ToList()
+            };
 
-                if (!userRoles.Any(r => r == role.Name) && role.IsSelected)
-                    await _userManager.AddToRoleAsync(user, role.Name);
-            }
+            var result = await _users.ManageRoles(dto);
 
-            return RedirectToAction("Index");
+            return result.Success ? RedirectToAction(nameof(Index)) : View(data);
+
         }
 
         public async Task<IActionResult> Delete(string userID)
         {
-            var user = await _userManager.FindByIdAsync(userID);
+            var user = await _users.GetUser(userID);
 
             return user is not null ? View(user) : NotFound("User not found.");
         }
@@ -104,14 +86,14 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(AppUser user)
         {
-            var result = await _userManager.DeleteAsync(user);
+            var result = await _users.Delete(user);
 
-            return result.Succeeded ? RedirectToAction("Index") : BadRequest(string.Join('-', result.Errors.Select(e => e.Description).ToList()));
+            return result.Success ? RedirectToAction("Index") : BadRequest(result.Error);
         }
 
         public async Task<IActionResult> Settings(string userID)
         {
-            var user = await _userManager.FindByIdAsync(userID);
+            var user = await _users.GetUser(userID);
 
             if (user is not null)
             {
@@ -133,20 +115,17 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Settings(SettingsViewModel data)
         {
-            var user = await _userManager.FindByIdAsync(data.UserID);
-
-            if (user is not null)
+            var settingsDTO = new SettingsDTO()
             {
-                user.UserName = data.UserName;
-                user.Email = data.Email;
-                user.PhoneNumber = data.PhoneNumber;
+                UserID = data.UserID,
+                Email = data.Email,
+                PhoneNumber = data.PhoneNumber,
+                UserName = data.UserName
+            };
 
-                await _unitOfWork.Commit();
+            var result = await _users.Update(settingsDTO);
 
-                return RedirectToAction("Index");
-            }
-            else
-                return BadRequest("User didn't updated");
+            return result.Success ? RedirectToAction("Index") : BadRequest(result.Error);
         }
     }
 }

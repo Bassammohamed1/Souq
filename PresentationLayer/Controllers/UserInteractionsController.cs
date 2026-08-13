@@ -1,31 +1,36 @@
-﻿using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
+using PresentationLayer.ViewModels.Wishing_List;
+using X.PagedList.Extensions;
 
 namespace PresentationLayer.Controllers
 {
     [Authorize(Roles = "User")]
     public class UserInteractionsController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService userService;
+        private readonly IWishingListService _wishingList;
+        private readonly IDepartmentsService _departments;
+        private readonly IUserInteractionsService _userInteractions;
+        private readonly IUsersService _userService;
 
-        public UserInteractionsController(IUnitOfWork unitOfWork, IUserService userService)
+        public UserInteractionsController(IUsersService userService, IWishingListService wishingList, IDepartmentsService departments, IUserInteractionsService userInteractions)
         {
-            _unitOfWork = unitOfWork;
-            this.userService = userService;
+            _userService = userService;
+            _wishingList = wishingList;
+            _departments = departments;
+            _userInteractions = userInteractions;
         }
 
         public async Task<IActionResult> Comment(int itemId, string itemType)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (itemId != null && !string.IsNullOrEmpty(itemType))
             {
-                var userId = await userService.GetUserId();
+                var userId = _userService.GetUserId();
 
                 var comment = new Comment()
                 {
@@ -37,6 +42,7 @@ namespace PresentationLayer.Controllers
 
                 return View(comment);
             }
+
             return View();
         }
 
@@ -44,27 +50,27 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Comment(Comment comment)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (ModelState.IsValid)
             {
-                await _unitOfWork.Comments.Add(comment);
-                await _unitOfWork.Commit();
+                var result = await _userInteractions.AddComment(comment);
 
-                return RedirectToAction("Details", comment.ItemType, new { id = comment.ItemId });
+                return result.Success ? RedirectToAction("Details", comment.ItemType, new { id = comment.ItemId }) :
+                     View(comment);
             }
             return View(comment);
         }
 
         public async Task<IActionResult> Rate(int itemId, string itemType)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (itemId != null && !string.IsNullOrEmpty(itemType))
             {
-                var userId = await userService.GetUserId();
+                var userId = _userService.GetUserId();
 
                 var rate = new Rate()
                 {
@@ -75,6 +81,7 @@ namespace PresentationLayer.Controllers
 
                 return View(rate);
             }
+
             return View();
         }
 
@@ -82,72 +89,59 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Rate(Rate rate)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
 
             if (ModelState.IsValid)
             {
-                var rates = _unitOfWork.Rates.GetAllWithoutPagination().Result.Where(r => r.UserId == rate.UserId && r.ItemId == rate.ItemId && r.ItemType == rate.ItemType);
+                var result = await _userInteractions.AddRate(rate);
 
-                if (rates.Any())
-                {
-                    await _unitOfWork.Rates.Delete(rates.First());
-                    await _unitOfWork.Commit();
-                }
-
-                await _unitOfWork.Rates.Add(rate);
-                await _unitOfWork.Commit();
-
-                var propInfo = _unitOfWork.GetType()
-                  .GetProperty(rate.ItemType, BindingFlags.Public | BindingFlags.Instance);
-
-                if (propInfo == null)
-                    throw new ArgumentException($"No repository named '{rate.ItemType}'", nameof(rate.ItemType));
-
-                dynamic model = propInfo.GetValue(_unitOfWork);
-
-                var result = await model.SetRate(rate);
-
-                return result ? RedirectToAction("Details", rate.ItemType, new { id = rate.ItemId }) : throw new InvalidOperationException("Failed to set rate.");
+                return result.Success ? RedirectToAction("Details", rate.ItemType, new { id = rate.ItemId }) :
+                    throw new InvalidOperationException("Failed to set rate.");
             }
+
             return View();
         }
 
         public async Task<IActionResult> AddItemToWishList(int itemId, string itemType)
         {
-            var wishCount = await _unitOfWork.WishLists.Add(itemId, itemType);
+            var wishCount = await _wishingList.Add(itemId, itemType);
+
             return RedirectToAction("GetUserWishingList");
         }
 
         public async Task<IActionResult> RemoveItemFromWishList(int itemId, string itemType)
         {
-            var wishCount = await _unitOfWork.WishLists.Remove(itemId, itemType);
+            var wishCount = await _wishingList.Remove(itemId, itemType);
+
             return RedirectToAction("GetUserWishingList");
         }
 
         public async Task<IActionResult> GetUserWishingList(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            int pageNumber = page ?? 1;
-            int pageSize = 10;
+            var result = await _wishingList.UserWishingList(page);
 
-            var wishList = await _unitOfWork.WishLists.UserWishingList(pageNumber, pageSize);
-
-            foreach (var wish in wishList)
+            var wishingListVM = result.Select(wl => new WishingListViewModel
             {
-                wish.Quantity = await _unitOfWork.Carts.TotalItemQuantityInCart(wish.ItemId, wish.ItemType);
-                await _unitOfWork.Commit();
-            }
+                ItemId = wl.ItemId,
+                Quantity = wl.Quantity,
+                Name = wl.Name,
+                Price = wl.Price,
+                ItemType = wl.ItemType,
+                imageSrc = wl.imageSrc
+            }).ToPagedList();
 
-            return View("WishingList", wishList);
+            return View("WishingList", wishingListVM);
         }
 
         public async Task<IActionResult> GetTotalItemInWishingList()
         {
-            int totalItems = await _unitOfWork.WishLists.TotalItemsInWishingList();
+            int totalItems = await _wishingList.TotalItemsInWishingList();
+
             return Ok(totalItems);
         }
     }

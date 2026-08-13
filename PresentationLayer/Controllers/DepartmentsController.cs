@@ -1,4 +1,4 @@
-﻿using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,26 +8,24 @@ namespace PresentationLayer.Controllers
     [Authorize(Roles = "Admin")]
     public class DepartmentsController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDepartmentsService _departments;
 
-        public DepartmentsController(IUnitOfWork unitOfWork)
+        public DepartmentsController(IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
+            _departments = departments;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var data = await _unitOfWork.Departments.GetAllWithoutPagination();
-
-            return View(data);
+            return View(departments);
         }
 
         public async Task<ActionResult> Add()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             return View();
@@ -39,8 +37,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null)
             {
-                await _unitOfWork.Departments.Add(data);
-                await _unitOfWork.Commit();
+                await _departments.Add(data);
+              
                 return RedirectToAction(nameof(Index));
             }
 
@@ -49,13 +47,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Update(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var department = await _unitOfWork.Departments.GetById(id);
+            var department = await _departments.GetDepartment(id);
 
             if (department != null)
                 return View(department);
@@ -70,8 +68,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null)
             {
-                await _unitOfWork.Departments.Update(data);
-                await _unitOfWork.Commit();
+                await _departments.Update(data);
+            
                 return RedirectToAction(nameof(Index));
             }
 
@@ -80,13 +78,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var department = await _unitOfWork.Departments.GetById(id);
+            var department = await _departments.GetDepartment(id);
 
             if (department != null)
                 return View();
@@ -98,8 +96,8 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(Department data)
         {
-            await _unitOfWork.Departments.Delete(data);
-            await _unitOfWork.Commit();
+            await _departments.Delete(data);
+         
             return RedirectToAction(nameof(Index));
         }
     }

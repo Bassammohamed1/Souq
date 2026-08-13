@@ -24,9 +24,9 @@ namespace PresentationLayer.ViewModels
         public bool isLiked { get; set; } = false;
         public string? CategoryName { get; set; }
         public string? ControllerName { get; set; }
-        public List<WashingMachineViewModel>? RelatedWashingMachines { get; set; }
-        public List<WashingMachineViewModel>? SimilarPriceWashingMachines { get; set; }
-        public IQueryable<Comment>? Comments { get; set; }
+        public IEnumerable<WashingMachineViewModel>? RelatedWashingMachines { get; set; }
+        public IEnumerable<WashingMachineViewModel>? SimilarPriceWashingMachines { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
         public IQueryable<Offer>? Offers { get; set; }
         public Item? BOGOGet { get; set; }
         public int[]? StarCounts { get; set; }

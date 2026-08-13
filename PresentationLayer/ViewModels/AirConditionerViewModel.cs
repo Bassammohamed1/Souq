@@ -25,9 +25,9 @@ namespace PresentationLayer.ViewModels
         public string? ControllerName { get; set; }
         public int? TotalQuantity { get; set; }
         public bool isLiked { get; set; } = false;
-        public List<AirConditionerViewModel>? RelatedAirConditioners { get; set; }
-        public List<AirConditionerViewModel>? SimilarPriceAirConditioners { get; set; }
-        public IQueryable<Comment>? Comments { get; set; }
+        public IEnumerable<AirConditionerViewModel>? RelatedAirConditioners { get; set; }
+        public IEnumerable<AirConditionerViewModel>? SimilarPriceAirConditioners { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
         public IQueryable<Offer>? Offers { get; set; }
         public Item? BOGOGet { get; set; }
         public int[]? StarCounts { get; set; }

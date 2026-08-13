@@ -82,17 +82,17 @@
         @Html.PagedListPager(Model, page => Url.Action("GetUserWishingList", new { page }), new PagedListRenderOptions
         {
             DisplayLinkToFirstPage = PagedListDisplayMode.Always,
-        DisplayLinkToLastPage = PagedListDisplayMode.Always,
-        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-        DisplayLinkToNextPage = PagedListDisplayMode.Always,
-        DisplayLinkToIndividualPages = true,
-        LinkToFirstPageFormat = "First",
-        LinkToPreviousPageFormat = "Previous",
-        LinkToIndividualPageFormat = "{0}",
-        LinkToNextPageFormat = "Next",
-        LinkToLastPageFormat = "Last"
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            DisplayLinkToIndividualPages = true,
+            LinkToFirstPageFormat = "First",
+            LinkToPreviousPageFormat = "Previous",
+            LinkToIndividualPageFormat = "{0}",
+            LinkToNextPageFormat = "Next",
+            LinkToLastPageFormat = "Last"
         })
-</div>
+    </div>
 }
 
 <script>

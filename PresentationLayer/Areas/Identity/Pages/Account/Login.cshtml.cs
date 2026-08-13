@@ -2,21 +2,22 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
+using DomainLayer.Interfaces;
+using DomainLayer.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Souq.Models;
-using DomainLayer.Models;
-using DomainLayer.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PresentationLayer.Areas.Identity.Pages.Account
 {
@@ -25,13 +26,13 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDepartmentsService _departments;
 
-        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger, IUnitOfWork unitOfWork)
+        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger, IDepartmentsService departments)
         {
             _signInManager = signInManager;
             _logger = logger;
-            _unitOfWork = unitOfWork;
+            _departments = departments;
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =  await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (!string.IsNullOrEmpty(ErrorMessage))
@@ -111,7 +112,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =  await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             returnUrl ??= Url.Content("~/");

@@ -17,7 +17,7 @@
         </div>
         <div class="card-body">
             <p><strong>Order ID:</strong>@Model.ID</p>
-            <p><strong>Total Price:</strong>@Model.OrderDetails.Sum(od => od.Price * od.Quantity) EGP</p>
+            <p><strong>Total Price:</strong>@Model.TotalPrice EGP</p>
             <p><strong>Payment Method:</strong> Cash on Delivery</p>
             <p><strong>Status:</strong> Confirmed</p>
         </div>

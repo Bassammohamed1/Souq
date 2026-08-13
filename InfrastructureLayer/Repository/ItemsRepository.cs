@@ -2,133 +2,109 @@
 using DomainLayer.Models;
 using InfrastructureLayer.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace InfrastructureLayer.Repository
 {
-    public class ItemsRepository : IItemsRepository
+    public class ItemsRepository : Repository<Item>, IItemsRepository
     {
         private readonly AppDbContext _context;
 
-        public ItemsRepository(AppDbContext context)
+        public ItemsRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
 
         public async Task<Item> FindItemByID(int ID)
         {
-            var items = await GetAll(1, int.MaxValue);
+            var items = await this.GetAllItems(1, int.MaxValue);
 
-            var item = items.Where(i => i.ID == ID).FirstOrDefault();
+            var item = items.FirstOrDefault(i => i.ID == ID);
 
             return item;
         }
 
-        public async Task<IEnumerable<Item>> GetAll(int pageNumber, int pageSize)
+        public async Task<IEnumerable<Item>> GetAllItems(int pageNumber, int pageSize)
         {
             var items = new List<Item>();
 
-            var airConditioners = await _context.AirConditioners.Include(a => a.Category).ToListAsync();
+            var airConditioners = await _context.AirConditioners.AsNoTracking().AsSplitQuery()
+                .Include(a => a.Category).ToListAsync();
+
             items.AddRange(airConditioners);
 
-            var cookers = await _context.Cookers.Include(c => c.Category).ToListAsync();
+            var cookers = await _context.Cookers.AsNoTracking().AsSplitQuery()
+                .Include(c => c.Category).ToListAsync();
+
             items.AddRange(cookers);
 
-            var fridges = await _context.Fridges.Include(f => f.Category).ToListAsync();
+            var fridges = await _context.Fridges.AsNoTracking().AsSplitQuery()
+                .Include(f => f.Category).ToListAsync();
+
             items.AddRange(fridges);
 
-            var washingMachines = await _context.WashingMachines.Include(w => w.Category).ToListAsync();
+            var washingMachines = await _context.WashingMachines.AsNoTracking().AsSplitQuery()
+                .Include(w => w.Category).ToListAsync();
+
             items.AddRange(washingMachines);
 
-            var headPhones = await _context.HeadPhones.Include(h => h.Category).ToListAsync();
+            var headPhones = await _context.HeadPhones.AsNoTracking().AsSplitQuery()
+                .Include(h => h.Category).ToListAsync();
+
             items.AddRange(headPhones);
 
-            var laptops = await _context.Laptops.Include(l => l.Category).ToListAsync();
+            var laptops = await _context.Laptops.AsNoTracking().AsSplitQuery()
+                .Include(l => l.Category).ToListAsync();
+
             items.AddRange(laptops);
 
-            var tvs = await _context.TVs.Include(t => t.Category).ToListAsync();
+            var tvs = await _context.TVs.AsNoTracking().AsSplitQuery()
+                .Include(t => t.Category).ToListAsync();
+
             items.AddRange(tvs);
 
-            var mobilePhones = await _context.MobilePhones.Include(p => p.Category).ToListAsync();
+            var mobilePhones = await _context.MobilePhones.AsNoTracking().AsSplitQuery()
+                .Include(p => p.Category).ToListAsync();
+
             items.AddRange(mobilePhones);
 
-            var videoGames = await _context.VideoGames.Include(v => v.Category).ToListAsync();
+            var videoGames = await _context.VideoGames.AsNoTracking().AsSplitQuery()
+                .Include(v => v.Category).ToListAsync();
+
             items.AddRange(videoGames);
 
             return items.Any() ? items.Skip((pageNumber - 1) * pageSize).Take(pageSize) : Enumerable.Empty<Item>();
         }
 
-        public async Task<IEnumerable<Item>> GetFilteredItems(List<string> selectedFilters, int pageNumber, int pageSize)
+        public IQueryable<T> GetLatestItemsDesOrder<T>(int pageNumber, int pageSize, string orderKey) where T : Item
         {
-            var items = new List<Item>();
-
-            foreach (var filter in selectedFilters)
+            if (!string.IsNullOrEmpty(orderKey))
             {
-                switch (filter)
-                {
-                    case "Appliances":
-                        var appliances = await GetDepartmentItems(filter);
-                        items.AddRange(appliances);
-                        break;
-
-                    case "Electronics":
-                        var electronics = await GetDepartmentItems(filter);
-                        items.AddRange(electronics);
-                        break;
-
-                    case "Mobile Phones":
-                        var mobilePhones = await GetDepartmentItems(filter);
-                        items.AddRange(mobilePhones);
-                        break;
-
-                    case "Video Games":
-                        var videoGames = await GetDepartmentItems(filter);
-                        items.AddRange(videoGames);
-                        break;
-
-                    case "Air Conditioners":
-                        var airConditioners = await _context.AirConditioners.AsNoTracking().ToListAsync();
-                        items.AddRange(airConditioners);
-                        break;
-
-                    case "Cookers":
-                        var cookers = await _context.Cookers.AsNoTracking().ToListAsync();
-                        items.AddRange(cookers);
-                        break;
-
-                    case "Fridges":
-                        var fridges = await _context.Fridges.AsNoTracking().ToListAsync();
-                        items.AddRange(fridges);
-                        break;
-
-                    case "Washing Machines":
-                        var washingMachines = await _context.WashingMachines.AsNoTracking().ToListAsync();
-                        items.AddRange(washingMachines);
-                        break;
-
-                    case "Laptops":
-                        var laptops = await _context.Laptops.AsNoTracking().ToListAsync();
-                        items.AddRange(laptops);
-                        break;
-
-                    case "TVs":
-                        var tvs = await _context.TVs.AsNoTracking().ToListAsync();
-                        items.AddRange(tvs);
-                        break;
-
-                    case "Headphones":
-                        var headphones = await _context.HeadPhones.AsNoTracking().ToListAsync();
-                        items.AddRange(headphones);
-                        break;
-
-                    default:
-                        break;
-                }
+                return _context.Set<T>().AsNoTracking().AsSplitQuery()
+                     .OrderByDescending(i => EF.Property<object>(i, "AddedOn"))
+                     .Include("Category")
+                     .OrderByDescending(i => EF.Property<object>(i, orderKey))
+                     .Skip((pageNumber - 1) * pageSize).Take(pageSize);
             }
-
-            return items.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            else
+                throw new ArgumentException();
         }
 
-        public Task<IEnumerable<Item>> SortItems(IEnumerable<Item> items, string key, bool des)
+        public IQueryable<T> GetLatestItemsAesOrder<T>(int pageNumber, int pageSize, string orderKey) where T : Item
+        {
+            if (!string.IsNullOrEmpty(orderKey))
+            {
+                return _context.Set<T>().AsNoTracking().AsSplitQuery()
+                   .OrderByDescending(i => EF.Property<object>(i, "AddedOn"))
+                   .Include("Category")
+                   .OrderBy(i => EF.Property<object>(i, orderKey))
+                   .Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            }
+            else
+                throw new ArgumentException();
+        }
+
+        public IEnumerable<Item> SortItems(IEnumerable<Item> items, string key, bool des)
         {
             Func<Item, object> keySelector = i => i.GetType().GetProperty(key)?.GetValue(i, null);
 
@@ -136,57 +112,17 @@ namespace InfrastructureLayer.Repository
                 ? items.OrderByDescending(keySelector)
                 : items.OrderBy(keySelector);
 
-            return Task.FromResult(sortedItems);
+            return sortedItems;
         }
 
-        private async Task<IEnumerable<Item>> GetDepartmentItems(string name)
+        public IQueryable<T> ItemDbSet<T>() where T : class
         {
-            var items = new List<Item>();
+            return _context.Set<T>().AsQueryable();
+        }
 
-            switch (name)
-            {
-                case "Appliances":
-                    var airConditioners = await _context.AirConditioners.AsNoTracking().ToListAsync();
-                    items.AddRange(airConditioners);
-
-                    var cookers = await _context.Cookers.AsNoTracking().ToListAsync();
-                    items.AddRange(cookers);
-
-                    var fridges = await _context.Fridges.AsNoTracking().ToListAsync();
-                    items.AddRange(fridges);
-
-                    var washingMachines = await _context.WashingMachines.AsNoTracking().ToListAsync();
-                    items.AddRange(washingMachines);
-
-                    break;
-
-                case "Electronics":
-                    var laptops = await _context.Laptops.AsNoTracking().ToListAsync();
-                    items.AddRange(laptops);
-
-                    var headphones = await _context.HeadPhones.AsNoTracking().ToListAsync();
-                    items.AddRange(headphones);
-
-                    var tvs = await _context.TVs.AsNoTracking().ToListAsync();
-                    items.AddRange(tvs);
-
-                    break;
-
-                case "Mobile Phones":
-                    var mobilePhones = await _context.MobilePhones.AsNoTracking().ToListAsync();
-                    items.AddRange(mobilePhones);
-                    break;
-
-                case "Video Games":
-                    var videoGames = await _context.VideoGames.AsNoTracking().ToListAsync();
-                    items.AddRange(videoGames);
-                    break;
-
-                default:
-                    break;
-            }
-
-            return items;
+        public INavigation FindNavigation<T>(string key) where T : Item
+        {
+            return _context.Model.FindEntityType(typeof(T))?.FindNavigation(key);
         }
     }
 }

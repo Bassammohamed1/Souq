@@ -41,7 +41,7 @@
     {
         <div class="item-card">
             <div class="cardHeader">
-                <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, 'TVs')" : $"addToWishlist({item.Id}, 'TVs')")">
+                <button class="wishList" onclick="@(item.isLiked ? $"removeFromWishlist({item.Id}, '{item.ControllerName}')" : $"addToWishlist({item.Id}, '{item.ControllerName}')")">
                     <i class="bi @(item.isLiked ? "bi-heart-fill text-danger" : "bi-heart")"></i>
                 </button>
             </div>

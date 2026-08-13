@@ -1,0 +1,75 @@
+﻿using DomainLayer.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ApplicationLayer.DTOs
+{
+    public class MobilePhoneDTO
+    {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public double? Rate { get; set; }
+        public double? Price { get; set; }
+        public double? NewPrice { get; set; }
+        public bool IsDiscounted { get; set; }
+        public string? DiscountValue { get; set; }
+        public bool IsBOGOBuy { get; set; }
+        public bool IsBOGOGet { get; set; }
+        public string? imageSrc { get; set; }
+        public string? Color { get; set; }
+        public int? RAM { get; set; }
+        public int? MemoryStorageCapacity { get; set; }
+        public string? OperatingSystem { get; set; }
+        public string? CPUModel { get; set; }
+        public int? TotalQuantity { get; set; }
+        public bool isLiked { get; set; } = false;
+        public string? ControllerName { get; set; }
+        public string? CategoryName { get; set; }
+        public IEnumerable<MobilePhoneDTO>? RelatedPhones { get; set; }
+        public IEnumerable<MobilePhoneDTO>? SimilarPricePhones { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
+        public IQueryable<Offer>? Offers { get; set; }
+        public Item? BOGOGet { get; set; }
+        public int[]? StarCounts { get; set; }
+        public int? RateCount { get; set; }
+        public string[] StarStates
+        {
+            get
+            {
+                var states = new string[5];
+                var remaining = Rate;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (remaining >= 1)
+                    {
+                        states[i] = "full";
+                        remaining -= 1;
+                    }
+                    else if (remaining >= 0.5)
+                    {
+                        states[i] = "half";
+                        remaining = 0;
+                    }
+                    else
+                    {
+                        states[i] = "empty";
+                    }
+                }
+                return states;
+            }
+        }
+        public int[] StarPercentages
+        {
+            get
+            {
+                if (RateCount == 0) return new int[5];
+                return StarCounts
+                    .Select(c => (int)Math.Round((decimal)(100.0 * c / RateCount)))
+                    .ToArray();
+            }
+        }
+    }
+}

@@ -1,0 +1,685 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = PresentationLayer
+build_property.RootNamespace = PresentationLayer
+build_property.ProjectDir = E:\My Projects\Souq\Souq\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = E:\My Projects\Souq\Souq
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ConfirmEmail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxDb25maXJtRW1haWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ConfirmEmailChange.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxDb25maXJtRW1haWxDaGFuZ2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ExternalLogin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxFeHRlcm5hbExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ForgotPasswordConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxGb3Jnb3RQYXNzd29yZENvbmZpcm1hdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Lockout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxMb2Nrb3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/LoginWith2fa.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxMb2dpbldpdGgyZmEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/LoginWithRecoveryCode.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxMb2dpbldpdGhSZWNvdmVyeUNvZGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxMb2dvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcQ2hhbmdlUGFzc3dvcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/DeletePersonalData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcRGVsZXRlUGVyc29uYWxEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/Disable2fa.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcRGlzYWJsZTJmYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/DownloadPersonalData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcRG93bmxvYWRQZXJzb25hbERhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/Email.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcRW1haWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/EnableAuthenticator.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcRW5hYmxlQXV0aGVudGljYXRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/ExternalLogins.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcRXh0ZXJuYWxMb2dpbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/GenerateRecoveryCodes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcR2VuZXJhdGVSZWNvdmVyeUNvZGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/PersonalData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcUGVyc29uYWxEYXRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/ResetAuthenticator.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcUmVzZXRBdXRoZW50aWNhdG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/SetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcU2V0UGFzc3dvcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/ShowRecoveryCodes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcU2hvd1JlY292ZXJ5Q29kZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/TwoFactorAuthentication.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcVHdvRmFjdG9yQXV0aGVudGljYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/_ManageNav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcX01hbmFnZU5hdi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/_StatusMessage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcX1N0YXR1c01lc3NhZ2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Manage/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxNYW5hZ2VcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/RegisterConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZWdpc3RlckNvbmZpcm1hdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ResendEmailConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZXNlbmRFbWFpbENvbmZpcm1hdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/ResetPasswordConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxSZXNldFBhc3N3b3JkQ29uZmlybWF0aW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/_StatusMessage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxfU3RhdHVzTWVzc2FnZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Account/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcQWNjb3VudFxfVmlld0ltcG9ydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZhbGlkYXRpb25TY3JpcHRzUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Areas/Identity/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXEFkZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/AirConditioners.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXEFpckNvbmRpdGlvbmVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXEFsbENvbW1lbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXEluZGV4QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/AirConditioners/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWlyQ29uZGl0aW9uZXJzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Appliances/Appliances.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwbGlhbmNlc1xBcHBsaWFuY2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Appliances/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwbGlhbmNlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cart/ShoppingCart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxTaG9wcGluZ0NhcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Categories/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmllc1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Categories/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmllc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Categories/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmllc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Categories/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmllc1xVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xBbGxDb21tZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/Cookers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xDb29rZXJzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xJbmRleEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Cookers/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29va2Vyc1xVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Dashboard/Analytics.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEFuYWx5dGljcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Dashboard/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXERhc2hib2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Departments/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0bWVudHNcQWRkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Departments/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0bWVudHNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Departments/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0bWVudHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Departments/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0bWVudHNcVXBkYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Electronics/Electronics.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRWxlY3Ryb25pY3NcRWxlY3Ryb25pY3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Electronics/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRWxlY3Ryb25pY3NcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xBbGxDb21tZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/Fridges.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xGcmlkZ2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xJbmRleEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Fridges/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xBbGxDb21tZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/HeadPhones.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xIZWFkUGhvbmVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xJbmRleEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/HeadPhones/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGVhZFBob25lc1xVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Home/Filter.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxGaWx0ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Home/Items.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJdGVtcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xBbGxDb21tZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xJbmRleEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/Laptops.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xMYXB0b3BzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Laptops/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFwdG9wc1xVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXEFkZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXEFsbENvbW1lbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXEluZGV4QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/MobilePhones.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXE1vYmlsZVBob25lcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/MobilePhones/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlUGhvbmVzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Offers/CreateOffer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZmZXJzXENyZWF0ZU9mZmVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Offers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZmZXJzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Offers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZmZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Offers/Offers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZmZXJzXE9mZmVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Offers/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT2ZmZXJzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Orders/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Payments/COD.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudHNcQ09ELmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Payments/FailedOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudHNcRmFpbGVkT3JkZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Payments/PaymentMethods.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudHNcUGF5bWVudE1ldGhvZHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Payments/PaypalCheckout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudHNcUGF5cGFsQ2hlY2tvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Payments/SucceedOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF5bWVudHNcU3VjY2VlZE9yZGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Products/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Roles/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Roles/_RoleForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcX1JvbGVGb3JtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_AuthLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRoTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_DashboardLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9EYXNoYm9hcmRMYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_LoginPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_PartialSidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYXJ0aWFsU2lkZWJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_PartialTopbar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYXJ0aWFsVG9wYmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Support/AdminChat.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxBZG1pbkNoYXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Support/UserChat.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxVc2VyQ2hhdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Support/_ChatMessagesPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VwcG9ydFxfQ2hhdE1lc3NhZ2VzUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXEFkZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXEFsbENvbW1lbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXEluZGV4QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/TVs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXFRWcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/TVs/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVFZzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/UserInteractions/Comment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlckludGVyYWN0aW9uc1xDb21tZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/UserInteractions/Rate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlckludGVyYWN0aW9uc1xSYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/UserInteractions/WishingList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlckludGVyYWN0aW9uc1xXaXNoaW5nTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Users/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Users/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Users/ManageRoles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcTWFuYWdlUm9sZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Users/Settings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcU2V0dGluZ3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xBZGQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xBbGxDb21tZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xJbmRleEFkbWluLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/VideoGames/VideoGames.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlkZW9HYW1lc1xWaWRlb0dhbWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXEFkZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/AllComments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXEFsbENvbW1lbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXEluZGV4QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/WashingMachines/WashingMachines.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzaGluZ01hY2hpbmVzXFdhc2hpbmdNYWNoaW5lcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/My Projects/Souq/Souq/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-xphr5dixgj

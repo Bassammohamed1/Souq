@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using ApplicationLayer.Interfaces.ServicesInterfaces;
 using DomainLayer.Interfaces;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -26,7 +27,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<AppUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDepartmentsService _departments;
 
         public RegisterModel(
             UserManager<AppUser> userManager,
@@ -34,7 +35,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
             SignInManager<AppUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IUnitOfWork unitOfWork)
+            IDepartmentsService departments)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -42,7 +43,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _unitOfWork = unitOfWork;
+            _departments = departments;
         }
 
         /// <summary>
@@ -106,7 +107,7 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =  await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             ReturnUrl = returnUrl;

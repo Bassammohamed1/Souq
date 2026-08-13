@@ -1,10 +1,9 @@
-﻿using DomainLayer.Enums;
-using DomainLayer.Interfaces;
+﻿using ApplicationLayer.Interfaces.ServicesInterfaces;
+using ApplicationLayer.Services;
 using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using PresentationLayer.ViewModels;
 using PresentationLayer.ViewModels.ItemVMs;
 
@@ -15,103 +14,99 @@ namespace PresentationLayer.Controllers
     {
         private async Task CreateCategoriesSelectList()
         {
-            var allCategories = await _unitOfWork.Categories.GetSpecificCategories("Electronics");
+            var allCategories = await _laptops.GetSpecificCategoriesForSelectList();
 
             var categoriesList = new SelectList(allCategories.OrderBy(c => c.Name), "ID", "Name");
 
             ViewBag.categoriesViewBag = categoriesList;
         }
 
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserService _userService;
-        public LaptopsController(IUnitOfWork unitOfWork, IUserService userService)
+        private readonly ILaptopsService _laptops;
+        private readonly IDepartmentsService _departments;
+
+        public LaptopsController(ILaptopsService laptops, IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
-            _userService = userService;
+            _laptops = laptops;
+            _departments = departments;
         }
 
         public async Task<IActionResult> Index()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var laptopsCategories = await _unitOfWork.Laptops.GetItemCategories().Result.ToListAsync();
-
-            var discountedLaptops = _unitOfWork.Laptops.GetDiscountedItems(1, 10, "ID", false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).OrderBy(l => Guid.NewGuid()).ToList();
-
-            var topRatedLaptops = _unitOfWork.Laptops.GetTopRatedItems(1, 10, "ID", false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).OrderBy(l => Guid.NewGuid()).ToList();
-
-            var latestLaptops = _unitOfWork.Laptops.GetLatestItems(1, 10, "ID", false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).OrderBy(l => Guid.NewGuid()).ToList();
+            var result = _laptops.GetLaptopsWithRelatedOnes();
 
             var laptopsVM = new ItemViewModel<LaptopViewModel>()
             {
-                ItemCategories = laptopsCategories,
-                DiscountedItems = discountedLaptops,
-                latestItems = latestLaptops,
-                TopRatedItems = topRatedLaptops
+                ItemCategories = result.ItemCategories,
+                DiscountedItems = result.DiscountedItems
+                .Select(l => new LaptopViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Rate = l.Rate,
+                    Price = l.Price,
+                    NewPrice = l.NewPrice ?? 0,
+                    imageSrc = l.imageSrc,
+                    Color = l.Color,
+                    CPU = l.CPU,
+                    GPU = l.GPU,
+                    HardDiskDescription = l.HardDiskDescription,
+                    HardDiskSize = l.HardDiskSize,
+                    ModelName = l.ModelName,
+                    RAM = l.RAM,
+                    OperatingSystem = l.OperatingSystem,
+                    ScreenSize = l.ScreenSize,
+                    isLiked = l.isLiked,
+                    CategoryName = l.CategoryName,
+                    RateCount = l.RateCount
+                }),
+                latestItems = result.latestItems
+                .Select(l => new LaptopViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Rate = l.Rate,
+                    Price = l.Price,
+                    NewPrice = l.NewPrice ?? 0,
+                    imageSrc = l.imageSrc,
+                    Color = l.Color,
+                    CPU = l.CPU,
+                    GPU = l.GPU,
+                    HardDiskDescription = l.HardDiskDescription,
+                    HardDiskSize = l.HardDiskSize,
+                    ModelName = l.ModelName,
+                    RAM = l.RAM,
+                    OperatingSystem = l.OperatingSystem,
+                    ScreenSize = l.ScreenSize,
+                    isLiked = l.isLiked,
+                    CategoryName = l.CategoryName,
+                    RateCount = l.RateCount
+                }),
+                TopRatedItems = result.TopRatedItems
+                .Select(l => new LaptopViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    Rate = l.Rate,
+                    Price = l.Price,
+                    NewPrice = l.NewPrice ?? 0,
+                    imageSrc = l.imageSrc,
+                    Color = l.Color,
+                    CPU = l.CPU,
+                    GPU = l.GPU,
+                    HardDiskDescription = l.HardDiskDescription,
+                    HardDiskSize = l.HardDiskSize,
+                    ModelName = l.ModelName,
+                    RAM = l.RAM,
+                    OperatingSystem = l.OperatingSystem,
+                    ScreenSize = l.ScreenSize,
+                    isLiked = l.isLiked,
+                    CategoryName = l.CategoryName,
+                    RateCount = l.RateCount
+                }),
+                Offers = result.Offers ?? Enumerable.Empty<Offer>().AsQueryable()
             };
 
             return View(laptopsVM);
@@ -119,13 +114,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> IndexAdmin(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
-            var laptops = await _unitOfWork.Laptops.GetAll(pageNumber, pageSize);
+            var laptops = _laptops.GetLaptops(pageNumber, pageSize);
 
             return View(laptops);
         }
@@ -133,7 +128,7 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             await CreateCategoriesSelectList();
@@ -147,12 +142,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _laptops.Add(data);
 
-                await _unitOfWork.Laptops.Add(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -162,13 +153,13 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var Laptop = await _unitOfWork.Laptops.GetById(id);
+            var Laptop = await _laptops.GetLaptop(id);
 
             if (Laptop != null)
             {
@@ -185,12 +176,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                var stream = new MemoryStream();
-                await data.clientFile.CopyToAsync(stream);
-                data.dbImage = stream.ToArray();
+                await _laptops.Update(data);
 
-                await _unitOfWork.Laptops.Update(data);
-                await _unitOfWork.Commit();
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
@@ -200,13 +187,13 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var Laptop = await _unitOfWork.Laptops.GetById(id);
+            var Laptop = await _laptops.GetLaptop(id);
 
             if (Laptop != null)
                 return View();
@@ -218,14 +205,14 @@ namespace PresentationLayer.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(Laptop data)
         {
-            await _unitOfWork.Laptops.Delete(data);
-            await _unitOfWork.Commit();
+            await _laptops.Delete(data);
+
             return RedirectToAction(nameof(IndexAdmin));
         }
 
         public async Task<IActionResult> Laptops()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             return View();
@@ -235,264 +222,151 @@ namespace PresentationLayer.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+                var departments = await _departments.GetDepartments();
                 ViewData["Departments"] = departments;
 
-                bool desOrder = des ?? false;
-                int pageSize = 9;
-                int pageNumber = page ?? 1;
-                var totalPages = (int)Math.Ceiling(await _unitOfWork.Laptops.TotalItems("Brands", null, null, name) / (double)pageSize);
-
-                var laptops = _unitOfWork.Laptops.GetCategoryItems(name, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                    Select(l => new LaptopViewModel
-                    {
-                        Id = l.ID,
-                        Name = l.Name,
-                        Rate = l.Rate,
-                        Price = l.Price,
-                        NewPrice = l.NewPrice ?? 0,
-                        imageSrc = l.imageSrc,
-                        Color = l.Color,
-                        CPU = l.CPU,
-                        GPU = l.GPU,
-                        HardDiskDescription = l.HardDiskDescription,
-                        HardDiskSize = l.HardDiskSize,
-                        ModelName = l.ModelName,
-                        RAM = l.RAM,
-                        OperatingSystem = l.OperatingSystem,
-                        ScreenSize = l.ScreenSize,
-                        isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                        CategoryName = l.Category.Name,
-                        RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                    }).ToList();
+                var result = await _laptops.GetBrandsLaptops(orderIndex, page, name, des);
 
                 var data = new ItemsViewModel
                 {
-                    Items = laptops,
-                    CurrentPage = pageNumber,
-                    TotalPages = totalPages,
-                    OrderIndex = orderIndex,
-                    Des = des,
-                    ActionName = "Brands",
-                    Brand = name
+                    Items = result.Items,
+                    CurrentPage = result.CurrentPage,
+                    TotalPages = result.TotalPages,
+                    OrderIndex = result.OrderIndex,
+                    Des = result.Des,
+                    ActionName = result.ActionName,
+                    Brand = result.Brand
                 };
+
                 return View("Laptops", data);
             }
+
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Discounted(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Laptops.TotalItems("Discounted") / (double)pageSize);
-
-            var discountedLaptops = _unitOfWork.Laptops.GetDiscountedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).ToList();
+            var result = await _laptops.GetDiscountedLaptops(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = discountedLaptops,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Discounted",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("Laptops", data);
         }
 
         public async Task<IActionResult> TopRated(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Laptops.TotalItems("Rated") / (double)pageSize);
-
-            var ratedLaptops = _unitOfWork.Laptops.GetTopRatedItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).ToList();
+            var result = await _laptops.GetTopRatedLaptops(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = ratedLaptops,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "TopRated",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("Laptops", data);
         }
 
         public async Task<IActionResult> Latest(string? orderIndex, int? page, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Laptops.TotalItems("Latest") / (double)pageSize);
-
-            var latestLaptops = _unitOfWork.Laptops.GetLatestItems(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).ToList();
+            var result = await _laptops.GetLatestLaptops(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
-                Items = latestLaptops,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "Latest",
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
             };
+
             return View("Laptops", data);
         }
 
         public async Task<IActionResult> PriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            bool desOrder = des ?? false;
-            int pageSize = 9;
-            int pageNumber = page ?? 1;
-            var totalPages = (int)Math.Ceiling(await _unitOfWork.Laptops.TotalItems("Price", price1, price2, null) / (double)pageSize);
-
-            var priceLaptops = _unitOfWork.Laptops.GetItemsFilteredByPrice(price1, price2, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).Result.ToList().
-                Select(l => new LaptopViewModel
-                {
-                    Id = l.ID,
-                    Name = l.Name,
-                    Rate = l.Rate,
-                    Price = l.Price,
-                    NewPrice = l.NewPrice ?? 0,
-                    imageSrc = l.imageSrc,
-                    Color = l.Color,
-                    CPU = l.CPU,
-                    GPU = l.GPU,
-                    HardDiskDescription = l.HardDiskDescription,
-                    HardDiskSize = l.HardDiskSize,
-                    ModelName = l.ModelName,
-                    RAM = l.RAM,
-                    OperatingSystem = l.OperatingSystem,
-                    ScreenSize = l.ScreenSize,
-                    isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                    CategoryName = l.Category.Name,
-                    RateCount = _unitOfWork.Laptops.GetItemRates(l.ID, "Laptops").Result.Count()
-                }).ToList();
+            var result = await _laptops.GetLaptopsWithPriceFilter(orderIndex, page, price1, price2, des);
 
             var data = new ItemsViewModel
             {
-                Items = priceLaptops,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages,
-                OrderIndex = orderIndex,
-                Des = des,
-                ActionName = "PriceFilter",
-                Price1 = price1,
-                Price2 = price2
+                Items = result.Items,
+                CurrentPage = result.CurrentPage,
+                TotalPages = result.TotalPages,
+                OrderIndex = result.OrderIndex,
+                Des = result.Des,
+                ActionName = result.ActionName,
+                Price1 = result.Price1,
+                Price2 = result.Price2
             };
+
             return View("Laptops", data);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var Laptop = await _unitOfWork.Laptops.GetById(id);
+                var result = await _laptops.GetLaptopDetails(id);
 
-                if (Laptop != null)
+                if (result != null)
                 {
-                    var comments = await _unitOfWork.Laptops.GetItemComments(id, "Laptops", "Default");
-
-                    var rateList = await _unitOfWork.Laptops.GetItemRates(id, "Laptops");
-                    var rateCount = rateList.Count();
-
-                    var starCounts = await _unitOfWork.Laptops.GetItemRateDetails(id, "Laptops");
-
-                    var totalQuantity = await _unitOfWork.Carts.TotalItemQuantityInCart(id, "Laptops");
-
-                    var similarPriceLaptops = _unitOfWork.Laptops.GetAllWithoutPagination().Result.
-                        Where(l => l.Price == Laptop.Price || Math.Abs(l.Price - Laptop.Price) <= 1000).ToList()
+                    var laptops = new LaptopViewModel
+                    {
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        Price = result.Price,
+                        NewPrice = result.NewPrice,
+                        IsDiscounted = result.IsDiscounted,
+                        DiscountValue = result.DiscountValue,
+                        IsBOGOBuy = result.IsBOGOBuy,
+                        IsBOGOGet = result.IsBOGOGet,
+                        imageSrc = result.imageSrc,
+                        Color = result.Color,
+                        CPU = result.CPU,
+                        GPU = result.GPU,
+                        HardDiskDescription = result.HardDiskDescription,
+                        HardDiskSize = result.HardDiskSize,
+                        ModelName = result.ModelName,
+                        RAM = result.RAM,
+                        OperatingSystem = result.OperatingSystem,
+                        ScreenSize = result.ScreenSize,
+                        CategoryName = result.CategoryName,
+                        RelatedLaptops = result.RelatedLaptops
                         .Select(l => new LaptopViewModel
                         {
-                            Id = l.ID,
+                            Id = l.Id,
                             Name = l.Name,
                             Rate = l.Rate,
                             Price = l.Price,
-                            NewPrice = l.NewPrice ?? 0,
-                            IsDiscounted = l.IsDiscounted,
+                            NewPrice = l.NewPrice,
                             imageSrc = l.imageSrc,
                             Color = l.Color,
                             CPU = l.CPU,
@@ -503,82 +377,42 @@ namespace PresentationLayer.Controllers
                             RAM = l.RAM,
                             OperatingSystem = l.OperatingSystem,
                             ScreenSize = l.ScreenSize,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                            CategoryName = l.Category.Name,
-                            RateCount = rateCount
-                        }).ToList();
-
-                    var relatedLaptops = _unitOfWork.Laptops.GetAllWithoutPagination().Result
-                        .Where(m => m.CategoryId == Laptop.CategoryId).Take(10).ToList().
-                        Select(l => new LaptopViewModel
-                        {
-                            Id = l.ID,
-                            Name = l.Name,
-                            Rate = l.Rate,
-                            Price = l.Price,
-                            NewPrice = l.NewPrice ?? 0,
-                            IsDiscounted = l.IsDiscounted,
-                            imageSrc = l.imageSrc,
-                            Color = l.Color,
-                            CPU = l.CPU,
-                            GPU = l.GPU,
-                            HardDiskDescription = l.HardDiskDescription,
-                            HardDiskSize = l.HardDiskSize,
-                            ModelName = l.ModelName,
-                            RAM = l.RAM,
-                            OperatingSystem = l.OperatingSystem,
-                            ScreenSize = l.ScreenSize,
-                            isLiked = _unitOfWork.WishLists.HasUserLiked(_userService.GetUserId().Result, l.ID, "Laptops"),
-                            CategoryName = l.Category.Name,
-                            RateCount = rateCount
-                        }).ToList();
-
-                    var offers = await _unitOfWork.Offers.GetOffers("Electronics", Laptop.Category?.Name, Laptop.ID);
-
-                    var discountValue = string.Empty;
-                    if (offers.Any())
-                    {
-                        discountValue = offers.First().OfferType == OfferType.PercentDiscount ?
-                           $"{offers.First().PercentDiscount}%" :
-                           offers.First().OfferType == OfferType.FixedDiscount ? $"{offers.First().FixedDiscountValue} EGP" : null;
-                    }
-
-                    var BOGOGetItem = await _unitOfWork.Offers.GetBOGOGetItem(Laptop);
-
-                    var laptop = new LaptopViewModel
-                    {
-                        Id = id,
-                        Name = Laptop.Name,
-                        Rate = Laptop.Rate,
-                        Price = Laptop.Price,
-                        NewPrice = Laptop.NewPrice ?? 0,
-                        IsDiscounted = Laptop.IsDiscounted,
-                        DiscountValue = discountValue,
-                        IsBOGOBuy = Laptop.IsBOGOBuy,
-                        IsBOGOGet = Laptop.IsBOGOGet,
-                        imageSrc = Laptop.imageSrc,
-                        Color = Laptop.Color,
-                        CPU = Laptop.CPU,
-                        GPU = Laptop.GPU,
-                        HardDiskDescription = Laptop.HardDiskDescription,
-                        HardDiskSize = Laptop.HardDiskSize,
-                        ModelName = Laptop.ModelName,
-                        RAM = Laptop.RAM,
-                        OperatingSystem = Laptop.OperatingSystem,
-                        ScreenSize = Laptop.ScreenSize,
-                        CategoryName = Laptop.Category.Name,
-                        RelatedLaptops = relatedLaptops,
-                        SimilarPriceLaptops = similarPriceLaptops,
-                        Comments = comments,
-                        Offers = offers,
-                        BOGOGet = BOGOGetItem,
-                        StarCounts = starCounts,
-                        RateCount = rateCount,
-                        ControllerName = "Laptops",
-                        TotalQuantity = totalQuantity
+                            isLiked = l.isLiked,
+                            CategoryName = l.CategoryName,
+                            RateCount = l.RateCount
+                        }),
+                        SimilarPriceLaptops = result.SimilarPriceLaptops
+                           .Select(l => new LaptopViewModel
+                           {
+                               Id = l.Id,
+                               Name = l.Name,
+                               Rate = l.Rate,
+                               Price = l.Price,
+                               NewPrice = l.NewPrice,
+                               imageSrc = l.imageSrc,
+                               Color = l.Color,
+                               CPU = l.CPU,
+                               GPU = l.GPU,
+                               HardDiskDescription = l.HardDiskDescription,
+                               HardDiskSize = l.HardDiskSize,
+                               ModelName = l.ModelName,
+                               RAM = l.RAM,
+                               OperatingSystem = l.OperatingSystem,
+                               ScreenSize = l.ScreenSize,
+                               isLiked = l.isLiked,
+                               CategoryName = l.CategoryName,
+                               RateCount = l.RateCount
+                           }),
+                        Comments = result.Comments,
+                        Offers = result.Offers,
+                        BOGOGet = result.BOGOGet,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount,
+                        ControllerName = result.ControllerName,
+                        TotalQuantity = result.TotalQuantity
                     };
 
-                    return View(laptop);
+                    return View(laptops);
                 }
                 else
                     return RedirectToAction("Index");
@@ -588,37 +422,27 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> AllLaptopComments(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var Laptop = await _unitOfWork.Laptops.GetById(id);
+                var result = await _laptops.GetLaptopAllComments(id);
 
-                var rateList = await _unitOfWork.Laptops.GetItemRates(id, "Laptops");
-                var rateCount = rateList.Count();
-
-                var starCounts = await _unitOfWork.Laptops.GetItemRateDetails(id, "Laptops");
-
-                if (Laptop != null)
+                if (result is not null)
                 {
-                    var comments = await _unitOfWork.Laptops.GetItemComments(id, "Laptops", "All");
-
-                    if (comments.Any())
+                    var laptop = new LaptopViewModel
                     {
-                        var laptop = new LaptopViewModel
-                        {
-                            Id = Laptop.ID,
-                            Name = Laptop.Name,
-                            Rate = Laptop.Rate,
-                            CategoryName = Laptop.Category.Name,
-                            Comments = comments,
-                            StarCounts = starCounts,
-                            RateCount = rateCount
-                        };
+                        Id = result.Id,
+                        Name = result.Name,
+                        Rate = result.Rate,
+                        CategoryName = result.CategoryName,
+                        Comments = result.Comments,
+                        StarCounts = result.StarCounts,
+                        RateCount = result.RateCount
+                    };
 
-                        return View("AllComments", laptop);
-                    }
+                    return View("AllComments", laptop);
                 }
                 else
                     return RedirectToAction("Details", id);

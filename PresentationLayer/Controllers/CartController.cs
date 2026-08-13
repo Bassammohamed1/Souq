@@ -1,7 +1,8 @@
-﻿using DomainLayer.Interfaces;
-using InfrastructureLayer.Helpers;
+﻿using ApplicationLayer.Helpers;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Souq.Models.Cart_Orders;
 using X.PagedList.Extensions;
 
 namespace PresentationLayer.Controllers
@@ -9,18 +10,18 @@ namespace PresentationLayer.Controllers
     [Authorize(Roles = "User")]
     public class CartController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly PaypalClient _paypalClient;
+        private readonly ICartService _carts;
+        private readonly IDepartmentsService _departments;
 
-        public CartController(IUnitOfWork unitOfWork, PaypalClient paypalClient)
+        public CartController(ICartService carts, IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
-            _paypalClient = paypalClient;
+            _carts = carts;
+            _departments = departments;
         }
 
         public async Task<IActionResult> AddItemToCart(int itemId, string itemType, int? qty, int redirect = 0)
         {
-            var cartCount = await _unitOfWork.Carts.Add(itemId, itemType, qty);
+            var cartCount = await _carts.Add(itemId, itemType, qty);
 
             if (redirect == 0)
                 return Ok(cartCount);
@@ -30,7 +31,7 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> RemoveItemFromCart(int itemId, string itemType, int redirect = 0)
         {
-            var cartCount = await _unitOfWork.Carts.Remove(itemId, itemType);
+            var cartCount = await _carts.Remove(itemId, itemType);
 
             if (redirect == 0)
                 return Ok(cartCount);
@@ -40,60 +41,91 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> GetUserCart(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            var cart = await _unitOfWork.Carts.GetUserCart();
+            var cart = await _carts.GetUserCart();
             cart.Carts = cart.Carts.ToPagedList(pageNumber, pageSize);
 
-            return View("ShoppingCart", cart);
+            return View("ShoppingCart", new CartViewModel
+            {
+                Carts = cart.Carts.Select(c => new RepositoryCartVM
+                {
+                    imageSrc = c.imageSrc,
+                    ItemId = c.ItemId,
+                    ItemType = c.ItemType,
+                    Name = c.Name,
+                    Price = c.Price,
+                    Quantity = c.Quantity
+                }),
+                TotalPrice = cart.TotalPrice
+            });
         }
 
         public async Task<IActionResult> GetTotalItemInCart()
         {
-            int totalItems = await _unitOfWork.Carts.TotalItemsInCart();
+            int totalItems = await _carts.TotalItemsInCart();
+
             return Ok(totalItems);
         }
 
         [HttpPost]
         public async Task<IActionResult> ApplyPromoCode(string promoCode)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (string.IsNullOrWhiteSpace(promoCode))
-            {
                 ViewBag.PromoMessage = "Please enter a promo code.";
-            }
             else
             {
-                var promoCodeOffer = await _unitOfWork.Offers.IsPromoCodeExist(promoCode);
+                var result = await _carts.ApplyPromoCode(promoCode);
 
-                if (promoCodeOffer is not null)
+                if (result.Success)
                 {
-                    var userCart = await _unitOfWork.Carts.GetUserCart();
+                    ViewBag.PromoMessage = result.PromoMessage;
+                    var cartVM = new CartViewModel
+                    {
+                        Carts = result.Cart.Carts.Select(c => new RepositoryCartVM
+                        {
+                            imageSrc = c.imageSrc,
+                            ItemId = c.ItemId,
+                            ItemType = c.ItemType,
+                            Name = c.Name,
+                            Price = c.Price,
+                            Quantity = c.Quantity
+                        }),
+                        TotalPrice = result.Cart.TotalPrice,
+                        OldPrice = result.OldPrice
+                    };
 
-                    var updatedCart = await _unitOfWork.Carts.ApplyPromoCode(userCart, promoCodeOffer);
-                    updatedCart.Carts = updatedCart.Carts.ToPagedList(1, 10);
-
-                    var promoSign = promoCodeOffer.PromoDiscountType == "fixed" ? "💲" : "%";
-                    ViewBag.PromoMessage = $"Promo code applied: {promoCodeOffer.PromoDiscountValue}{promoSign} discount!";
-
-                    return View("ShoppingCart", updatedCart);
+                    return View("ShoppingCart", cartVM);
                 }
                 else
-                {
-                    ViewBag.PromoMessage = "Invalid promo code.";
-                }
+                    ViewBag.PromoMessage = result.Error;
             }
 
-            var cart = await _unitOfWork.Carts.GetUserCart();
+            var cart = await _carts.GetUserCart();
             cart.Carts = cart.Carts.ToPagedList(1, 10);
 
-            return View("ShoppingCart", cart);
+            var cartVM2 = new CartViewModel
+            {
+                Carts = cart.Carts.Select(c => new RepositoryCartVM
+                {
+                    imageSrc = c.imageSrc,
+                    ItemId = c.ItemId,
+                    ItemType = c.ItemType,
+                    Name = c.Name,
+                    Price = c.Price,
+                    Quantity = c.Quantity
+                }),
+                TotalPrice = cart.TotalPrice
+            };
+
+            return View("ShoppingCart", cartVM2);
         }
     }
 }

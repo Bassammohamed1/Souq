@@ -1,11 +1,11 @@
-﻿using DomainLayer.DTOs;
-using DomainLayer.Interfaces;
+﻿using ApplicationLayer.DTOs;
+using ApplicationLayer.Interfaces.ServicesInterfaces;
+using DomainLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PresentationLayer.ViewModels.Categories;
 using X.PagedList;
-using X.PagedList.Extensions;
 
 namespace PresentationLayer.Controllers
 {
@@ -14,50 +14,37 @@ namespace PresentationLayer.Controllers
     {
         private async Task CreateDepartmentsSelectList()
         {
-            var allDepartments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var allDepartments =await _departments.GetDepartments();
 
             var departmentsList = new SelectList(allDepartments.OrderBy(d => d.Name), "ID", "Name");
 
             ViewBag.departmentsViewBag = departmentsList;
         }
 
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICategoriesService _categories;
+        private readonly IDepartmentsService _departments;
 
-        public CategoriesController(IUnitOfWork unitOfWork)
+        public CategoriesController(ICategoriesService categories, IDepartmentsService departments)
         {
-            _unitOfWork = unitOfWork;
+            _categories = categories;
+            _departments = departments;
         }
 
         public async Task<IActionResult> Index(int? page)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            int pageSize = 10;
-            int pageNumber = page ?? 1;
+            var result = await _categories.GetAllCategoriesForIndexPage(page);
 
-            var totalCount = _unitOfWork.Categories.GetAllWithoutPagination().Result.Count();
-
-            var categories = await _unitOfWork.Categories.AllCategoriesWithDepartment(pageNumber, pageSize);
-
-            var data = categories.Select(c => new CategoryIndexVM
-            {
-                Id = c.ID,
-                Name = c.Name,
-                Image = c.imageSrc,
-                Departments = c.CategoryDepartments.Select(cd => cd.Department.Name).ToList(),
-                TotalPages = totalCount,
-                CurrentPage = pageNumber
-            }).ToList();
-
-              var pagedData = new StaticPagedList<CategoryIndexVM>(data, pageNumber, pageSize, totalCount);
+            var pagedData = new StaticPagedList<CategoryIndexVM>((IEnumerable<CategoryIndexVM>)result, result.First().CurrentPage, 10, result.First().TotalPages);
 
             return View(pagedData);
         }
 
         public async Task<IActionResult> Add()
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             await CreateDepartmentsSelectList();
@@ -71,8 +58,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                await _unitOfWork.Categories.AddCategory(data);
-                await _unitOfWork.Commit();
+                await _categories.Add(data);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -81,13 +68,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Update(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var category = await _unitOfWork.Categories.GetById(id);
+            var category = await _categories.GetCategorie(id);
 
             if (category != null)
             {
@@ -95,7 +82,7 @@ namespace PresentationLayer.Controllers
                 {
                     Id = id,
                     Name = category.Name,
-                    DepartmentsIds = _unitOfWork.Categories.GetCategoryDepartments(id).Result
+                    DepartmentsIds = _categories.GetCategoryDepartments(id).Result
                 };
 
                 await CreateDepartmentsSelectList();
@@ -111,8 +98,8 @@ namespace PresentationLayer.Controllers
         {
             if (data is not null && data.clientFile is not null)
             {
-                await _unitOfWork.Categories.UpdateCategory(data);
-                await _unitOfWork.Commit();
+                await _categories.Update(data);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -121,13 +108,13 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var departments = await _unitOfWork.Departments.GetAllWithoutPagination();
+            var departments =await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var category = await _unitOfWork.Categories.GetById(id);
+            var category = await _categories.GetCategorie(id);
 
             if (category != null)
             {
@@ -135,8 +122,9 @@ namespace PresentationLayer.Controllers
                 {
                     Id = id,
                     Name = category.Name,
-                    DepartmentsIds = _unitOfWork.Categories.GetCategoryDepartments(id).Result
+                    DepartmentsIds = _categories.GetCategoryDepartments(id).Result
                 };
+
                 return View(categoryVM);
             }
             else
@@ -145,10 +133,10 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Delete(CategoryDTO data)
+        public async Task<IActionResult> Delete(Category data)
         {
-            await _unitOfWork.Categories.DeleteCategory(data);
-            await _unitOfWork.Commit();
+            await _categories.Delete(data);
+
             return RedirectToAction(nameof(Index));
         }
     }
