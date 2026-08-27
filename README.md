@@ -66,11 +66,12 @@
 
 ---
 
-🧪 Testing
+## 🧪 Testing & Quality Assurance
+- **AAA** (Arrange–Act–Assert) pattern.
+- **xUnit** unit tests for core features.
+- **InMemory Database** for safe DB testing.
+- **FakeItEasy** for mocking dependencies.
 
-   AAA (Arrange–Act–Assert) pattern.
-
-   In-memory database for safe testing.
 ---
 
 ## 🌐 Live Demo
