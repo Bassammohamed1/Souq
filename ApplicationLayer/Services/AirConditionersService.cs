@@ -65,7 +65,7 @@ namespace ApplicationLayer.Services
             await _unitOfWork.Commit();
 
             return result is not null ? new Result() { Success = true }
-                    : new Result() { Success = false, Error = "An error occured while deleting.." };
+                    : new Result() { Success = false, Error = "An error occured while deleting." };
         }
 
         public ItemDTO<AirConditionerDTO> GetAirConditionersWithRelatedOnes()

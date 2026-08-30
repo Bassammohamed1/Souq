@@ -1,13 +1,8 @@
 ﻿using DomainLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApplicationLayer.DTOs
 {
-    public class TvDTO
+    public class TVDTO
     {
         public int? Id { get; set; }
         public string? Name { get; set; }
@@ -30,8 +25,8 @@ namespace ApplicationLayer.DTOs
         public bool isLiked { get; set; } = false;
         public string? CategoryName { get; set; }
         public string? ControllerName { get; set; }
-        public IEnumerable<TvDTO>? RelatedTVs { get; set; }
-        public IEnumerable<TvDTO>? SimilarPriceTVs { get; set; }
+        public IEnumerable<TVDTO>? RelatedTVs { get; set; }
+        public IEnumerable<TVDTO>? SimilarPriceTVs { get; set; }
         public IEnumerable<Comment>? Comments { get; set; }
         public IQueryable<Offer>? Offers { get; set; }
         public Item? BOGOGet { get; set; }

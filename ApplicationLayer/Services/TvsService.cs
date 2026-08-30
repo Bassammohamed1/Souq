@@ -7,25 +7,25 @@ using DomainLayer.Models;
 
 namespace ApplicationLayer.Services
 {
-    public class TvsService : ITvsService
+    public class TVsService : ITVsService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUsersService _userService;
         private readonly IServicesInstanceProvider _servicesInstanceProvider;
 
-        public TvsService(IUnitOfWork unitOfWork, IUsersService userService, IServicesInstanceProvider servicesInstanceProvider)
+        public TVsService(IUnitOfWork unitOfWork, IUsersService userService, IServicesInstanceProvider servicesInstanceProvider)
         {
             _unitOfWork = unitOfWork;
             _userService = userService;
             _servicesInstanceProvider = servicesInstanceProvider;
         }
 
-        public async Task<TV> GetTv(int id)
+        public async Task<TV> GetTV(int id)
         {
             return await _unitOfWork.TVs.GetById(id);
         }
 
-        public IEnumerable<TV> GetTvs(int pageNumber, int pageSize)
+        public IEnumerable<TV> GetTVs(int pageNumber, int pageSize)
         {
             return _unitOfWork.TVs.GetAll(pageNumber, pageSize);
         }
@@ -68,12 +68,12 @@ namespace ApplicationLayer.Services
                     : new Result() { Success = false, Error = "An error occured while deleting." };
         }
 
-        public ItemDTO<TvDTO> GetTvsWithRelatedOnes()
+        public ItemDTO<TVDTO> GetTVsWithRelatedOnes()
         {
             var tvsCategories = _servicesInstanceProvider.GetItemsServiceInstance().GetItemCategories<TV>();
 
-            var discountedTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetDiscountedItems<TV>(1, 10, "ID", false).ToList().
-                Select(t => new TvDTO
+            var discountedTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetDiscountedItems<TV>(1, 10, "ID", false).ToList().
+                Select(t => new TVDTO
                 {
                     Id = t.ID,
                     Name = t.Name,
@@ -88,13 +88,13 @@ namespace ApplicationLayer.Services
                     SpecialFeatures = t.SpecialFeatures,
                     Resolution = t.Resolution,
                     ScreenSize = t.ScreenSize,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                     CategoryName = t.Category.Name,
-                    RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                    RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                 }).OrderBy(a => Guid.NewGuid());
 
-            var topRatedTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetTopRatedItems<TV>(1, 10, "ID", false).ToList().
-                Select(t => new TvDTO
+            var topRatedTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetTopRatedItems<TV>(1, 10, "ID", false).ToList().
+                Select(t => new TVDTO
                 {
                     Id = t.ID,
                     Name = t.Name,
@@ -109,13 +109,13 @@ namespace ApplicationLayer.Services
                     SpecialFeatures = t.SpecialFeatures,
                     Resolution = t.Resolution,
                     ScreenSize = t.ScreenSize,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                     CategoryName = t.Category.Name,
-                    RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                    RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                 }).OrderBy(a => Guid.NewGuid());
 
-            var latestTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetLatestItems<TV>(1, 10, "ID", false).ToList().
-                Select(t => new TvDTO
+            var latestTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetLatestItems<TV>(1, 10, "ID", false).ToList().
+                Select(t => new TVDTO
                 {
                     Id = t.ID,
                     Name = t.Name,
@@ -130,21 +130,21 @@ namespace ApplicationLayer.Services
                     SpecialFeatures = t.SpecialFeatures,
                     Resolution = t.Resolution,
                     ScreenSize = t.ScreenSize,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                     CategoryName = t.Category.Name,
-                    RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                    RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                 }).OrderBy(a => Guid.NewGuid());
 
-            return new ItemDTO<TvDTO>()
+            return new ItemDTO<TVDTO>()
             {
                 ItemCategories = tvsCategories,
-                DiscountedItems = (IEnumerable<TvDTO>)discountedTvs,
-                latestItems = (IEnumerable<TvDTO>)latestTvs,
-                TopRatedItems = (IEnumerable<TvDTO>)topRatedTvs,
+                DiscountedItems = (IEnumerable<TVDTO>)discountedTVs,
+                latestItems = (IEnumerable<TVDTO>)latestTVs,
+                TopRatedItems = (IEnumerable<TVDTO>)topRatedTVs,
             };
         }
 
-        public async Task<ItemsDTO> GetBrandsTvs(string? orderIndex, int? page, string name, bool? des)
+        public async Task<ItemsDTO> GetBrandsTVs(string? orderIndex, int? page, string name, bool? des)
         {
             bool desOrder = des ?? false;
             int pageSize = 9;
@@ -152,7 +152,7 @@ namespace ApplicationLayer.Services
             var totalPages = (int)Math.Ceiling(await _servicesInstanceProvider.GetItemsServiceInstance().TotalItems<TV>("Brands", null, null, name) / (double)pageSize);
 
             var tvs = _servicesInstanceProvider.GetItemsServiceInstance().GetCategoryItems<TV>(name, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
-                 Select(t => new TvDTO
+                 Select(t => new TVDTO
                  {
                      Id = t.ID,
                      Name = t.Name,
@@ -167,9 +167,9 @@ namespace ApplicationLayer.Services
                      SpecialFeatures = t.SpecialFeatures,
                      Resolution = t.Resolution,
                      ScreenSize = t.ScreenSize,
-                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                      CategoryName = t.Category.Name,
-                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                  });
 
             return new ItemsDTO
@@ -184,15 +184,15 @@ namespace ApplicationLayer.Services
             };
         }
 
-        public async Task<ItemsDTO> GetDiscountedTvs(string? orderIndex, int? page, bool? des)
+        public async Task<ItemsDTO> GetDiscountedTVs(string? orderIndex, int? page, bool? des)
         {
             bool desOrder = des ?? false;
             int pageSize = 9;
             int pageNumber = page ?? 1;
             var totalPages = (int)Math.Ceiling(await _servicesInstanceProvider.GetItemsServiceInstance().TotalItems<TV>("Discounted") / (double)pageSize);
 
-            var discountedTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetDiscountedItems<TV>(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
-                 Select(t => new TvDTO
+            var discountedTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetDiscountedItems<TV>(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
+                 Select(t => new TVDTO
                  {
                      Id = t.ID,
                      Name = t.Name,
@@ -207,14 +207,14 @@ namespace ApplicationLayer.Services
                      SpecialFeatures = t.SpecialFeatures,
                      Resolution = t.Resolution,
                      ScreenSize = t.ScreenSize,
-                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                      CategoryName = t.Category.Name,
-                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                  });
 
             return new ItemsDTO
             {
-                Items = discountedTvs,
+                Items = discountedTVs,
                 CurrentPage = pageNumber,
                 TotalPages = totalPages,
                 OrderIndex = orderIndex,
@@ -223,7 +223,7 @@ namespace ApplicationLayer.Services
             };
         }
 
-        public async Task<ItemsDTO> GetTopRatedTvs(string? orderIndex, int? page, bool? des)
+        public async Task<ItemsDTO> GetTopRatedTVs(string? orderIndex, int? page, bool? des)
         {
             bool desOrder = des ?? false;
             int pageSize = 9;
@@ -231,8 +231,8 @@ namespace ApplicationLayer.Services
             var totalPages = (int)Math.Ceiling(await _servicesInstanceProvider.GetItemsServiceInstance().TotalItems<TV>("Rated") / (double)pageSize);
 
 
-            var ratedTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetTopRatedItems<TV>(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
-                  Select(t => new TvDTO
+            var ratedTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetTopRatedItems<TV>(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
+                  Select(t => new TVDTO
                   {
                       Id = t.ID,
                       Name = t.Name,
@@ -247,14 +247,14 @@ namespace ApplicationLayer.Services
                       SpecialFeatures = t.SpecialFeatures,
                       Resolution = t.Resolution,
                       ScreenSize = t.ScreenSize,
-                      isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                      isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                       CategoryName = t.Category.Name,
-                      RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                      RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                   });
 
             return new ItemsDTO
             {
-                Items = ratedTvs,
+                Items = ratedTVs,
                 CurrentPage = pageNumber,
                 TotalPages = totalPages,
                 OrderIndex = orderIndex,
@@ -263,15 +263,15 @@ namespace ApplicationLayer.Services
             };
         }
 
-        public async Task<ItemsDTO> GetLatestTvs(string? orderIndex, int? page, bool? des)
+        public async Task<ItemsDTO> GetLatestTVs(string? orderIndex, int? page, bool? des)
         {
             bool desOrder = des ?? false;
             int pageSize = 9;
             int pageNumber = page ?? 1;
             var totalPages = (int)Math.Ceiling(await _servicesInstanceProvider.GetItemsServiceInstance().TotalItems<TV>("Latest") / (double)pageSize);
 
-            var latestTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetLatestItems<TV>(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
-                 Select(t => new TvDTO
+            var latestTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetLatestItems<TV>(pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
+                 Select(t => new TVDTO
                  {
                      Id = t.ID,
                      Name = t.Name,
@@ -286,14 +286,14 @@ namespace ApplicationLayer.Services
                      SpecialFeatures = t.SpecialFeatures,
                      Resolution = t.Resolution,
                      ScreenSize = t.ScreenSize,
-                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                      CategoryName = t.Category.Name,
-                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                  });
 
             return new ItemsDTO
             {
-                Items = latestTvs,
+                Items = latestTVs,
                 CurrentPage = pageNumber,
                 TotalPages = totalPages,
                 OrderIndex = orderIndex,
@@ -302,15 +302,15 @@ namespace ApplicationLayer.Services
             };
         }
 
-        public async Task<ItemsDTO> GetTvsWithPriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
+        public async Task<ItemsDTO> GetTVsWithPriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
         {
             bool desOrder = des ?? false;
             int pageSize = 9;
             int pageNumber = page ?? 1;
             var totalPages = (int)Math.Ceiling(await _servicesInstanceProvider.GetItemsServiceInstance().TotalItems<TV>("Price", price1, price2, null) / (double)pageSize);
 
-            var priceTvs = _servicesInstanceProvider.GetItemsServiceInstance().GetItemsFilteredByPrice<TV>(price1, price2, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
-                 Select(t => new TvDTO
+            var priceTVs = _servicesInstanceProvider.GetItemsServiceInstance().GetItemsFilteredByPrice<TV>(price1, price2, pageNumber, pageSize, orderIndex ?? "ID", des ?? false).ToList().
+                 Select(t => new TVDTO
                  {
                      Id = t.ID,
                      Name = t.Name,
@@ -325,14 +325,14 @@ namespace ApplicationLayer.Services
                      SpecialFeatures = t.SpecialFeatures,
                      Resolution = t.Resolution,
                      ScreenSize = t.ScreenSize,
-                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                     isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                      CategoryName = t.Category.Name,
-                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "Tvs").Result.Count()
+                     RateCount = _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(t.ID, "TVs").Result.Count()
                  });
 
             return new ItemsDTO
             {
-                Items = priceTvs,
+                Items = priceTVs,
                 CurrentPage = pageNumber,
                 TotalPages = totalPages,
                 OrderIndex = orderIndex,
@@ -343,23 +343,23 @@ namespace ApplicationLayer.Services
             };
         }
 
-        public async Task<TvDTO> GetTvDetails(int id)
+        public async Task<TVDTO> GetTVDetails(int id)
         {
-            var tv = await this.GetTv(id);
+            var tv = await this.GetTV(id);
 
             if (tv != null)
             {
-                var comments = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemComments(id, "Tvs", "Default");
+                var comments = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemComments(id, "TVs", "Default");
 
-                var rateCount = (await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(id, "Tvs")).Count();
+                var rateCount = (await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(id, "TVs")).Count();
 
-                var starCounts = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRateDetails<TV>(id, "Tvs");
+                var starCounts = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRateDetails<TV>(id, "TVs");
 
-                var totalQuantity = await _servicesInstanceProvider.GetCartServiceInstance().TotalItemQuantityInCart(id, "Tvs");
+                var totalQuantity = await _servicesInstanceProvider.GetCartServiceInstance().TotalItemQuantityInCart(id, "TVs");
 
-                var similarPriceTvs = (await _unitOfWork.TVs.GetAll())
+                var similarPriceTVs = (await _unitOfWork.TVs.GetAll())
                     .Where(t => t.Price == tv.Price || Math.Abs(t.Price - tv.Price) <= 1000)
-                    .Select(t => new TvDTO
+                    .Select(t => new TVDTO
                     {
                         Id = t.ID,
                         Name = t.Name,
@@ -374,14 +374,14 @@ namespace ApplicationLayer.Services
                         SpecialFeatures = t.SpecialFeatures,
                         Resolution = t.Resolution,
                         ScreenSize = t.ScreenSize,
-                        isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                        isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                         CategoryName = t.Category.Name,
                         RateCount = rateCount
                     });
 
-                var relatedTvs = (await _unitOfWork.TVs.GetAll())
+                var relatedTVs = (await _unitOfWork.TVs.GetAll())
                     .Where(t => t.CategoryId == tv.CategoryId).Take(10)
-                    .Select(t => new TvDTO
+                    .Select(t => new TVDTO
                     {
                         Id = t.ID,
                         Name = t.Name,
@@ -396,7 +396,7 @@ namespace ApplicationLayer.Services
                         SpecialFeatures = t.SpecialFeatures,
                         Resolution = t.Resolution,
                         ScreenSize = t.ScreenSize,
-                        isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "Tvs").Result,
+                        isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), t.ID, "TVs").Result,
                         CategoryName = t.Category.Name,
                         RateCount = rateCount
                     });
@@ -412,7 +412,7 @@ namespace ApplicationLayer.Services
 
                 var BOGOGetItem = await _servicesInstanceProvider.GetOffersServiceInstance().GetBOGOGetItem(tv);
 
-                return new TvDTO
+                return new TVDTO
                 {
                     Id = tv.ID,
                     Name = tv.Name,
@@ -432,14 +432,14 @@ namespace ApplicationLayer.Services
                     Resolution = tv.Resolution,
                     ScreenSize = tv.ScreenSize,
                     CategoryName = tv.Category.Name,
-                    RelatedTVs = relatedTvs,
-                    SimilarPriceTVs = similarPriceTvs,
+                    RelatedTVs = relatedTVs,
+                    SimilarPriceTVs = similarPriceTVs,
                     Comments = comments,
                     Offers = offers,
                     BOGOGet = BOGOGetItem,
                     StarCounts = starCounts,
                     RateCount = rateCount,
-                    ControllerName = "Tvs",
+                    ControllerName = "TVs",
                     TotalQuantity = totalQuantity
                 };
             }
@@ -448,26 +448,26 @@ namespace ApplicationLayer.Services
                 return null;
         }
 
-        public async Task<TvDTO> GetTvAllComments(int id)
+        public async Task<TVDTO> GetTVAllComments(int id)
         {
-            var Tv = await this.GetTv(id);
+            var TV = await this.GetTV(id);
 
-            var rateCount = (await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(id, "Tvs")).Count();
+            var rateCount = (await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRates(id, "TVs")).Count();
 
-            var starCounts = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRateDetails<TV>(id, "Tvs");
+            var starCounts = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemRateDetails<TV>(id, "TVs");
 
-            if (Tv != null)
+            if (TV != null)
             {
-                var comments = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemComments(id, "Tvs", "All");
+                var comments = await _servicesInstanceProvider.GetItemsServiceInstance().GetItemComments(id, "TVs", "All");
 
                 if (comments.Any())
                 {
-                    return new TvDTO
+                    return new TVDTO
                     {
-                        Id = Tv.ID,
-                        Name = Tv.Name,
-                        Rate = Tv.Rate,
-                        CategoryName = Tv.Category.Name,
+                        Id = TV.ID,
+                        Name = TV.Name,
+                        Rate = TV.Rate,
+                        CategoryName = TV.Category.Name,
                         Comments = comments,
                         StarCounts = starCounts,
                         RateCount = rateCount

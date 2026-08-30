@@ -21,10 +21,10 @@ namespace PresentationLayer.Controllers
             ViewBag.categoriesViewBag = categoriesList;
         }
 
-        private readonly ITvsService _tvs;
+        private readonly ITVsService _tvs;
         private readonly IDepartmentsService _departments;
 
-        public TVsController(ITvsService tv, IDepartmentsService departments)
+        public TVsController(ITVsService tv, IDepartmentsService departments)
         {
             _tvs = tv;
             _departments = departments;
@@ -35,7 +35,7 @@ namespace PresentationLayer.Controllers
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var result = _tvs.GetTvsWithRelatedOnes();
+            var result = _tvs.GetTVsWithRelatedOnes();
 
             var tvsVM = new ItemViewModel<TVViewModel>()
             {
@@ -114,7 +114,7 @@ namespace PresentationLayer.Controllers
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
-            var tvs = _tvs.GetTvs(pageNumber, pageSize);
+            var tvs = _tvs.GetTVs(pageNumber, pageSize);
 
             return View(tvs);
         }
@@ -153,12 +153,12 @@ namespace PresentationLayer.Controllers
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var Tv = await _tvs.GetTv(id);
+            var TV = await _tvs.GetTV(id);
 
-            if (Tv != null)
+            if (TV != null)
             {
                 await CreateCategoriesSelectList();
-                return View(Tv);
+                return View(TV);
             }
 
             throw new ArgumentNullException("Invalid id!!");
@@ -187,9 +187,9 @@ namespace PresentationLayer.Controllers
             if (id == null && id != 0)
                 throw new ArgumentNullException("Invalid id!!");
 
-            var Tv = await _tvs.GetTv(id);
+            var TV = await _tvs.GetTV(id);
 
-            if (Tv != null)
+            if (TV != null)
                 return View();
             else
                 throw new ArgumentNullException("Invalid id!!");
@@ -204,7 +204,7 @@ namespace PresentationLayer.Controllers
             return RedirectToAction(nameof(IndexAdmin));
         }
 
-        public async Task<IActionResult> Tvs()
+        public async Task<IActionResult> TVs()
         {
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
@@ -219,7 +219,7 @@ namespace PresentationLayer.Controllers
                 var departments = await _departments.GetDepartments();
                 ViewData["Departments"] = departments;
 
-                var result = await _tvs.GetBrandsTvs(orderIndex, page, name, des);
+                var result = await _tvs.GetBrandsTVs(orderIndex, page, name, des);
 
                 var data = new ItemsViewModel
                 {
@@ -232,7 +232,7 @@ namespace PresentationLayer.Controllers
                     Brand = result.Brand
                 };
 
-                return View("Tvs", data);
+                return View("TVs", data);
             }
 
             return RedirectToAction("Index");
@@ -243,7 +243,7 @@ namespace PresentationLayer.Controllers
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var result = await _tvs.GetDiscountedTvs(orderIndex, page, des);
+            var result = await _tvs.GetDiscountedTVs(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
@@ -255,7 +255,7 @@ namespace PresentationLayer.Controllers
                 ActionName = result.ActionName,
             };
 
-            return View("Tvs", data);
+            return View("TVs", data);
         }
 
         public async Task<IActionResult> TopRated(string? orderIndex, int? page, bool? des)
@@ -263,7 +263,7 @@ namespace PresentationLayer.Controllers
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var result = await _tvs.GetTopRatedTvs(orderIndex, page, des);
+            var result = await _tvs.GetTopRatedTVs(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
@@ -275,7 +275,7 @@ namespace PresentationLayer.Controllers
                 ActionName = result.ActionName,
             };
 
-            return View("Tvs", data);
+            return View("TVs", data);
         }
 
         public async Task<IActionResult> Latest(string? orderIndex, int? page, bool? des)
@@ -283,7 +283,7 @@ namespace PresentationLayer.Controllers
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var result = await _tvs.GetLatestTvs(orderIndex, page, des);
+            var result = await _tvs.GetLatestTVs(orderIndex, page, des);
 
             var data = new ItemsViewModel
             {
@@ -295,7 +295,7 @@ namespace PresentationLayer.Controllers
                 ActionName = result.ActionName,
             };
 
-            return View("Tvs", data);
+            return View("TVs", data);
         }
 
         public async Task<IActionResult> PriceFilter(string? orderIndex, int? page, int price1, int price2, bool? des)
@@ -303,7 +303,7 @@ namespace PresentationLayer.Controllers
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
-            var result = await _tvs.GetTvsWithPriceFilter(orderIndex, page, price1, price2, des);
+            var result = await _tvs.GetTVsWithPriceFilter(orderIndex, page, price1, price2, des);
 
             var data = new ItemsViewModel
             {
@@ -317,7 +317,7 @@ namespace PresentationLayer.Controllers
                 Price2 = result.Price2
             };
 
-            return View("Tvs", data);
+            return View("TVs", data);
         }
 
         public async Task<IActionResult> Details(int id)
@@ -327,7 +327,7 @@ namespace PresentationLayer.Controllers
 
             if (id != null && id != 0)
             {
-                var result = await _tvs.GetTvDetails(id);
+                var result = await _tvs.GetTVDetails(id);
 
                 if (result != null)
                 {
@@ -408,14 +408,14 @@ namespace PresentationLayer.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> AllTvComments(int id)
+        public async Task<IActionResult> AllTVComments(int id)
         {
             var departments = await _departments.GetDepartments();
             ViewData["Departments"] = departments;
 
             if (id != null && id != 0)
             {
-                var result = await _tvs.GetTvAllComments(id);
+                var result = await _tvs.GetTVAllComments(id);
 
                 if (result is not null)
                 {

@@ -102,7 +102,7 @@ namespace ApplicationLayer.Services
                     SpecialFeatures = f.SpecialFeatures,
                     NumberOfDoors = f.NumberOfDoors,
                     CategoryName = f.Category.Name,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), f.ID, "AirConditioners").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), f.ID, "Fridges").Result,
                     ControllerName = "Fridges"
                 });
 
@@ -128,7 +128,7 @@ namespace ApplicationLayer.Services
                     Rate = c.Rate,
                     CategoryName = c.Category.Name,
                     NumberOfHeatingElements = c.NumberOfHeatingElements,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), c.ID, "AirConditioners").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), c.ID, "Cookers").Result,
                     ControllerName = "Cookers"
                 });
 
@@ -149,7 +149,7 @@ namespace ApplicationLayer.Services
                     Rate = w.Rate,
                     SpecialFeatures = w.SpecialFeatures,
                     CategoryName = w.Category.Name,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), w.ID, "AirConditioners").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), w.ID, "WashingMachines").Result,
                     ControllerName = "WashingMachines"
                 });
 
@@ -224,7 +224,7 @@ namespace ApplicationLayer.Services
                     SpecialFeatures = f.SpecialFeatures,
                     NumberOfDoors = f.NumberOfDoors,
                     CategoryName = f.Category.Name,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), f.ID, "AirConditioners").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), f.ID, "Fridges").Result,
                     ControllerName = "Fridges"
                 });
 
@@ -250,7 +250,7 @@ namespace ApplicationLayer.Services
                     Rate = c.Rate,
                     CategoryName = c.Category.Name,
                     NumberOfHeatingElements = c.NumberOfHeatingElements,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), c.ID, "AirConditioners").Result  ,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), c.ID, "Cookers").Result  ,
                     ControllerName = "Cookers"
                 });
 
@@ -271,7 +271,7 @@ namespace ApplicationLayer.Services
                     Rate = w.Rate,
                     SpecialFeatures = w.SpecialFeatures,
                     CategoryName = w.Category.Name,
-                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), w.ID, "AirConditioners").Result,
+                    isLiked = _servicesInstanceProvider.GetWishingListServiceInstance().HasUserLiked(_userService.GetUserId(), w.ID, "WashingMachines").Result,
                     ControllerName = "WashingMachines"
                 });
 

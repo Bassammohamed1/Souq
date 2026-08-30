@@ -46,7 +46,7 @@ builder.Services.AddScoped<IOrdersService, OrdersService>();
 builder.Services.AddScoped<IPaymentsService, PaymentsService>();
 builder.Services.AddScoped<IPaymentMethodsImplementations, PaymetMethodsImplementations>();
 builder.Services.AddScoped<IRolesService, RolesService>();
-builder.Services.AddScoped<ITvsService, TvsService>();
+builder.Services.AddScoped<ITVsService, TVsService>();
 builder.Services.AddScoped<IUserInteractionsService, UserInteractionsService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IVideoGamesService, VideoGamesService>();

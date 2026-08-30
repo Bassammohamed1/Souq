@@ -13,7 +13,7 @@ namespace ApplicationLayer.Services
         private readonly IUsersService _userService;
         private readonly IServicesInstanceProvider _servicesInstanceProvider;
 
-        public WashingMachinesService(IUnitOfWork unitOfWork, IItemsService items, IUsersService userService, IWishingListService wishingList, ICartService carts, IOffersService offers, ICategoriesService categories, IServicesInstanceProvider servicesInstanceProvider)
+        public WashingMachinesService(IUnitOfWork unitOfWork, IUsersService userService, IServicesInstanceProvider servicesInstanceProvider)
         {
             _unitOfWork = unitOfWork;
             _userService = userService;

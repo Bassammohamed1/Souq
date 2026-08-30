@@ -82,7 +82,7 @@ namespace ApplicationLayer.Services
                 });
 
             var tvs = _servicesInstanceProvider.GetItemsServiceInstance().GetCategoryItems<TV>(name, pageNumber, 3, orderIndex ?? "ID", Des ?? false).ToList()
-                .Select(t => new TvDTO
+                .Select(t => new TVDTO
                 {
                     Id = t.ID,
                     ConnectivityTechnology = t.ConnectivityTechnology,
@@ -177,7 +177,7 @@ namespace ApplicationLayer.Services
                  });
 
             var tvs = (_servicesInstanceProvider.GetItemsServiceInstance().GetItemsFilteredByPrice<TV>(price1, price2, pageNumber, 3, orderIndex ?? "ID", Des ?? false)).ToList()
-                 .Select(t => new TvDTO
+                 .Select(t => new TVDTO
                  {
                      Id = t.ID,
                      ConnectivityTechnology = t.ConnectivityTechnology,

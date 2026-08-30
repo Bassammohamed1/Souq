@@ -52,8 +52,6 @@ namespace ApplicationLayer.Services
                 }
                 else if (offer.OfferType == OfferType.FixedDiscount || offer.OfferType == OfferType.PercentDiscount)
                 {
-                    var offerItem = await _servicesInstanceProvider.GetItemsServiceInstance().GetItem(offer.ItemID ?? 0);
-
                     var offerVM = new OfferDTO()
                     {
                         ID = offer.ID,
@@ -300,12 +298,10 @@ namespace ApplicationLayer.Services
                     {
                         case OfferType.FixedDiscount:
                             item.NewPrice = item.Price - data.FixedDiscountValue;
-
                             break;
 
                         case OfferType.PercentDiscount:
-                            item.NewPrice = item.Price * (data.PercentDiscount / 100);
-
+                            item.NewPrice = item.Price * (1 - data.PercentDiscount / 100);
                             break;
                     }
                 }

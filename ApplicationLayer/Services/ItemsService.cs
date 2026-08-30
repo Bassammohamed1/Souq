@@ -146,7 +146,7 @@ namespace ApplicationLayer.Services
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            data.SelectedFilters = filters.Split(',').ToList();
+            data.SelectedFilters = filters?.Split(',').ToList() ?? new List<string>();
 
             var filteredItems = await this.GetFilteredItems(data.SelectedFilters, 1, int.MaxValue);
 
